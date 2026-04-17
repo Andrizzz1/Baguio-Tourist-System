@@ -1,10 +1,38 @@
 export const NavBar = ()=>{
-    return <div className="flex items-center justify-around p-2">
+    return <div className="flex items-center justify-around py-4 ">
              <h1 className="font-extrabold text-3xl text-green-900 uppercase ">Ask Baguio</h1>
              <div className="flex gap-5 text-green-800 items-center">
-                    <a className=" cursor-pointer">For You</a>
-                    <a className=" cursor-pointer">About Us</a>
-                    <a className=" cursor-pointer text-white font-semibold bg-green-900 px-2 py-1 rounded-2xl">Sign Up</a>
+                    <a href="#" className=" cursor-pointer 
+                    relative
+                    after:content-['']
+                    after:left-0
+                    after:absolute
+                    after:-bottom-1
+                    after:h-0.5
+                    after:w-0
+                    after:transition-all
+                    after:bg-green-900
+                    after:duration-300
+                    hover:after:w-full
+                    text-xl
+                    max-sm:text-sm
+                    ">For You</a>
+                    <a href="#" className=" cursor-pointer
+                    relative
+                    after:content-['']
+                    after:left-0
+                    after:absolute
+                    after:-bottom-1
+                    after:h-0.5
+                    after:w-0
+                    after:transition-all
+                    after:bg-green-900
+                    after:duration-300
+                    hover:after:w-full
+                    text-xl
+                    max-sm:text-sm
+                    ">About Us</a>
+                    <a href="#" className="hover:bg-green-600 transition-all duration-400 max-sm:text-sm text-xl cursor-pointer text-white bg-green-900 px-3 py-0.5 rounded-2xl">Sign Up</a>
              </div>
         </div>
 }
