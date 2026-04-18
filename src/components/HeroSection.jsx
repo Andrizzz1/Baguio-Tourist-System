@@ -2,7 +2,7 @@ import { TypeAnimation } from 'react-type-animation';
 
 export const HeroSection = ()=>{
     return <section>
-        <div className="h-[calc(100vh-80px)] bg-cover bg-center rounded-t-xl  bg-black/50 bg-blend-darken" 
+        <div className="h-[calc(100vh-80px)] max-sm:h-screen bg-cover bg-center rounded-t-xl  bg-black/50 bg-blend-darken" 
              style={{backgroundImage:"url('/imgs/background.png')"}}>
                 <div className='px-65 py-40 max-xl:px-40 max-lg:px-35 max-md:px-20 max-sm:px-5'>
                     <TypeAnimation
