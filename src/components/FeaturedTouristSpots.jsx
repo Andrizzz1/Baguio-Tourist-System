@@ -3,7 +3,7 @@ import MagicBento from '../utilities/MagicBento.jsx';
 export const FeaturedSpots = ()=>{
     return <section className="text-center mt-10 flex flex-col items-center  ">
         <h2 className="font-bold text-2xl text-green-900">Discover Tourist Spots</h2>
-        <p className="mt-2 text-gray-400">Start your journey with Baguio’s most loved destinations.</p>
+        <p className="mt-2 text-grey-400">Start your journey with Baguio’s most loved destinations.</p>
         <MagicBento 
             textAutoHide={true}
             enableStars

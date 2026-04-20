@@ -12,37 +12,43 @@ const cardData = [
     color: '#120F17',
     title: 'Burnham Park',
     description: 'Boating, biking, gardens',
-    label: 'Tourist Spot'
+    label: 'Tourist Spot',
+    image: '/imgs/burnham-park.jpg'
   },
   {
     color: '#120F17',
     title: 'Mines View Park',
     description: 'Scenic mountain viewpoint',
-    label: 'Landmark'
+    label: 'Landmark',
+    image: '/imgs/mines-view-park.jpg'
   },
   {
     color: '#120F17',
     title: 'The Mansion',
     description: 'Historic presidential residence',
-    label: 'Historical Site'
+    label: 'Historical Site',
+    image: '/imgs/the-mansion.jpg'
   },
   {
     color: '#120F17',
     title: 'Wright Park',
     description: 'Horse rides, pine trees',
-    label: 'Tourist Spot'
+    label: 'Tourist Spot',
+    image: '/imgs/wright-park.jpg'
   },
   {
     color: '#120F17',
     title: 'Camp John Hay',
     description: 'Pines, trails, leisure',
-    label: 'Tourist Spot'
+    label: 'Tourist Spot',
+    image: '/imgs/camp-john-hay.jpg'
   },
   {
     color: '#120F17',
     title: 'Botanical Garden',
     description: 'Flowers, trails, culture',
-    label: 'Tourist Spot'
+    label: 'Tourist Spot',
+    image: '/imgs/botanical-garden.jpg'
   }
 ];
 
@@ -470,18 +476,18 @@ const useMobileDetection = () => {
   return isMobile;
 };
 
-const MagicBento = ({
-  textAutoHide = true,
-  enableStars = true,
-  enableSpotlight = true,
-  enableBorderGlow = true,
-  disableAnimations = false,
-  spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
-  particleCount = DEFAULT_PARTICLE_COUNT,
-  enableTilt = false,
-  glowColor = DEFAULT_GLOW_COLOR,
-  clickEffect = true,
-  enableMagnetism = true
+        const MagicBento = ({
+          textAutoHide = true,
+          enableStars = true,
+          enableSpotlight = true,
+          enableBorderGlow = true,
+          disableAnimations = false,
+          spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
+          particleCount = DEFAULT_PARTICLE_COUNT,
+          enableTilt = false,
+          glowColor = DEFAULT_GLOW_COLOR,
+          clickEffect = true,
+          enableMagnetism = true
 }) => {
   const gridRef = useRef(null);
   const isMobile = useMobileDetection();
@@ -502,14 +508,18 @@ const MagicBento = ({
       <BentoCardGrid gridRef={gridRef}>
         {cardData.map((card, index) => {
           const baseClassName = `magic-bento-card ${textAutoHide ? 'magic-bento-card--text-autohide' : ''} ${enableBorderGlow ? 'magic-bento-card--border-glow' : ''}`;
-          const cardProps = {
-            className: baseClassName,
-            style: {
-              backgroundColor: card.color,
-              '--glow-color': glowColor
-            }
-          };
-
+       const cardProps = {
+        className: baseClassName,
+        style: {
+          backgroundColor: card.color,
+          '--glow-color': glowColor,
+          ...(card.image && {
+            backgroundImage: `url(${card.image})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }),
+        }
+      };
           if (enableStars) {
             return (
               <ParticleCard
