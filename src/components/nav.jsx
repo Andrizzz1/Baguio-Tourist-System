@@ -1,6 +1,6 @@
 export const NavBar = ()=>{
        
-    return <div className="flex items-center justify-around py-4 max-sm:hidden ">
+    return <div className="flex font-bold items-center justify-around py-4 max-sm:hidden bg-white ">
              <h1 className="font-extrabold text-3xl text-green-900 uppercase max-sm:hidden">Ask Baguio</h1>
              <div className="flex gap-5 text-green-800 items-center max-sm:hidden">
                     <a href="#" className=" cursor-pointer 
