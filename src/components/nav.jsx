@@ -33,7 +33,7 @@ export const NavBar = ()=>{
                     text-xl
                     max-sm:text-sm
                     ">About Us</a>
-                    <a href="#" className="hover:bg-green-600 transition-all duration-400 max-sm:text-sm text-xl cursor-pointer text-white bg-green-900 px-3 py-0.5 rounded-2xl">Sign Up</a>
+                    <a href="#" className="hover:bg-grey-600 transition-all duration-400 max-sm:text-sm text-xl cursor-pointer text-white bg-green-900 px-3 py-0.5 rounded-2xl">Sign Up</a>
                  
              </div>
         </div>
