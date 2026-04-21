@@ -2,7 +2,8 @@ import { NavBar } from "./components/nav";
 import { HeroSection } from "./components/HeroSection";
 import { FeaturedSpots } from "./components/FeaturedTouristSpots";
 import { AboutSection } from "./components/aboutSection.jsx";
-import BubbleMenu from "./utilities/BubbleMenu.jsx"
+import { HowitWorks } from "./components/howItWorks.jsx";
+import BubbleMenu from "./utilities/BubbleMenu.jsx";
 function App(){
   const items = [
               {
@@ -27,7 +28,7 @@ function App(){
               hoverStyles: { bgColor: '#f59e0b', textColor: '#ffffff' }
               }
               ];
-  return <div>
+  return <div className="bg-green-50">
     <NavBar />
     <div className='sm:hidden' >                         
                      <BubbleMenu
@@ -46,6 +47,7 @@ function App(){
     <HeroSection />
     <FeaturedSpots />
     <AboutSection />
+    <HowitWorks  />
   </div>
 }
 
