@@ -35,7 +35,7 @@ export const NavBar = ()=>{
                     text-xl
                     max-sm:text-sm
                     " onClick={()=>navigate('/AboutUs')}>About Us</a>
-                    <a href="#" className="hover:bg-green-600 transition-all duration-400 max-sm:text-sm text-xl cursor-pointer text-white bg-green-900 px-4 py-1.5 rounded-2xl">Sign Up</a>
+                    <a href="#" onClick={()=>navigate('/Register')} className="hover:bg-green-600 transition-all duration-400 max-sm:text-sm text-xl cursor-pointer text-white bg-green-900 px-4 py-1.5 rounded-2xl">Sign Up</a>
                  
              </div>
         </div>

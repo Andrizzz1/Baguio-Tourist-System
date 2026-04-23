@@ -1,8 +1,26 @@
-import { NavBar } from "./components/nav"
+import { NavBar } from "./components/nav";
+import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import TiltedCard from "./utilities/TiltedCard";
 import BubbleMenu from "./utilities/BubbleMenu.jsx";
 export const Aboutus = ()=>{
+     useEffect(()=>{
+        const hiddenSide = document.getElementsByClassName("side")
+        const observer =  new IntersectionObserver((entries) =>{
+          entries.forEach((entry) =>{
+            if(entry.isIntersecting){
+              entry.target.classList.add("showSide")
+            }else{
+              entry.target.classList.remove("showSide")
+            }
+          })
+        })
+        Array.from(hiddenSide).forEach((el) => {
+          observer.observe(el)
+        })
+        return () => observer.disconnect()
+      },[])
+
     const items = [
               {
               label: 'For You',
@@ -27,7 +45,7 @@ export const Aboutus = ()=>{
               }
               ];
     function ProfileCard({imgSrc, Name,description, title}){
-        return <div className="shadow-xl overflow-hidden text-center w-/12 p-1 bg-white rounded-2xl flex items-center flex-wrap justify-center mt-10 mx-5">
+        return <div className=" shadow-xl overflow-hidden text-center w-/12 p-1 bg-white rounded-2xl flex items-center flex-wrap justify-center mt-10 mx-5">
             <TiltedCard
             imageSrc={imgSrc}
             altText={Name}
@@ -77,13 +95,15 @@ export const Aboutus = ()=>{
             </h1>
             <p className="w-96 mx-auto text-gray-600">We're just two students inspired by the cool breeze and pine-scented air of Baguio, building tools to help you discover the hidden gems of the Summer Capital.</p>
         </div>
-        <div className="mt-20 flex flex-wrap justify-center gap-2">
+        <div className="mt-20 flex flex-wrap justify-center gap-2 side">
             <ProfileCard 
             imgSrc='/imgs/Andrei.png' 
+            classList='xside'
             description = 'Andrei is a Computer Engineering student from Baguio with skills in frontend and backend development. He works on the core logic of the Baguio Tourist System, helping build a smart, reliable, and user-friendly platform through React, JavaScript, Node.js, and web-based system development.'
             Name = 'John Andrei Mandapat' 
             title='Lead Developer'/>
             <ProfileCard 
+            classList='xside'
             imgSrc='/imgs/tristan.jpg' 
             description = 'A Computer Engineering student and project collaborator who contributed to the visual direction of the Baguio Tourist System by suggesting fonts, helping source images, and supporting the overall design and content setup of the platform.'
             Name = 'Tristan Dela Cruz' 
