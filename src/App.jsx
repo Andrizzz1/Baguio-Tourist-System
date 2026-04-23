@@ -14,7 +14,7 @@ function App(){
   //para sa fade effect 
   useEffect(()=>{
     const hiddenElements = document.getElementsByClassName("hiddenEl")
-
+    const hiddenSide = document.getElementsByClassName("side")
     const observer =  new IntersectionObserver((entries) =>{
       entries.forEach((entry) =>{
         if(entry.isIntersecting){
