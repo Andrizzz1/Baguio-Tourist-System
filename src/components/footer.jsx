@@ -1,34 +1,32 @@
 export const Footer =()=>{
-    return<div className="w-full mx-auto bg-[#32612D] px-10">
+    return<div className="p-3 w-full mx-auto bg-[#32612D] px-10 max-sm:text-center">
             
             <div className="flex flex-col md:flex-row justify-between gap-8">
                 <div>
-                    <h3 className="font-bold text-xl">Baguio Tourist System</h3>
-                    <p className="text-green-200 mt-2">Making travel easier, one destination at a time.</p>
+                    <h3 className="font-semibold text-3xl text-black">Baguio Tourist System</h3>
+                    <p className="text-green-100 mt-2">Explore Baguio with smarter travel guidance.</p>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
                     <div>
-                        <h4 className="font-semibold">Platform</h4>
-                        <ul className="mt-2 text-green-200 space-y-1">
-                            <li>Features</li>
-                            <li>Testimonials</li>
-                            <li>FAQ</li>
+                        <h4 className="font-semibold text-black">Platform</h4>
+                        <ul className="mt-2 text-green-100 space-y-1">
+                            <li className="cursor-pointer hover:text-green-200 " >Tourist Spots</li>
+                            <li className="cursor-pointer hover:text-green-200">Features</li>
+                            <li className="cursor-pointer hover:text-green-200">About the Platform</li>
                         </ul>
                     </div>
                     <div>
-                        <h4 className="font-semibold">Company</h4>
-                        <ul className="mt-2 text-green-200 space-y-1">
-                            <li>About Us</li>
-                            <li>Careers</li>
-                            <li>Contact</li>
+                        <h4 className="font-semibold text-black">Team</h4>
+                        <ul className="mt-2 text-green-100 space-y-1">
+                            <li className="cursor-pointer hover:text-green-200  ">About Us</li>
+                            <li className="cursor-pointer hover:text-green-200 ">Contact</li>
                         </ul>
                     </div>
                     <div>
-                        <h4 className="font-semibold">Legal</h4>
-                        <ul className="mt-2 text-green-200 space-y-1">
-                            <li>Privacy Policy</li>
-                            <li>Terms of Service</li>
-                            <li>Cookie Policy</li>
+                        <h4 className="font-semibold text-black">Legal</h4>
+                        <ul className="mt-2 text-green-100 space-y-1">
+                            <li className="cursor-pointer hover:text-green-200 ">Privacy Policy</li>
+                            <li className="cursor-pointer hover:text-green-200 ">Terms of Service</li>
                         </ul>
                     </div>
                 </div>
