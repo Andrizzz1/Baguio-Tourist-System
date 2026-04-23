@@ -1,10 +1,11 @@
 import { TypeAnimation } from 'react-type-animation';
-
+import { useNavigate } from 'react-router-dom';
 export const HeroSection = ()=>{
+    const navigate = useNavigate()
     return <section>
         <div className="max-sm:flex max-sm:flex-col max-sm:justify-center h-[calc(100vh-70px)] max-sm:h-screen bg-cover bg-center rounded-t-xl  bg-black/50 bg-blend-darken" 
              style={{backgroundImage:"url('/imgs/background.png')"}}>
-                <div className='px-65 py-40 max-xl:px-40 max-lg:px-35 max-md:px-20 max-sm:px-2 text-center max-sm:flex max-sm:flex-col'>
+                <div className='hiddenEl px-65 py-40 max-xl:px-40 max-lg:px-35 max-md:px-20 max-sm:px-2 text-center max-sm:flex max-sm:flex-col'>
                     <TypeAnimation
                         sequence={[
                             // Same substring at the start will only be typed out once, initially

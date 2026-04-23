@@ -7,3 +7,16 @@
   box-sizing: border-box;
 
 }
+
+.hiddenEl {
+    opacity: 0;
+    transition: all 1s;
+    filter: blur(1px);
+
+}
+
+.show{
+    opacity: 1;
+    filter: blur(0);
+    transition: all 1s;
+}
