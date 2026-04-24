@@ -24,7 +24,7 @@ export const HeroSection = ()=>{
                     <h1 className='text-white font-bold text-8xl max-sm:text-5xl'>Navigating the <br className='max-lg:hidden'/> City of Pines.</h1>
                     <p className='text-gray-400 mt-5 max-w-2xl mx-auto text-center'>Find where to go, know why it matters, and explore the city with real local insight and AI assistance</p>
                     <div className='flex  items-center justify-center mx-auto mt-5 gap-5 max-w-xl'>
-                        <a href="#" className='bg-white
+                        <a className='bg-white
                         text-green-900
                         py-2 w-34 
                         text-center px-5 
@@ -35,8 +35,10 @@ export const HeroSection = ()=>{
                         hover:text-green-600
                         transition-all
                         duration-300
-                        '>LOGIN</a>
-                        <a href="#" className='hover:bg-green-600 duration-400 transition-all bg-green-900 text-white py-2 px-5 rounded-4xl'>CHAT WITH AI</a>
+                        '
+                        onClick={()=>navigate('/Signin')}
+                        >LOGIN</a>
+                        <a className='hover:bg-green-600 duration-400 transition-all bg-green-900 text-white py-2 px-5 rounded-4xl'>CHAT WITH AI</a>
                     </div>
                 </div>    
            
