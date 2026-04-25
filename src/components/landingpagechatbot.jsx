@@ -11,14 +11,45 @@ export const ChatbotModal = ({ onClose }) => {
     const [messages, setMessages] = useState(INITIAL_MESSAGES)
     const [input, setInput] = useState('')
 
-    const sendMessage = (text) => {
+
+    async function sendToAI(msg) {
+        try {
+            const response = await fetch("/api/FrontendChatbot", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: msg })
+            });
+
+            // ADD THESE DEBUG LINES
+            console.log("Status:", response.status);
+            const data = await response.json();
+            console.log("Full response:", data);  // see exactly what's coming back
+
+            if (!response.ok) {
+                return `API Error: ${data.error?.message || response.status}`;
+            }
+
+            return data.reply
+
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            return "Error contacting AI";
+        }
+
+    }
+
+    const sendMessage = async(text) => {
         const userMsg = text.trim() || input.trim()
+        
         if (!userMsg) return
         setMessages(prev => [
             ...prev,
-            { from: 'user', text: userMsg },
-            { from: 'bot', text: `You asked about "${userMsg}". I'm still learning, but I'll have great Baguio tips for you soon! 🌿` }
+            { from: 'user', text: userMsg }
         ])
+        const aiReply = await sendToAI(userMsg)
+        setMessages(prev =>[...prev, { text: aiReply, from: "bot" }])
         setInput('')
     }
 
