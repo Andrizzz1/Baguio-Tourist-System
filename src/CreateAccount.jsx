@@ -7,6 +7,27 @@ export const RegisterAcc = () => {
     const navigate = useNavigate()
     const [showEmail, setShowEmail] = useState(false)
 
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
+
+    async function handleRegister(){
+        if(!email || !password) return
+
+        const response = await fetch('/api/Register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        })
+
+        const data = await response.json()
+
+        if(response.ok){
+            navigate('/Signin')  // redirect to login after success
+        } else {
+            setError(data.error)  // show error message
+        }
+    }
     return (
         <section className="min-h-screen bg-green-50 grid grid-cols-1 md:grid-cols-2">        
             {/* Left Panel */}
@@ -25,10 +46,11 @@ export const RegisterAcc = () => {
 
             {/* Right Panel */}
             <div className="flex items-center justify-center p-8">
-                <button onClick={() => navigate('/')} className='z-20 absolute top-5 right-4 hover:bg-black/30 bg-blend-darken p-1 rounded-2xl transition-all delay-100'>
-                    <ArrowUturnLeftIcon className="w-6 h-6" />
-                </button>
+                
 
+
+
+                <button onClick={() => navigate('/')} className='z-20 absolute top-5 right-4 hover:bg-black/30 bg-blend-darken p-1 rounded-2xl transition-all delay-100'><ArrowUturnLeftIcon className="w-6 h-6" /></button>
                 <div className="w-full max-w-md">
                     <h2 className="text-green-900 font-bold text-3xl">Create Account</h2>
                     <p className="text-gray-500 mt-1 mb-8">Start your Cordillera journey today</p>
@@ -90,6 +112,7 @@ export const RegisterAcc = () => {
                             <div>
                                 <label className="text-xs font-semibold text-green-900 uppercase tracking-wider">Email</label>
                                 <input
+                                    value={email} onChange={(e) => setEmail(e.target.value)}
                                     type="email"
                                     placeholder="name@example.com"
                                     className="mt-1 w-full border border-gray-200 bg-white rounded-xl px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-700"
@@ -97,17 +120,20 @@ export const RegisterAcc = () => {
                             </div>
                             <div>
                                 <label className="text-xs font-semibold text-green-900 uppercase tracking-wider">Password</label>
-                                <input
+                                <input 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     type="password"
                                     placeholder="••••••••"
                                     className="mt-1 w-full border border-gray-200 bg-white rounded-xl px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-700"
                                 />
                             </div>
+                            {error && <p className="text-red-500 text-sm">{error}</p>}
                             <button
+                                onClick={handleRegister}
                                 type="submit"
                                 className="w-full bg-green-900 hover:bg-green-700 transition-colors text-white font-semibold py-2.5 rounded-xl mt-1"
-                            >
-                                Create Account
+                            > Create Account
                             </button>
                         </form>
                     )}
