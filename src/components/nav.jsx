@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router-dom'
-
 export const NavBar = ()=>{
     const navigate = useNavigate()
-    return <div className="flex font-bold items-center justify-around py-4 max-sm:hidden bg-white ">
-             <h1 className="font-extrabold text-3xl text-green-900 uppercase max-sm:hidden">Ask Baguio</h1>
+    return <div className="flex font-bold items-center justify-around py-4 max-sm:hidden bg-white items-center-safe">
+             <h1 className="font-extrabold text-3xl text-green-900 uppercase max-sm:hidden flex items-center gap-2">
+              <h1 className="font-extrabold text-3xl text-green-900 uppercase max-sm:hidden flex items-center gap-2">
+              <img src="/imgs/imgss.png" alt="logo" className="w-20 h-20"/>
+              Ask Baguio
+              </h1>
+              </h1>
+                     
              <div className="flex gap-9 text-green-800 items-center max-sm:hidden">
                     <a href="#" className=" cursor-pointer 
                     relative
