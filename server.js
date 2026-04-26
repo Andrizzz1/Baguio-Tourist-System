@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-
+dotenv.config();
 import pkg from 'pg'
 import bcrypt from 'bcrypt'
 const { Pool } = pkg
@@ -14,7 +14,7 @@ const pool = new Pool({
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-dotenv.config();
+
 
 const sys_role = `
 You are **Ask Baguio AI**, the virtual assistant for the Ask Baguio tourism platform.

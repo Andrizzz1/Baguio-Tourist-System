@@ -13,7 +13,7 @@ export const RegisterAcc = () => {
     async function handleRegister(){
         if(!email || !password) return
 
-        const response = await fetch('/api/Register', {
+        const response = await fetch('/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -22,7 +22,7 @@ export const RegisterAcc = () => {
         const data = await response.json()
 
         if(response.ok){
-            navigate('/Signin')  // redirect to login after success
+            navigate('/signin')  // redirect to login after success
         } else {
             setError(data.error)  // show error message
         }
@@ -49,7 +49,7 @@ export const RegisterAcc = () => {
 
 
 
-                <button onClick={() => navigate('/')} className='z-20 absolute top-5 right-4 hover:bg-black/30 bg-blend-darken p-1 rounded-2xl transition-all delay-100'><ArrowUturnLeftIcon className="w-6 h-6" /></button>
+                <button onClick={() => navigate('/')} className='z-20 absolute top-5 right-4 hover:bg-black/30 bg-blend-darken p-1 rounded-2xl transition-all delay-100'><ArrowUturnLeftIcon className="w-6 h-6 text-black" /></button>
                 <div className="w-full max-w-md">
                     
                     <h2 className="text-green-900 font-bold text-3xl">Create Account</h2>
@@ -91,7 +91,9 @@ export const RegisterAcc = () => {
                             Use email & password
                         </button>
                     ) : (
-                        <form className="flex flex-col gap-4 ">
+                        <form 
+                        onSubmit={(e) => e.preventDefault()}
+                            className="flex flex-col gap-4 ">
                             <div>
                                 <label className="text-xs font-semibold text-green-900 uppercase tracking-wider">Full Name</label>
                                 <input

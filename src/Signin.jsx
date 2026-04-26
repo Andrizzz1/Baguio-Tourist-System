@@ -1,8 +1,32 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
+import { useState } from 'react'
 
 export const Signin = () => {
     const navigate = useNavigate()
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
+
+    async function handleLogin(){
+        if(!email || !password) return
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            const data = await response.json()
+            if(response.ok){
+                navigate('/dashboard')
+            } else {
+                setError(data.error || 'Invalid credentials')
+            }
+        } catch {
+            setError('Connection error. Please try again.')
+        }
+    }
 
     return (
         <section className="min-h-screen bg-green-50 grid grid-cols-1 md:grid-cols-2">
@@ -21,10 +45,12 @@ export const Signin = () => {
                     <p className="text-gray-500 mt-1 mb-8">Sign in to continue your Cordillera journey</p>
 
                     {/* Email / Password Form */}
-                    <form className="flex flex-col gap-4">
+                    <form className="flex flex-col gap-4"  onSubmit={(e) => e.preventDefault()}>
                         <div>
                             <label className="text-xs font-semibold text-green-900 uppercase tracking-wider">Email</label>
                             <input
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 type="email"
                                 placeholder="name@example.com"
                                 className="mt-1 w-full border border-gray-200 bg-white rounded-xl px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-700"
@@ -36,13 +62,16 @@ export const Signin = () => {
                                 <span className="text-xs text-green-800 font-semibold cursor-pointer hover:underline">Forgot password?</span>
                             </div>
                             <input
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 type="password"
                                 placeholder="••••••••"
                                 className="mt-1 w-full border border-gray-200 bg-white rounded-xl px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-700"
                             />
                         </div>
                         <button
-                            onClick={() => navigate('/Dashboard')}   
+                            onClick={handleLogin}   
+                            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
                             type="submit"
                             className="w-full bg-green-900 hover:bg-green-700 transition-colors text-white font-semibold py-2.5 rounded-xl mt-1"
                         >
