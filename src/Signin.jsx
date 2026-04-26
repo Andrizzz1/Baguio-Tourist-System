@@ -42,6 +42,7 @@ export const Signin = () => {
                             />
                         </div>
                         <button
+                            onClick={() => navigate('/Dashboard')}   
                             type="submit"
                             className="w-full bg-green-900 hover:bg-green-700 transition-colors text-white font-semibold py-2.5 rounded-xl mt-1"
                         >
