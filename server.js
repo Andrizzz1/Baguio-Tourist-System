@@ -2,7 +2,15 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+
+import pkg from 'pg'
+import bcrypt from 'bcrypt'
+const { Pool } = pkg
 const app = express();
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL
+})
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -58,5 +66,58 @@ app.post('/api/FrontendChatbot', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+app.post('/api/Register', async (req, res) => {
+    const { email, password } = req.body
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10)
+        const result = await pool.query(
+            'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email',
+            [email, hashedPassword]
+        )
+        res.status(201).json({ user: result.rows[0] })
+    } catch (error) {
+        if (error.code === '23505') {
+            res.status(400).json({ error: 'Email already exists' })
+        } else {
+            console.error(error)
+            res.status(500).json({ error: 'Registration failed' })
+        }
+    }
+});
+dotenv.config();
+console.log("DB URL:", process.env.DATABASE_URL)
+
+app.post('/api/Login', async (req, res) => {
+    const { email, password } = req.body
+    try {
+        // find user by email
+        const result = await pool.query(
+            'SELECT * FROM users WHERE email = $1',
+            [email]
+        )
+
+        // check if user exists
+        if (result.rows.length === 0) {
+            return res.status(400).json({ error: 'Email not found' })
+        }
+
+        const user = result.rows[0]
+
+        // compare password with hashed password
+        const isMatch = await bcrypt.compare(password, user.password)
+
+        if (!isMatch) {
+            return res.status(400).json({ error: 'Incorrect password' })
+        }
+
+        res.json({ message: 'Login successful', user: { id: user.id, email: user.email } })
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: 'Login failed' })
+    }
+})
 
 app.listen(3000, () => console.log('Running on http://localhost:3000'));

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useEffect,useRef } from 'react'
 import { XMarkIcon, PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/solid'
 
 const INITIAL_MESSAGES = [
@@ -10,8 +10,12 @@ const CHIPS = ['Top Tourist Spots', 'History of The Mansion', 'Travel Tips', 'Be
 export const ChatbotModal = ({ onClose }) => {
     const [messages, setMessages] = useState(INITIAL_MESSAGES)
     const [input, setInput] = useState('')
-
-
+    const [loading, setLoading] = useState(false)
+    const [showChips, setShowchips] = useState(true)
+    const bottomRef = useRef(null) 
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [messages])
     async function sendToAI(msg) {
         try {
             const response = await fetch("/api/FrontendChatbot", {
@@ -48,7 +52,9 @@ export const ChatbotModal = ({ onClose }) => {
             ...prev,
             { from: 'user', text: userMsg }
         ])
+        setLoading(true)
         const aiReply = await sendToAI(userMsg)
+        setLoading(false)
         setMessages(prev =>[...prev, { text: aiReply, from: "bot" }])
         setInput('')
     }
@@ -78,13 +84,16 @@ export const ChatbotModal = ({ onClose }) => {
 
                 {/* Chat Area */}
                 <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3 bg-green-50">
+                    
                     {messages.map((msg, i) => (
                         <div key={i} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            
                             {msg.from === 'bot' && (
                                 <div className="w-7 h-7 rounded-full bg-green-900 flex items-center justify-center mr-2 mt-1 shrink-0">
                                      <img className='h-6' src="/imgs/chatbotLogo.png" alt="Chatlogo" />
                                 </div>
                             )}
+                           
                             <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm
                                 ${msg.from === 'user'
                                     ? 'bg-green-900 text-white rounded-br-sm'
@@ -94,9 +103,22 @@ export const ChatbotModal = ({ onClose }) => {
                             </div>
                         </div>
                     ))}
+                     {loading && (
+                        <div className="flex justify-start">
+                        <div className="border-green-300 px-4 py-3 rounded-2xl flex gap-1 items-center">
+                            <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:0ms]"></span>
+                            <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:150ms]"></span>
+                            <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:300ms]"></span>
+                        </div>
+                        </div>
+                    )}
+                    <div ref={bottomRef} />
                 </div>
-
+                
+                
+       
                 {/* Suggestion Chips */}
+                {showChips == true? (
                 <div className="px-5 py-3 flex gap-2 flex-wrap border-t border-gray-100 bg-white">
                     {CHIPS.map(chip => (
                         <button
@@ -108,7 +130,9 @@ export const ChatbotModal = ({ onClose }) => {
                         </button>
                     ))}
                 </div>
-
+                ):
+                null
+}
                 {/* Input */}
                 <div className="px-5 py-4 bg-white border-t border-gray-100 flex gap-3 items-center">
                     <input
@@ -116,6 +140,7 @@ export const ChatbotModal = ({ onClose }) => {
                         value={input}
                         onChange={e => setInput(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
+                        onClick={()=> setShowchips(false)}
                         placeholder="Ask me anything about Baguio..."
                         className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-700 bg-green-50"
                     />
