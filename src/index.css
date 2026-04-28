@@ -7,3 +7,34 @@
   box-sizing: border-box;
 
 }
+
+.hiddenEl {
+    opacity: 0;
+    transition: all 1s;
+    filter: blur(2px);
+
+}
+
+.show{
+    opacity: 1;
+    filter: blur(0);
+    transition: all 1s;
+}
+
+.side{
+    opacity: 0;
+    filter: blur(5px);
+    transition: all 1s;
+    transform: translateX(-100%);
+}
+
+.showSide{
+    opacity: 1;
+    filter: blur(0);
+    transition: all 1s;
+    transform: translateX(0);
+}
+
+.xside:nth-child(2){
+    transition-delay: 200ms;
+}

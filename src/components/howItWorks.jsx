@@ -27,12 +27,13 @@ export const HowitWorks = ()=>{
                                max-sm:flex 
                                max-sm:flex-wrap  
                                max-sm:gap-10
-                               min-h-[80vh] 
+                               min-h-[40vh] 
+                               lg:h-[80vh] 
                                mt-10 
                                bg-green-100 
                                p-5 
                                gap-1" > 
-    <div className="h-full bg-cover bg-center rounded-4xl max-sm:w-full" style={{backgroundImage:"url('/imgs/HowItWorks_bg.png')"}}>
+    <div className="h-full bg-cover bg-center rounded-4xl max-sm:w-full " style={{backgroundImage:"url('/imgs/HowItWorks_bg.png')"}}>
         <div className="flex flex-col items-center gap-5 mt-20 max-sm:mt-5 p-1 max-sm:gap-2 max-sm:w-full">
             <h1 className="font-bold text-7xl max-sm:text-6xl text-center lg:mt-20 text-green-700">How it works</h1>
             <p className='text-gray-500 font-semibold'>Explore Baguio in three simple steps.</p>
@@ -64,7 +65,7 @@ export const HowitWorks = ()=>{
             border: '2px solid white'
           }} />
           <div className='mt-5'>
-            <h3 style={{ fontWeight: 700, fontSize: '1.5rem' }}>{step.title}</h3>
+            <h3 style={{ fontWeight: 700, fontSize: '1.5rem' ,color:'black'}}>{step.title}</h3>
             <p className='text-gray-500'>{step.desc}</p>
           </div>
         </div>

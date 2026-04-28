@@ -1,5 +1,5 @@
 export const CalltoAction = ()=>{
-    return <section className="mt-10 pb-10 flex justify-center">
+    return <section className="mt-10 pb-10 flex justify-center p-5">
         <div className="bg-green-900 text-white p-10 rounded-3xl">
             <div className="max-w-4xl mx-auto text-center">
                 <h2 className="font-bold text-3xl">Ready to Explore Baguio?</h2>
