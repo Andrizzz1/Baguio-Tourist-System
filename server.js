@@ -3,17 +3,20 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
+console.log("DB URL:", process.env.DATABASE_URL)
 import pkg from 'pg'
 import bcrypt from 'bcrypt'
 const { Pool } = pkg
 const app = express();
-const pool = new Pool({
+const pool = new Pool({ 
     connectionString: process.env.DATABASE_URL
 })
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);     
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'dist')));
+
 
 
 const sys_role = `
@@ -86,8 +89,8 @@ app.post('/api/Register', async (req, res) => {
         }
     }
 });
-dotenv.config();
-console.log("DB URL:", process.env.DATABASE_URL)
+
+
 
 app.post('/api/Login', async (req, res) => {
     const { email, password } = req.body
@@ -118,6 +121,10 @@ app.post('/api/Login', async (req, res) => {
         console.error(error)
         res.status(500).json({ error: 'Login failed' })
     }
-})
 
-app.listen(3000, () => console.log('Running on http://localhost:3000'));
+})
+    app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log('Running on http://localhost:3000'));
