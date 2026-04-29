@@ -127,4 +127,4 @@ app.post('/api/Login', async (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Running on http://localhost:3000'));
+app.listen(PORT, '0.0.0.0', () => console.log(`Running on port ${PORT}`));
