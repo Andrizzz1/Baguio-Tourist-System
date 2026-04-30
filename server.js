@@ -12,6 +12,9 @@ const pool = new Pool({
     connectionString: process.env.DATABASE_URL
 })
 
+require('dotenv').config()
+
+console.log(process.env.GROQ_API_KEY) 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);     
 app.use(express.json());
