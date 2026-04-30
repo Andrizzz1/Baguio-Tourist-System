@@ -1,5 +1,9 @@
 {
   "version": 2,
+<<<<<<< HEAD
+=======
+  "buildCommand": "npm run build",
+>>>>>>> c7d963610fe9e570b93ff44ec3cfadf65abe2172
   "builds": [
     { "src": "server.js", "use": "@vercel/node" }
   ],
