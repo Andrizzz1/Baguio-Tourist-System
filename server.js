@@ -73,9 +73,9 @@ app.post('/api/FrontendChatbot', async (req, res) => {
 
 
 app.post('/api/register', async (req, res) => {
-    const { email, password } = req.body
+    const { email, password_hash } = req.body
     try {
-        const hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPassword = await bcrypt.hash(password_hash, 10)
         const result = await pool.query(
             'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email',
             [email, hashedPassword]
@@ -94,7 +94,7 @@ app.post('/api/register', async (req, res) => {
 
 
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body
+    const { email, password_hash } = req.body
     try {
         // find user by email
         const result = await pool.query(
@@ -110,7 +110,7 @@ app.post('/api/login', async (req, res) => {
         const user = result.rows[0]
 
         // compare password with hashed password
-        const isMatch = await bcrypt.compare(password, user.password_hash)
+        const isMatch = await bcrypt.compare(password_hash, user.password_hash)
 
         if (!isMatch) {
             return res.status(400).json({ error: 'Incorrect password' })
