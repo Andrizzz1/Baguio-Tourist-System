@@ -18,6 +18,7 @@ export const Signin = () => {
             })
             const data = await response.json()
             if(response.ok){
+                localStorage.setItem('user', JSON.stringify(data.user))
                 navigate('/dashboard')
             } else {
                 setError(data.error || 'Invalid credentials')
