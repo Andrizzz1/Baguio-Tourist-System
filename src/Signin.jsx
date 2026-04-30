@@ -7,9 +7,8 @@ export const Signin = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-
     async function handleLogin(){
-        if(!email || !password) return
+        if ( !email || !password) return
 
         try {
             const response = await fetch('/api/login', {
@@ -19,6 +18,7 @@ export const Signin = () => {
             })
             const data = await response.json()
             if(response.ok){
+                localStorage.setItem('user', JSON.stringify(data.user))
                 navigate('/dashboard')
             } else {
                 setError(data.error || 'Invalid credentials')
