@@ -77,7 +77,7 @@ app.post('/api/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10)
         const result = await pool.query(
-            'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email',
+            'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email',
             [email, hashedPassword]
         )
         res.status(201).json({ user: result.rows[0] })
@@ -110,7 +110,7 @@ app.post('/api/login', async (req, res) => {
         const user = result.rows[0]
 
         // compare password with hashed password
-        const isMatch = await bcrypt.compare(password, user.password)
+        const isMatch = await bcrypt.compare(password, user.password_hash)
 
         if (!isMatch) {
             return res.status(400).json({ error: 'Incorrect password' })
