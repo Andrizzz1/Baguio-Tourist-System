@@ -7,9 +7,8 @@ export const Signin = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-
     async function handleLogin(){
-        if(!email || !password) return
+        if ( !email || !password) return
 
         try {
             const response = await fetch('/api/login', {

@@ -5,13 +5,13 @@ import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
 export const RegisterAcc = () => {
     const navigate = useNavigate()
     const [showEmail, setShowEmail] = useState(false)
-
+    const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
 
     async function handleRegister(){
-        if(!email || !password) return
+        if (!username || !email || !password) return
 
         const response = await fetch('/api/register', {
             method: 'POST',
@@ -97,6 +97,8 @@ export const RegisterAcc = () => {
                             <div>
                                 <label className="text-xs font-semibold text-green-900 uppercase tracking-wider">Full Name</label>
                                 <input
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    value={username}
                                     type="text"
                                     placeholder="Juan Dela Cruz"
                                     className="mt-1 w-full border border-gray-200 bg-white rounded-xl px-4 py-2.5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-700"
