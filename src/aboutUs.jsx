@@ -157,7 +157,7 @@ export const Aboutus = () => {
           title="BACKEND DEVELOPER"
           github="Andrizzz1"
           gmail="andreimandapat09@gmail.com"
-          linkedin="https://linkedin.com/in/yourprofile"
+          linkedin="https://www.linkedin.com/in/andrei-domsing-165750341/"
         />
 
         <ProfileCard
@@ -167,7 +167,7 @@ export const Aboutus = () => {
           title="FRONTEND DEVELOPER"
           github="definitelynotyuriii"
           gmail="delacruztristan02@gmail.com"
-          linkedin="https://linkedin.com/in/yourprofile"
+          linkedin="https://www.linkedin.com/in/tristan-dela-cruz-268143374/"
         />
       </div>
     </section>
