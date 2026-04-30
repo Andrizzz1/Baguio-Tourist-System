@@ -73,17 +73,22 @@ app.post('/api/FrontendChatbot', async (req, res) => {
 
 
 app.post('/api/register', async (req, res) => {
-    const { email, password } = req.body
+    const { username, email, password } = req.body
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10)
 
         const result = await pool.query(
-            'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email',
-            [email, hashedPassword]
+            'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING users_id,username, email',
+            [username, email, hashedPassword]
         )
 
-        res.status(201).json({ user: result.rows[0] })
+        res.status(201).json({
+            user: {
+                id: result.rows[0].users_id,
+                email: result.rows[0].email
+            }
+})
     } catch (error) {
         if (error.code === '23505') {
             res.status(400).json({ error: 'Email already exists' })
@@ -119,7 +124,7 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).json({ error: 'Incorrect password' })
         }
 
-        res.json({ message: 'Login successful', user: { id: user.id, email: user.email } })
+        res.json({ message: 'Login successful', user: { id: user.users_id, email: user.email } })
 
     } catch (error) {
         console.error(error)
