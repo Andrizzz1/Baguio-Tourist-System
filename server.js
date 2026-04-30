@@ -9,7 +9,8 @@ import bcrypt from 'bcrypt'
 const { Pool } = pkg
 const app = express();
 const pool = new Pool({ 
-    connectionString: process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
 })
 
 const __filename = fileURLToPath(import.meta.url);
@@ -71,7 +72,7 @@ app.post('/api/FrontendChatbot', async (req, res) => {
 });
 
 
-app.post('/api/Register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     const { email, password } = req.body
     try {
         const hashedPassword = await bcrypt.hash(password, 10)
@@ -92,7 +93,7 @@ app.post('/api/Register', async (req, res) => {
 
 
 
-app.post('/api/Login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { email, password } = req.body
     try {
         // find user by email
