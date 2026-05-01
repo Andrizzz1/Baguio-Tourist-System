@@ -89,6 +89,7 @@ app.post('/api/register', async (req, res) => {
         res.status(201).json({
             user: {
                 id: result.rows[0].users_id,
+                username: result.rows[0].username,
                 email: result.rows[0].email
             }
 })
@@ -127,7 +128,7 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).json({ error: 'Incorrect password' })
         }
 
-        res.json({ message: 'Login successful', user: { id: user.users_id, email: user.email } })
+        res.json({ message: 'Login successful', user: { id: user.users_id, email: user.email,username: user.username } })
 
     } catch (error) {
         console.error(error)
