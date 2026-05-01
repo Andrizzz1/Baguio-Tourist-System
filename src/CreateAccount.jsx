@@ -10,7 +10,7 @@ export const RegisterAcc = () => {
     const [error, setError] = useState("")
     const canvasRef = useRef(null)
     const animRef = useRef(null)
-
+    const [username, setUsername] = useState("")
     async function handleRegister(){
         if (!username || !email || !password) return
 
@@ -318,7 +318,7 @@ export const RegisterAcc = () => {
 
                     {/* SOCIAL BUTTONS */}
                     <div className="flex flex-col gap-3">
-                        <button className="flex items-center justify-center gap-3 w-full border border-gray-200 hover:bg-gray-50 py-2.5 rounded-xl font-medium transition">
+                        <button className="flex text-black items-center justify-center gap-3 w-full border border-gray-200 hover:bg-gray-50 py-2.5 rounded-xl font-medium transition">
                             <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" />
                             Continue with Google
                         </button>
@@ -354,8 +354,9 @@ export const RegisterAcc = () => {
                             Use email & password
                         </button>
                     ) : (
-                        <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4">
-                            <input type="text" placeholder="Full Name"
+                        <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4 text-black">
+                            <input type="text"  onChange={(e) => setUsername(e.target.value)}
+                                    value={username} placeholder="Full Name"
                                 className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-green-600 outline-none"
                             />
                             <input value={email} onChange={(e) => setEmail(e.target.value)} type="email"
