@@ -7,11 +7,12 @@ import { CalltoAction } from "./components/calltoAction.jsx";
 import { Footer } from "./components/footer.jsx";
 import BubbleMenu from "./utilities/BubbleMenu.jsx";
 import { useRef,useEffect } from "react";
-
+import { useNavigate} from 'react-router-dom'
 
 
 function App(){
   //para sa fade effect 
+  const navigate = useNavigate()
   useEffect(()=>{
     const hiddenElements = document.getElementsByClassName("hiddenEl")
     const hiddenSide = document.getElementsByClassName("side")
@@ -32,24 +33,24 @@ function App(){
   const items = [
               {
               label: 'For You',
-              href: '#',
               ariaLabel: 'For You',
               rotation: -8,
-              hoverStyles: { bgColor: '#3b82f6', textColor: '#ffffff' }
+              hoverStyles: { bgColor: '#3b82f6', textColor: '#ffffff' },
+              onClick: ()=>navigate('/')
               },
               {
               label: 'about',
-              href: '#',
               ariaLabel: 'About',
               rotation: 8,
-              hoverStyles: { bgColor: '#10b981', textColor: '#ffffff' }
+              hoverStyles: { bgColor: '#10b981', textColor: '#ffffff' },
+              onClick: ()=>navigate('/AboutUs')
               },
               {
               label: 'Sign Up',
-              href: '#',
               ariaLabel: 'Projects',
               rotation: 8,
-              hoverStyles: { bgColor: '#f59e0b', textColor: '#ffffff' }
+              hoverStyles: { bgColor: '#f59e0b', textColor: '#ffffff' },
+              onClick: ()=>navigate('/Register')
               }
               ];
   return <div className="bg-green-50">
@@ -65,7 +66,7 @@ function App(){
                      animationEase="back.out(1.5)"
                      animationDuration={0.5}
                      staggerDelay={0.12}
-
+                  
                      />
       </div>
    <HeroSection />

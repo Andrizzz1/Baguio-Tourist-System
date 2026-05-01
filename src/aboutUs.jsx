@@ -1,40 +1,32 @@
 import { NavBar } from "./components/nav";
 import TiltedCard from "./utilities/TiltedCard";
 import BubbleMenu from "./utilities/BubbleMenu.jsx";
-
+import { useNavigate} from 'react-router-dom'
 export const Aboutus = () => {
-  const items = [
-    {
-      label: "For You",
-      href: "#",
-      ariaLabel: "For You",
-      rotation: -8,
-      hoverStyles: {
-        bgColor: "#3b82f6",
-        textColor: "#ffffff",
-      },
-    },
-    {
-      label: "about",
-      href: "#",
-      ariaLabel: "About",
-      rotation: 8,
-      hoverStyles: {
-        bgColor: "#10b981",
-        textColor: "#ffffff",
-      },
-    },
-    {
-      label: "Sign Up",
-      href: "#",
-      ariaLabel: "Projects",
-      rotation: 8,
-      hoverStyles: {
-        bgColor: "#f59e0b",
-        textColor: "#ffffff",
-      },
-    },
-  ];
+  const navigate = useNavigate()
+    const items = [
+              {
+              label: 'For You',
+              ariaLabel: 'For You',
+              rotation: -8,
+              hoverStyles: { bgColor: '#3b82f6', textColor: '#ffffff' },
+              onClick: ()=>navigate('/')
+              },
+              {
+              label: 'about',
+              ariaLabel: 'About',
+              rotation: 8,
+              hoverStyles: { bgColor: '#10b981', textColor: '#ffffff' },
+              onClick: ()=>navigate('/AboutUs')
+              },
+              {
+              label: 'Sign Up',
+              ariaLabel: 'Projects',
+              rotation: 8,
+              hoverStyles: { bgColor: '#f59e0b', textColor: '#ffffff' },
+              onClick: ()=>navigate('/Register')
+              }
+              ];
 
   function ProfileCard({
     imgSrc,
@@ -157,7 +149,7 @@ export const Aboutus = () => {
           title="BACKEND DEVELOPER"
           github="Andrizzz1"
           gmail="andreimandapat09@gmail.com"
-          linkedin="https://linkedin.com/in/yourprofile"
+          linkedin="https://www.linkedin.com/in/andrei-domsing-165750341/"
         />
 
         <ProfileCard
@@ -167,7 +159,7 @@ export const Aboutus = () => {
           title="FRONTEND DEVELOPER"
           github="definitelynotyuriii"
           gmail="delacruztristan02@gmail.com"
-          linkedin="https://linkedin.com/in/yourprofile"
+          linkedin="https://www.linkedin.com/in/tristan-dela-cruz-268143374/"
         />
       </div>
     </section>
