@@ -298,7 +298,7 @@ export const RegisterAcc = () => {
             </div>
 
             {/* RIGHT FORM */}
-            <div className="relative flex flex-col items-center justify-center bg-gradient-to-br from-green-50 via-green to-green-100 p-6">
+            <div className="relative flex flex-col items-center justify-center bg-linear-to-br from-green-50 via-white to-green-100 p-6">
 
                 {/* Back Button */}
                 <button

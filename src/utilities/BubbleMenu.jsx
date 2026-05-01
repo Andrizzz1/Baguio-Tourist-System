@@ -179,9 +179,9 @@ export default function BubbleMenu({
           <ul className="pill-list" role="menu" aria-label="Menu links">
             {menuItems.map((item, idx) => (
               <li key={idx} role="none" className="pill-col">
-                <a
+                <button
                   role="menuitem"
-                  href={item.href}
+                  onClick={item.onClick}
                   aria-label={item.ariaLabel || item.label}
                   className="pill-link"
                   style={{
@@ -203,7 +203,7 @@ export default function BubbleMenu({
                   >
                     {item.label}
                   </span>
-                </a>
+                </button>
               </li>
             ))}
           </ul>

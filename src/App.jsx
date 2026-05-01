@@ -33,27 +33,24 @@ function App(){
   const items = [
               {
               label: 'For You',
-              href: '#',
               ariaLabel: 'For You',
               rotation: -8,
               hoverStyles: { bgColor: '#3b82f6', textColor: '#ffffff' },
-              onClick: ()=>{navigate('/dashboard')}
+              onClick: ()=>navigate('/')
               },
               {
               label: 'about',
-              href: '#',
               ariaLabel: 'About',
               rotation: 8,
               hoverStyles: { bgColor: '#10b981', textColor: '#ffffff' },
-              onClick: ()=>{navigate('/AboutUs')}
+              onClick: ()=>navigate('/AboutUs')
               },
               {
               label: 'Sign Up',
-              href: '#',
               ariaLabel: 'Projects',
               rotation: 8,
               hoverStyles: { bgColor: '#f59e0b', textColor: '#ffffff' },
-              onClick: ()=>{navigate('/Register')}
+              onClick: ()=>navigate('/Register')
               }
               ];
   return <div className="bg-green-50">
