@@ -8,13 +8,14 @@ import pkg from 'pg'
 import bcrypt from 'bcrypt'
 const { Pool } = pkg
 const app = express();
-const pool = new Pool({ 
-    connectionString: process.env.DATABASE_URL
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DB_SSL === 'true'
+        ? { rejectUnauthorized: false }
+        : false
 })
 
-require('dotenv').config()
 
-console.log(process.env.GROQ_API_KEY) 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);     
 app.use(express.json());
@@ -74,28 +75,36 @@ app.post('/api/FrontendChatbot', async (req, res) => {
 });
 
 
-app.post('/api/Register', async (req, res) => {
-    const { email, password } = req.body
+app.post('/api/register', async (req, res) => {
+    const { username, email, password } = req.body
+
     try {
         const hashedPassword = await bcrypt.hash(password, 10)
+
         const result = await pool.query(
-            'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email',
-            [email, hashedPassword]
+            'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING users_id,username, email',
+            [username, email, hashedPassword]
         )
-        res.status(201).json({ user: result.rows[0] })
+
+        res.status(201).json({
+            user: {
+                id: result.rows[0].users_id,
+                email: result.rows[0].email
+            }
+})
     } catch (error) {
         if (error.code === '23505') {
             res.status(400).json({ error: 'Email already exists' })
         } else {
             console.error(error)
-            res.status(500).json({ error: 'Registration failed' })
+            res.status(500).json({ error: error.message })
         }
     }
-});
+})
 
 
 
-app.post('/api/Login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { email, password } = req.body
     try {
         // find user by email
@@ -112,13 +121,13 @@ app.post('/api/Login', async (req, res) => {
         const user = result.rows[0]
 
         // compare password with hashed password
-        const isMatch = await bcrypt.compare(password, user.password)
+        const isMatch = await bcrypt.compare(password, user.password_hash)
 
         if (!isMatch) {
             return res.status(400).json({ error: 'Incorrect password' })
         }
 
-        res.json({ message: 'Login successful', user: { id: user.id, email: user.email } })
+        res.json({ message: 'Login successful', user: { id: user.users_id, email: user.email } })
 
     } catch (error) {
         console.error(error)
@@ -126,8 +135,8 @@ app.post('/api/Login', async (req, res) => {
     }
 
 })
-    app.get('*', (req, res) => {
+  app.get('/{*splat}', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Running on http://localhost:3000'));
+app.listen(PORT, '0.0.0.0', () => console.log(`Running on port ${PORT}`));
