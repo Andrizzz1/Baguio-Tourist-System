@@ -7,7 +7,9 @@
   box-sizing: border-box;
 
 }
-
+body {
+  background: white;
+}
 .hiddenEl {
     opacity: 0;
     transition: all 1s;
