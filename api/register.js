@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     try {
         const hashedPassword = await bcrypt.hash(password, 10)
         const result = await pool.query(
-            'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING users_id,username, email',
+            'INSERT INTO users (username, email, password_hash) VALUES ($1, $2) RETURNING users_id,username, email',
             [username, email, hashedPassword]
         )
         res.status(201).json({ user: result.rows[0],username: result.rows[0].username, email: result.rows[0].email })
