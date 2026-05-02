@@ -1,32 +1,74 @@
-import { BookmarkIcon } from '@heroicons/react/24/outline'
-import { MapPinIcon } from '@heroicons/react/24/outline'
-import { MapIcon } from '@heroicons/react/24/outline'
-function Cardholder(props){
-    const {icon,name, desc} = props
-    return <div className='text-black border w-80 rounded-2xl p-3 flex flex-col justify-center'>
-        {icon}
-        <h1>{name}</h1>
-        <p>{desc}</p>
-    </div>
+import { BookmarkIcon, MapPinIcon, MapIcon, ChatBubbleLeftRightIcon, StarIcon, CameraIcon } from '@heroicons/react/24/outline'
+
+const actions = [
+    {
+        icon: <BookmarkIcon className="w-6 h-6 text-green-700" />,
+        name: 'Saved Spots',
+        desc: 'View and manage your favorite Baguio destinations.',
+        bg: 'bg-green-100',
+    },
+    {
+        icon: <MapIcon className="w-6 h-6 text-emerald-700" />,
+        name: 'Plan a Trip',
+        desc: 'Build a Baguio itinerary based on your saved places.',
+        bg: 'bg-emerald-100',
+    },
+    {
+        icon: <MapPinIcon className="w-6 h-6 text-teal-700" />,
+        name: 'Explore Places',
+        desc: 'Discover landmarks, trails, and local attractions.',
+        bg: 'bg-teal-100',
+    },
+    {
+        icon: <ChatBubbleLeftRightIcon className="w-6 h-6 text-green-700" />,
+        name: 'Ask AI Guide',
+        desc: 'Get instant travel tips and answers from our AI.',
+        bg: 'bg-green-100',
+    },
+    {
+        icon: <StarIcon className="w-6 h-6 text-emerald-700" />,
+        name: 'Top Rated',
+        desc: 'Browse the highest-rated spots by fellow travelers.',
+        bg: 'bg-emerald-100',
+    },
+    {
+        icon: <CameraIcon className="w-6 h-6 text-teal-700" />,
+        name: 'Photo Spots',
+        desc: 'Find the best scenic views and photo opportunities.',
+        bg: 'bg-teal-100',
+    },
+]
+
+function ActionCard({ icon, name, desc, bg }) {
+    return (
+        <div className="group bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-3 shadow-sm
+                        hover:shadow-md hover:-translate-y-1 hover:border-green-200
+                        transition-all duration-300 cursor-pointer">
+            <div className={`${bg} w-11 h-11 rounded-xl flex items-center justify-center
+                            group-hover:scale-110 transition-transform duration-300`}>
+                {icon}
+            </div>
+            <div>
+                <h3 className="font-semibold text-gray-800 text-sm">{name}</h3>
+                <p className="text-gray-400 text-xs mt-1 leading-relaxed">{desc}</p>
+            </div>
+            <span className="text-xs text-green-700 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Open →
+            </span>
+        </div>
+    )
 }
 
-
-export const QuickAction = () =>{
-    return <div className='flex flex-wrap justify-center gap-40 max-2xl:gap-15 px-1'>
-        <Cardholder 
-        icon = {<BookmarkIcon className="w-6 h-6 text-gray-500" />}
-        name = "Saved Spots"
-        desc = "Your favorite tourist destinations"
-        />
-        <Cardholder 
-        icon = {<MapIcon className="w-6 h-6 text-green-600" />}
-        name = "Plan a Trip"
-        desc = "Create a simple Baguio itinerary based on your saved places.s"
-        />
-        <Cardholder 
-        icon = {<MapPinIcon className="w-7 h-7 text-green-600" />}
-        name = "Explore Places"
-        desc = "Discover popular tourist spots, landmarks, and local attractions in Baguio."
-        />
-    </div>
+export const QuickAction = () => {
+    return (
+        <div className="px-5 mx-auto w-7xl">
+            <div className="mb-4">
+                <h2 className="text-gray-800 font-bold text-lg">Quick Actions</h2>
+                <p className="text-gray-400 text-sm">Everything you need for your Baguio trip</p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                {actions.map(a => <ActionCard key={a.name} {...a} />)}
+            </div>
+        </div>
+    )
 }
