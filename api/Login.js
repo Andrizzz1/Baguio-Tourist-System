@@ -19,13 +19,13 @@ export default async function handler(req, res) {
         }
 
         const user = result.rows[0]
-        const isMatch = await bcrypt.compare(password, user.password)
+        const isMatch = await bcrypt.compare(password, user.password_hash)
 
         if (!isMatch) {
             return res.status(400).json({ error: 'Incorrect password' })
         }
 
-        res.json({ message: 'Login successful', user: { id: user.id, email: user.email } })
+        res.json({ message: 'Login successful', user: { id: user.id, email: user.email,username: user.username } })
 
     } catch (error) {
         res.status(500).json({ error: 'Login failed' })
