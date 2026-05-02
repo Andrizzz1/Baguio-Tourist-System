@@ -1,4 +1,4 @@
-import { BookmarkIcon, MapPinIcon, MapIcon, ChatBubbleLeftRightIcon, StarIcon, CameraIcon } from '@heroicons/react/24/outline'
+import { BookmarkIcon, MapPinIcon, MapIcon } from '@heroicons/react/24/outline'
 
 const actions = [
     {
@@ -17,24 +17,6 @@ const actions = [
         icon: <MapPinIcon className="w-6 h-6 text-teal-700" />,
         name: 'Explore Places',
         desc: 'Discover landmarks, trails, and local attractions.',
-        bg: 'bg-teal-100',
-    },
-    {
-        icon: <ChatBubbleLeftRightIcon className="w-6 h-6 text-green-700" />,
-        name: 'Ask AI Guide',
-        desc: 'Get instant travel tips and answers from our AI.',
-        bg: 'bg-green-100',
-    },
-    {
-        icon: <StarIcon className="w-6 h-6 text-emerald-700" />,
-        name: 'Top Rated',
-        desc: 'Browse the highest-rated spots by fellow travelers.',
-        bg: 'bg-emerald-100',
-    },
-    {
-        icon: <CameraIcon className="w-6 h-6 text-teal-700" />,
-        name: 'Photo Spots',
-        desc: 'Find the best scenic views and photo opportunities.',
         bg: 'bg-teal-100',
     },
 ]
@@ -61,12 +43,12 @@ function ActionCard({ icon, name, desc, bg }) {
 
 export const QuickAction = () => {
     return (
-        <div className="px-5 mx-auto w-7xl">
+        <div className="px-5 max-w-7xl mx-auto mt-5">
             <div className="mb-4">
                 <h2 className="text-gray-800 font-bold text-lg">Quick Actions</h2>
                 <p className="text-gray-400 text-sm">Everything you need for your Baguio trip</p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {actions.map(a => <ActionCard key={a.name} {...a} />)}
             </div>
         </div>
