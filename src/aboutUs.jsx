@@ -38,7 +38,7 @@ export const Aboutus = () => {
     linkedin,
   }) {
     return (
-      <div className="group shadow-lg hover:shadow-2xl transition-all duration-500 ease-out text-center p-2 bg-white/90 backdrop-blur-md rounded-3xl flex items-center flex-wrap justify-center mt-5 mx-5 pb-6 border border-green-100 hover:-translate-y-2 hover:scale-[1.02]">
+      <div className="group shadow-lg hover:shadow-2xl transition-all duration-500 ease-out text-center p-2 bg-white/90 backdrop-blur-md rounded-3xl flex items-center flex-wrap justify-center mt-5 mx-1 max-md:mx-5 pb-6 border border-green-100 hover:-translate-y-2 hover:scale-[1.02]">
 
         <div className="transition-all duration-500 group-hover:scale-105">
           <TiltedCard
@@ -118,7 +118,7 @@ export const Aboutus = () => {
   }
 
   return (
-    <section className="bg-gradient-to-br from-green-50 via-green-100 to-green-50 min-h-screen transition-all duration-700">
+    <section className="bg-linear-to-br from-green-50 via-green-100 to-green-50 min-h-screen transition-all duration-700">
 
       <NavBar />
 
@@ -156,10 +156,10 @@ export const Aboutus = () => {
       <div className="mt-10 flex flex-wrap justify-center gap-2 pb-16 transition-all duration-700">
 
         <ProfileCard
-          imgSrc="/imgs/Andrei.png"
+          imgSrc="/imgs/John.jpg"
           description="Andrei, a Computer Engineering student from Baguio with skills in frontend and backend development. He works on the core logic of the Baguio Tourist System, helping build a smart, reliable, and user-friendly platform through React, JavaScript, Node.js, and web-based system development."
           Name="John Andrei Mandapat"
-          title="BACKEND DEVELOPER"
+          title="LEAD DEVELOPER"
           github="Andrizzz1"
           gmail="andreimandapat09@gmail.com"
           linkedin="https://www.linkedin.com/in/andrei-domsing-165750341/"
