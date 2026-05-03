@@ -175,5 +175,21 @@ app.post('/api/login', async (req, res) => {
   app.get('/{*splat}', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
+
+app.get("/api/community-stats", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT COUNT(*) AS total_members FROM users"
+        );
+
+        res.json({
+            totalMembers: Number(result.rows[0].total_members),
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => console.log(`Running on port ${PORT}`));

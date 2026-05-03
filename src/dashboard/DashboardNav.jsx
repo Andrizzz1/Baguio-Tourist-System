@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
+import { useState, useRef, useEffect } from 'react';
+import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const NAV_LINKS = [
@@ -10,11 +10,33 @@ const NAV_LINKS = [
 ]
 
 export const DashboardNav = () => {
-    const [menuOpen, setMenuOpen] = useState(false)
-    const navigate = useNavigate()
-    const { pathname } = useLocation()
+    const [menuOpen, setMenuOpen]     = useState(false)
+    const [profileOpen, setProfileOpen] = useState(false)
+    const navigate                    = useNavigate()
+    const { pathname }                = useLocation()
+    const profileRef                  = useRef(null)
 
     const isActive = (path) => pathname === path
+
+    const user        = JSON.parse(localStorage.getItem('user'))
+    const displayName = user?.username || 'Traveler'
+    const initials    = displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+
+    // close dropdown when clicking outside
+    useEffect(() => {
+        const handler = (e) => {
+            if (profileRef.current && !profileRef.current.contains(e.target)) {
+                setProfileOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handler)
+        return () => document.removeEventListener('mousedown', handler)
+    }, [])
+
+    const handleLogout = () => {
+        localStorage.removeItem('user')
+        navigate('/')
+    }
 
     return (
         <nav className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-40">
@@ -44,7 +66,7 @@ export const DashboardNav = () => {
                     ))}
                 </div>
 
-                {/* Desktop Right — Search */}
+                {/* Desktop Right — Search + Profile */}
                 <div className="hidden md:flex items-center gap-3">
                     <div className="flex items-center gap-2 bg-green-50 border border-gray-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-green-700 transition-all">
                         <MagnifyingGlassIcon className="w-4 h-4 text-gray-400 shrink-0" />
@@ -53,6 +75,48 @@ export const DashboardNav = () => {
                             placeholder="Search spots..."
                             className="bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400 w-40 focus:w-52 transition-all duration-300"
                         />
+                    </div>
+
+                    {/* Profile Dropdown */}
+                    <div className="relative" ref={profileRef}>
+                        <button
+                            onClick={() => setProfileOpen(p => !p)}
+                            className="flex items-center gap-2 bg-green-50 hover:bg-green-100 border border-gray-200 rounded-xl px-2.5 py-1.5 transition-all duration-200 group"
+                        >
+                            <div className="w-7 h-7 rounded-full bg-green-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                {initials}
+                            </div>
+                            <span className="text-sm font-semibold text-green-900 max-w-24 truncate">{displayName}</span>
+                            <ChevronDownIcon className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${profileOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {/* Dropdown */}
+                        {profileOpen && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-lg overflow-hidden z-50">
+                                {/* User info header */}
+                                <div className="px-4 py-3 border-b border-gray-100">
+                                    <p className="text-sm font-semibold text-gray-800 truncate">{displayName}</p>
+                                    <p className="text-xs text-gray-400 truncate">{user?.email || 'traveler@baguio.com'}</p>
+                                </div>
+
+                                <div className="py-1">
+                                    <button
+                                        onClick={() => { setProfileOpen(false); navigate('/settings') }}
+                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-green-50 hover:text-green-900 transition-colors duration-150"
+                                    >
+                                        <Cog6ToothIcon className="w-4 h-4 text-gray-400" />
+                                        Settings
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-500 hover:bg-rose-50 transition-colors duration-150"
+                                    >
+                                        <ArrowRightOnRectangleIcon className="w-4 h-4 text-rose-400" />
+                                        Logout
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -68,11 +132,22 @@ export const DashboardNav = () => {
             </div>
 
             {/* Mobile Dropdown Menu */}
-            <div className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? 'max-h-96 border-t border-gray-100' : 'max-h-0'}`}>
+            <div className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? 'max-h-screen border-t border-gray-100' : 'max-h-0'}`}>
                 <div className="px-5 py-4 flex flex-col gap-1 bg-white">
 
+                    {/* Mobile User Info */}
+                    <div className="flex items-center gap-3 px-4 py-3 mb-1 bg-green-50 rounded-xl">
+                        <div className="w-9 h-9 rounded-full bg-green-900 flex items-center justify-center text-white text-sm font-bold shrink-0">
+                            {initials}
+                        </div>
+                        <div className="min-w-0">
+                            <p className="text-sm font-semibold text-gray-800 truncate">{displayName}</p>
+                            <p className="text-xs text-gray-400 truncate">{user?.email || 'traveler@baguio.com'}</p>
+                        </div>
+                    </div>
+
                     {/* Mobile Search */}
-                    <div className="flex items-center gap-2 bg-green-50 border border-gray-200 rounded-xl px-3 py-2.5 mb-2 focus-within:ring-2 focus-within:ring-green-700 transition-all">
+                    <div className="flex items-center gap-2 bg-green-50 border border-gray-200 rounded-xl px-3 py-2.5 mb-1 focus-within:ring-2 focus-within:ring-green-700 transition-all">
                         <MagnifyingGlassIcon className="w-4 h-4 text-gray-400 shrink-0" />
                         <input
                             type="text"
@@ -96,7 +171,23 @@ export const DashboardNav = () => {
                         </button>
                     ))}
 
-
+                    {/* Mobile Settings + Logout */}
+                    <div className="border-t border-gray-100 mt-1 pt-1">
+                        <button
+                            onClick={() => { navigate('/settings'); setMenuOpen(false) }}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-gray-600 hover:bg-green-50 hover:text-green-900 transition-colors duration-150"
+                        >
+                            <Cog6ToothIcon className="w-4 h-4 text-gray-400" />
+                            Settings
+                        </button>
+                        <button
+                            onClick={handleLogout}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-rose-500 hover:bg-rose-50 transition-colors duration-150"
+                        >
+                            <ArrowRightOnRectangleIcon className="w-4 h-4 text-rose-400" />
+                            Logout
+                        </button>
+                    </div>
                 </div>
             </div>
         </nav>
