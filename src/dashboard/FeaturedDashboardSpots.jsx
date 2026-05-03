@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useRef,useEffect } from 'react'
 import { HeartIcon, MapPinIcon, StarIcon, PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/solid'
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline'
 
@@ -41,7 +41,7 @@ const CHIPS = [
 
 function SpotCard({ name, category, rating, location, image }) {
     const [saved, setSaved] = useState(false)
-
+  
     return (
         <div className="group flex flex-col rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden
                         hover:shadow-md hover:-translate-y-1 transition-all duration-300 min-w-0">
@@ -86,20 +86,45 @@ function SpotCard({ name, category, rating, location, image }) {
 
 function AskBaguioAI() {
     const [input, setInput] = useState('')
+    const [loading, setLoading] = useState(false)
     const [showChips, setShowChips] = useState(true)
     const [messages, setMessages] = useState([
         { from: 'bot', text: "Hi! Want me to plan a cozy weekend around Camp John Hay with cafés and short hikes?" }
     ])
 
-    const send = (text) => {
-        const msg = text || input.trim()
+    const bottomRef = useRef(null) 
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [messages])
+    async function sendToAi(msg){
+        try{
+            const response = await fetch("api/dashboardChatbot",{
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: msg})
+            });
+            const data = await response.json();
+            if(!response.ok){
+                return `API Error: ${data.error?.message || response.status}`;
+            }
+
+            return data.reply
+        }catch(err){
+            console.error('Error:', err)
+        }
+    }
+    const send =async (text) => {
+        const msg = text.trim() || input.trim()
         if (!msg) return
         setShowChips(false)
         setMessages(prev => [
             ...prev,
             { from: 'user', text: msg },
-            { from: 'bot', text: `Great question about "${msg}"! I'll have detailed Baguio tips for you soon. 🌿` }
         ])
+        setLoading(true)
+        const reply = await sendToAi(msg)
+        setLoading(false)
+        setMessages(prev => [...prev, { from: 'bot', text: reply }])
         setInput('')
     }
 
@@ -118,7 +143,13 @@ function AskBaguioAI() {
             </div>
 
             {/* Chat bubbles */}
-            <div className="flex flex-col gap-2 flex-1 overflow-y-auto max-h-56">
+            <div
+                className="flex flex-col gap-2 flex-1 overflow-y-auto max-h-56"
+                style={{
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#6ee7b7 transparent',
+                }}
+            >
                 {messages.map((msg, i) => (
                     <div key={i} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-xs leading-relaxed shadow-sm
@@ -131,6 +162,16 @@ function AskBaguioAI() {
                         </div>
                     </div>
                 ))}
+                    {loading && (
+                        <div className="flex justify-start">
+                        <div className="border-green-300 px-4 py-3 rounded-2xl flex gap-1 items-center">
+                            <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:0ms]"></span>
+                            <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:150ms]"></span>
+                            <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:300ms]"></span>
+                        </div>
+                        </div>
+                    )}
+                <div ref={bottomRef} /> 
             </div>
 
             {/* Suggestion chips — hidden once user interacts */}
@@ -156,12 +197,12 @@ function AskBaguioAI() {
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     onFocus={() => setShowChips(false)}
-                    onKeyDown={e => e.key === 'Enter' && send()}
+                    onKeyDown={e => e.key === 'Enter' && send(input)}
                     placeholder="Ask about Baguio…"
                     className="flex-1 bg-transparent outline-none text-xs text-gray-700 placeholder-gray-400"
                 />
                 <button
-                    onClick={() => send()}
+                    onClick={() => send(input)}
                     className="w-7 h-7 rounded-full bg-green-900 hover:bg-green-700 flex items-center justify-center shrink-0 transition-colors duration-200"
                 >
                     <PaperAirplaneIcon className="w-3.5 h-3.5 text-white" />

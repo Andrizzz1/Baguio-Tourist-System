@@ -1,11 +1,20 @@
-import { useState } from 'react'
-import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'
+import { useState } from 'react';
+import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const NAV_LINKS = ['Dashboard', 'Explore', 'Community', 'Saved']
+const NAV_LINKS = [
+    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Explore',   path: '/explore'   },
+    { label: 'Community', path: '/Community' },
+    { label: 'Saved',     path: '/saved'     },
+]
 
 export const DashboardNav = () => {
     const [menuOpen, setMenuOpen] = useState(false)
-    const [active, setActive] = useState('Dashboard')
+    const navigate = useNavigate()
+    const { pathname } = useLocation()
+
+    const isActive = (path) => pathname === path
 
     return (
         <nav className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-40">
@@ -18,19 +27,19 @@ export const DashboardNav = () => {
 
                 {/* Desktop Nav Links */}
                 <div className="hidden md:flex items-center gap-1">
-                    {NAV_LINKS.map(link => (
+                    {NAV_LINKS.map(({ label, path }) => (
                         <button
-                            key={link}
-                            onClick={() => setActive(link)}
+                            key={label}
+                            onClick={() => navigate(path)}
                             className={`relative px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200
                                 after:content-[''] after:absolute after:bottom-1 after:left-4 after:h-0.5 after:bg-green-700
                                 after:transition-all after:duration-300
-                                ${active === link
+                                ${isActive(path)
                                     ? 'text-green-900 after:w-[calc(100%-2rem)]'
                                     : 'text-gray-500 hover:text-green-900 hover:bg-green-50 after:w-0 hover:after:w-[calc(100%-2rem)]'
                                 }`}
                         >
-                            {link}
+                            {label}
                         </button>
                     ))}
                 </div>
@@ -73,17 +82,17 @@ export const DashboardNav = () => {
                     </div>
 
                     {/* Mobile Nav Links */}
-                    {NAV_LINKS.map(link => (
+                    {NAV_LINKS.map(({ label, path }) => (
                         <button
-                            key={link}
-                            onClick={() => { setActive(link); setMenuOpen(false) }}
+                            key={label}
+                            onClick={() => { navigate(path); setMenuOpen(false) }}
                             className={`text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200
-                                ${active === link
+                                ${isActive(path)
                                     ? 'bg-green-900 text-white'
                                     : 'text-gray-600 hover:bg-green-50 hover:text-green-900'
                                 }`}
                         >
-                            {link}
+                            {label}
                         </button>
                     ))}
 
