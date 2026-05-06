@@ -10,6 +10,7 @@ export const Signin = () => {
     const [mounted, setMounted] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [focusedField, setFocusedField] = useState(null)
+    const [showPassword, setShowPassword] = useState(false)
 
     useEffect(() => {
         // Trigger mount animation
@@ -31,8 +32,7 @@ export const Signin = () => {
                 body: JSON.stringify({ email, password })
             })
             const data = await response.json()
-            if(response.ok){
-                localStorage.setItem('user', JSON.stringify(data.user))
+            if (response.ok) {
                 navigate('/dashboard')
             } else {
                 setError(data.error || 'Invalid credentials')
@@ -423,7 +423,7 @@ export const Signin = () => {
                 .bg-image {
                     position: absolute;
                     inset: 0;
-                    background-image: url('/imgs/bg.png');
+                    background-image: url('/imgs/background.png');
                     background-size: cover;
                     background-position: center;
                     animation: kenBurns 18s ease-in-out infinite alternate;
@@ -521,19 +521,84 @@ export const Signin = () => {
                             <div className="field fade-up delay-3">
                                 <div className="field-row">
                                     <label className="field-label">Password</label>
-                                    <button type="button" className="forgot-link">Forgot password?</button>
                                 </div>
-                                <div className="input-wrapper">
+                                <div className="input-wrapper" style={{ position: 'relative' }}>
                                     <input
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         onFocus={() => setFocusedField('password')}
                                         onBlur={() => setFocusedField(null)}
-                                        type="password"
+                                        type={showPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         className="input-field"
-                                    />
+                                        style={{ paddingRight: '3rem' }} // space for button
+                                    />  
+
+                               <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '10px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        padding: 0,
+                                        lineHeight: 0
+                                    }}
+                                >
+                                    {showPassword ? (
+                                        // Eye OFF (hidden)
+                                        <svg
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            style={{ display: 'block' }}
+                                        >
+                                            <path d="M2 2L22 22" stroke="#2d6a4f" strokeWidth="2" />
+                                            <path d="M10.58 10.58C10.21 10.95 10 11.46 10 12C10 13.1 10.9 14 12 14C12.54 14 13.05 13.79 13.42 13.42" stroke="#2d6a4f" strokeWidth="2" />
+                                            <path d="M9.88 5.09C10.55 4.86 11.26 4.75 12 4.75C16.5 4.75 20.27 7.61 21.5 12C21.05 13.53 20.22 14.91 19.13 16.02M6.1 6.1C4.66 7.23 3.55 8.77 2.5 12C3.73 16.39 7.5 19.25 12 19.25C13.11 19.25 14.18 19.05 15.18 18.68" stroke="#2d6a4f" strokeWidth="2" />
+                                        </svg>
+                                    ) : (
+                                        // Eye ON (visible)
+                                        <svg
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            style={{ display: 'block' }}
+                                        >
+                                            <path d="M1.5 12C2.73 7.61 6.5 4.75 12 4.75C17.5 4.75 21.27 7.61 22.5 12C21.27 16.39 17.5 19.25 12 19.25C6.5 19.25 2.73 16.39 1.5 12Z" stroke="#2d6a4f" strokeWidth="2" />
+                                            <circle cx="12" cy="12" r="3" stroke="#2d6a4f" strokeWidth="2" />
+                                        </svg>
+                                    )}
+                                </button>
                                 </div>
+                                <button
+                                    type="button"
+                                    className="forgot-link"
+                                    style={{
+                                        marginLeft: 'auto',
+                                        marginTop: '4px', // 👈 move down (try 2px, 4px, 6px, etc.)
+                                        transition: 'all 0.25s ease'
+                                    }}
+                                    onMouseOver={(e) => {
+                                        e.currentTarget.style.opacity = '0.7'
+                                        e.currentTarget.style.transform = 'translateX(-2px)'
+                                    }}
+                                    onMouseOut={(e) => {
+                                        e.currentTarget.style.opacity = '1'
+                                        e.currentTarget.style.transform = 'translateX(0)'
+                                    }}
+                                >
+                                    Forgot password?
+                                </button>
                             </div>
 
                             <div className="fade-up delay-4">
@@ -563,11 +628,11 @@ export const Signin = () => {
                                 Continue with Google
                             </button>
                             <button className="social-btn">
-                                    <svg viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M22.675 0h-21.35C.595 0 0 .595 0 1.326v21.348C0 23.405.595 24 1.326 24H12.82v-9.294H9.692V11.01h3.128V8.414c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.466.099 2.798.143v3.24l-1.92.001c-1.504 0-1.795.715-1.795 1.763v2.31h3.587l-.467 3.696h-3.12V24h6.116c.73 0 1.326-.595 1.326-1.326V1.326C24 .595 23.405 0 22.675 0z"/>
-                                    </svg>
-                                    Continue with Facebook
-                                </button>
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                                </svg>
+                                Continue with GitHub
+                            </button>
                             <button className="social-btn">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
@@ -590,7 +655,7 @@ export const Signin = () => {
                     <div className="orb orb-1" />
                     <div className="orb orb-2" />
                     <div className="right-content">
-                        <p className="eyebrow">Summer Capital of the philippines</p>
+                        <p className="eyebrow">City of Pines</p>
                         <h1 className="right-heading">Your Journey<br />Awaits</h1>
                         <p className="right-sub">Explore hidden gems, local favorites, and AI-powered travel tips — all in one place.</p>
                         <div className="tag-row">
