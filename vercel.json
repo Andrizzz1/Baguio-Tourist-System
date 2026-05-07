@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "version": 2,
   "builds": [
     { "src": "server.js", "use": "@vercel/node" }
@@ -7,12 +6,5 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "server.js" },
     { "src": "/(.*)", "dest": "server.js" }
-=======
-  "rewrites": [
-    {
-      "source": "/((?!api/.*).*)",
-      "destination": "/index.html"
-    }
->>>>>>> 477d957b1e4b0173b045421362056f408d510887
   ]
 }
