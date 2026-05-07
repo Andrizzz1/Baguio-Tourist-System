@@ -38,41 +38,50 @@ export const Aboutus = () => {
     linkedin,
   }) {
     return (
-      <div className="shadow-xl text-center p-1 bg-white rounded-2xl flex items-center flex-wrap justify-center mt-5 mx-5 pb-6">
-        <TiltedCard
-          imageSrc={imgSrc}
-          altText={Name}
-          captionText={Name}
-          containerHeight="300px"
-          containerWidth="300px"
-          imageHeight="300px"
-          imageWidth="300px"
-          rotateAmplitude={12}
-          scaleOnHover={1.05}
-          showMobileWarning={false}
-          showTooltip
-          displayOverlayContent
-          overlayContent={
-            <p className="text-white p-3 font-bold bg-black/50 rounded-2xl text-center">
-              {Name}
-            </p>
-          }
-        />
+      <div className="group shadow-lg hover:shadow-2xl transition-all duration-500 ease-out text-center p-2 bg-white/90 backdrop-blur-md rounded-3xl flex items-center flex-wrap justify-center mt-5 mx-1 max-md:mx-5 pb-6 border border-green-100 hover:-translate-y-2 hover:scale-[1.02]">
 
-        <div className="flex flex-col items-center"> 
-          <h1 className="font-bold mt-3 text-2xl mb-2">{title}</h1>
-          <p className="text-gray-500 max-w-sm text-left ml-5">{description}</p>
+        <div className="transition-all duration-500 group-hover:scale-105">
+          <TiltedCard
+            imageSrc={imgSrc}
+            altText={Name}
+            captionText={Name}
+            containerHeight="300px"
+            containerWidth="300px"
+            imageHeight="300px"
+            imageWidth="300px"
+            rotateAmplitude={12}
+            scaleOnHover={1.05}
+            showMobileWarning={false}
+            showTooltip
+            displayOverlayContent
+            overlayContent={
+              <p className="text-white p-3 font-bold bg-black/50 rounded-2xl text-center backdrop-blur-sm">
+                {Name}
+              </p>
+            }
+          />
+        </div>
+
+        <div className="flex flex-col items-center transition-all duration-500 group-hover:translate-y-1"> 
+          <h1 className="font-bold mt-3 text-2xl mb-2 text-gray-800 tracking-wide group-hover:text-green-700 transition-all duration-300">
+            {title}
+          </h1>
+
+          <p className="text-gray-500 max-w-sm text-left ml-5 leading-relaxed group-hover:text-gray-700 transition-all duration-300">
+            {description}
+          </p>
 
           <div className="flex justify-center gap-3 mt-5 flex-wrap">
+
             {/* GitHub */}
             {github && (
               <a
                 href={`https://github.com/${github}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-700"
+                className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium transition-all duration-300 hover:bg-gray-700 hover:scale-110 active:scale-95 shadow-md hover:shadow-xl"
               >
-                <i className="fa-brands fa-github text-base mx-0.5"></i> GitHub
+                <i className="fa-brands fa-github text-base mx-0.5 transition-transform duration-300 group-hover:rotate-6"></i> GitHub
               </a>
             )}
 
@@ -82,7 +91,7 @@ export const Aboutus = () => {
                 href={`https://mail.google.com/mail/?view=cm&fs=1&to=${gmail}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-green-500 text-white rounded-full text-sm font-medium hover:bg-green-600"
+                className="px-4 py-2 bg-green-500 text-white rounded-full text-sm font-medium transition-all duration-300 hover:bg-green-600 hover:scale-110 active:scale-95 shadow-md hover:shadow-xl"
               >
                 <i className="fa-regular fa-envelope text-base mx-0.5"></i>
                 Gmail
@@ -95,12 +104,13 @@ export const Aboutus = () => {
                 href={linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-700 text-white rounded-full text-sm font-medium hover:bg-blue-800"
+                className="px-4 py-2 bg-blue-700 text-white rounded-full text-sm font-medium transition-all duration-300 hover:bg-blue-800 hover:scale-110 active:scale-95 shadow-md hover:shadow-xl"
               >
                 <i className="fa-brands fa-linkedin text-base mx-0.5"></i> 
                 LinkedIn
               </a>
             )}
+
           </div>
         </div>
       </div>
@@ -108,7 +118,8 @@ export const Aboutus = () => {
   }
 
   return (
-    <section className="bg-green-50">
+    <section className="bg-linear-to-br from-green-50 via-green-100 to-green-50 min-h-screen transition-all duration-700">
+
       <NavBar />
 
       <div className="sm:hidden">
@@ -125,28 +136,30 @@ export const Aboutus = () => {
         />
       </div>
 
-      <div className="pt-15 max-sm:pt-20 flex gap-5 justify-center flex-col text-center h-[calc(50vh-90px)]">
-        <p className="text-gray-600 border-2 border-green-400 px-4 rounded-2xl bg-green-300 mx-auto">
+      <div className="pt-15 max-sm:pt-20 flex gap-5 justify-center flex-col text-center h-[calc(50vh-90px)] transition-all duration-700">
+
+        <p className="text-gray-600 border-2 border-green-400 px-4 rounded-2xl bg-green-300 mx-auto shadow-md hover:scale-105 transition-all duration-300">
           THE CREATORS
         </p>
 
-        <h1 className="text-7xl font-bold max-sm:text-4xl text-black">
+        <h1 className="text-7xl font-bold max-sm:text-4xl text-black tracking-tight drop-shadow-sm transition-all duration-500 hover:tracking-wide">
           Meet the Team <br />
-          <span>Behind the Mist</span>
+          <span className="text-green-700">Behind the Mist</span>
         </h1>
 
-        <p className="max-w-sm mx-auto text-gray-600">
+        <p className="max-w-sm mx-auto text-gray-600 leading-relaxed transition-all duration-300 hover:text-gray-800">
           We're just two students inspired by Baguio, building tools to help you
           discover hidden gems.
         </p>
       </div>
 
-      <div className="mt-10 flex flex-wrap justify-center gap-2 pb-16">
+      <div className="mt-10 flex flex-wrap justify-center gap-2 pb-16 transition-all duration-700">
+
         <ProfileCard
-          imgSrc="/imgs/Andrei.png"
+          imgSrc="/imgs/John.jpg"
           description="Andrei, a Computer Engineering student from Baguio with skills in frontend and backend development. He works on the core logic of the Baguio Tourist System, helping build a smart, reliable, and user-friendly platform through React, JavaScript, Node.js, and web-based system development."
           Name="John Andrei Mandapat"
-          title="BACKEND DEVELOPER"
+          title="LEAD DEVELOPER"
           github="Andrizzz1"
           gmail="andreimandapat09@gmail.com"
           linkedin="https://www.linkedin.com/in/andrei-domsing-165750341/"
@@ -161,6 +174,7 @@ export const Aboutus = () => {
           gmail="delacruztristan02@gmail.com"
           linkedin="https://www.linkedin.com/in/tristan-dela-cruz-268143374/"
         />
+
       </div>
     </section>
   );

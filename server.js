@@ -3,17 +3,24 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
+console.log("DB URL:", process.env.DATABASE_URL)
 import pkg from 'pg'
 import bcrypt from 'bcrypt'
 const { Pool } = pkg
 const app = express();
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DB_SSL === 'true'
+        ? { rejectUnauthorized: false }
+        : false
 })
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);     
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'dist')));
+
 
 
 const sys_role = `
@@ -67,29 +74,74 @@ app.post('/api/FrontendChatbot', async (req, res) => {
     }
 });
 
+app.post('/api/dashboardChatbot', async (req, res) => {
+    console.log('1. Request received:', req.body)
+    try {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "llama-3.3-70b-versatile",
+                messages: [
+                  { role: "system", content: sys_role },
+                  { role: "user", content: 'Best sunrise spots near the city?'},
+                  { role: "assistant", content: 'The best sunrise spots near Baguio are Mines View Park, Mt. Yangbew in La Trinidad, and Kadaclan View Deck. Mines View Park is the easiest to visit and gives a beautiful view of the mountains, while Mt. Yangbew is great if you want a short hike with wide open scenery. Kadaclan View Deck is also a nice option if you prefer a quieter sunrise spot. It is best to go around 4:30 to 5:00 AM and bring a jacket because mornings in Baguio can be cold.' },
+                  { role: "user", content: 'Where to try strawberry taho?'},
+                  { role: "assistant", content: 'You can try strawberry taho at La Trinidad Strawberry Farm, which is the most popular place near Baguio for it. You may also find it around tourist spots like Mines View Park. Another good option is the Baguio Night Market along Harrison Road, where you can try strawberry taho from around 9 PM to 4 AM.' },
+                  { role: "user", content: 'Best sunrise spots near the city?'},
+                  { role: "assistant", content: `
+                    For a 3-day first-timer Baguio itinerary, start your first day with Burnham Park, Session Road, Baguio Cathedral, and the Night Market at Harrison Road. This is a good easy first day because everything is close to the city center.
 
-app.post('/api/Register', async (req, res) => {
-    const { email, password } = req.body
+                    On the second day, visit the classic tourist spots like Mines View Park, The Mansion, Wright Park, and Baguio Botanical Garden. These are some of the most popular Baguio attractions for first-time visitors.
+
+                    On the third day, go a little outside the center and visit La Trinidad Strawberry Farm, then explore Camp John Hay or BenCab Museum if you want art, nature, and a more relaxed ending to the trip. Do not forget to try strawberry taho, buy pasalubong, and bring a jacket because Baguio mornings and nights can be cold.
+                    ` },
+                  { role: "user", content: req.body.message }
+                ]
+            })
+        });
+
+        const data = await response.json();
+        res.json({ reply: data.choices[0].message.content });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+app.post('/api/register', async (req, res) => {
+    const { username, email, password } = req.body
+
     try {
         const hashedPassword = await bcrypt.hash(password, 10)
+
         const result = await pool.query(
-            'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email',
-            [email, hashedPassword]
+            'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING users_id,username, email',
+            [username, email, hashedPassword]
         )
-        res.status(201).json({ user: result.rows[0] })
+
+        res.status(201).json({
+            user: {
+                id: result.rows[0].users_id,
+                username: result.rows[0].username,
+                email: result.rows[0].email
+            }
+})
     } catch (error) {
         if (error.code === '23505') {
             res.status(400).json({ error: 'Email already exists' })
         } else {
             console.error(error)
-            res.status(500).json({ error: 'Registration failed' })
+            res.status(500).json({ error: error.message })
         }
     }
-});
-dotenv.config();
-console.log("DB URL:", process.env.DATABASE_URL)
+})
 
-app.post('/api/Login', async (req, res) => {
+
+
+app.post('/api/login', async (req, res) => {
     const { email, password } = req.body
     try {
         // find user by email
@@ -106,18 +158,38 @@ app.post('/api/Login', async (req, res) => {
         const user = result.rows[0]
 
         // compare password with hashed password
-        const isMatch = await bcrypt.compare(password, user.password)
+        const isMatch = await bcrypt.compare(password, user.password_hash)
 
         if (!isMatch) {
             return res.status(400).json({ error: 'Incorrect password' })
         }
 
-        res.json({ message: 'Login successful', user: { id: user.id, email: user.email } })
+        res.json({ message: 'Login successful', user: { id: user.users_id, email: user.email,username: user.username } })
 
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: 'Login failed' })
     }
-})
 
-app.listen(3000, () => console.log('Running on http://localhost:3000'));
+})
+  app.get('/{*splat}', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+app.get("/api/community-stats", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT COUNT(*) AS total_members FROM users"
+        );
+
+        res.json({
+            totalMembers: Number(result.rows[0].total_members),
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => console.log(`Running on port ${PORT}`));
