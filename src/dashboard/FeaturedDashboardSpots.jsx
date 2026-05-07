@@ -1,7 +1,7 @@
 import { useState,useRef,useEffect } from 'react'
 import { HeartIcon, MapPinIcon, StarIcon, PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/solid'
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline'
-
+import { useNavigate } from 'react-router-dom'
 const SPOTS = [
     {
         name: 'Burnham Park',
@@ -40,8 +40,9 @@ const CHIPS = [
 ]
 
 function SpotCard({ name, category, rating, location, image }) {
+    
     const [saved, setSaved] = useState(false)
-  
+    
     return (
         <div className="group flex flex-col rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden
                         hover:shadow-md hover:-translate-y-1 transition-all duration-300 min-w-0">
@@ -213,6 +214,7 @@ function AskBaguioAI() {
 }
 
 export const FeaturedDashboardSpots = () => {
+    const navigate = useNavigate()
     return (
         <div className="px-5 mx-auto max-w-7xl mt-5">
             <div className="flex flex-col lg:flex-row gap-5">
@@ -224,7 +226,7 @@ export const FeaturedDashboardSpots = () => {
                             <h2 className="font-bold text-gray-800 text-lg">Featured Tourist Spots</h2>
                             <p className="text-gray-400 text-sm mt-0.5">Hand-picked places loved by travelers this week</p>
                         </div>
-                        <a href="#" className="flex items-center gap-1 text-xs font-semibold text-green-700 hover:text-green-900 transition-colors shrink-0 mt-1">
+                        <a onClick={(e)=>{ e.preventDefault(); navigate('/explore')}} className="cursor-pointer flex items-center gap-1 text-xs font-semibold text-green-700 hover:text-green-900 transition-colors shrink-0 mt-1">
                             See all <span>→</span>
                         </a>
                     </div>
