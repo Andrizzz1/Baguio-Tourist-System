@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { DashboardNav } from "../dashboard/DashboardNav"
 import { MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
@@ -136,6 +136,15 @@ const otherPlaces = [
 ]
 
 const PlaceModal = ({ place, onClose }) => {
+    useEffect(() => {
+        if (place) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = ''
+        }
+        return () => { document.body.style.overflow = '' }
+    }, [place])
+
     if (!place) return null
     return (
         <div
@@ -234,11 +243,7 @@ export const Explore = () => {
             <div className="max-w-6xl mx-auto px-6 py-8">
 
                 {/* HEADER */}
-                <div className="flex items-center justify-between mb-8">
-                    <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition">
-                        <ArrowLeftIcon className="w-4 h-4" />
-                        Back to dashboard
-                    </button>
+                <div className="flex items-center justify-end mb-8">
                     <span className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full font-medium">
                         <SparklesIcon className="w-4 h-4" />
                         12 places
