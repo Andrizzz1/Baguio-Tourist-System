@@ -1,75 +1,95 @@
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useEffect, useRef } from 'react'
+import { MagnifyingGlassIcon, BookOpenIcon, SparklesIcon } from '@heroicons/react/24/solid'
 
+const STEPS = [
+    {
+        number: '01',
+        icon: <MagnifyingGlassIcon className="w-7 h-7 text-white" />,
+        title: 'Discover Places',
+        desc: 'Browse tourist spots, hidden gems, and local favorites with rich details, photos, and ratings.',
+        anim: 'fromLeft',
+        delay: 'delay-100',
+    },
+    {
+        number: '02',
+        icon: <BookOpenIcon className="w-7 h-7 text-white" />,
+        title: 'Learn the History',
+        desc: 'Read detailed background stories, cultural context, and historical facts for every destination.',
+        anim: 'fromBottom',
+        delay: 'delay-200',
+    },
+    {
+        number: '03',
+        icon: <SparklesIcon className="w-7 h-7 text-white" />,
+        title: 'Ask the AI Guide',
+        desc: 'Get instant itinerary suggestions, travel tips, and personalized recommendations from our AI.',
+        anim: 'fromRight',
+        delay: 'delay-300',
+    },
+]
 
-gsap.registerPlugin(ScrollTrigger);
-export const HowitWorks = ()=>{
-    const lineRef = useRef(null);
+function useReveal(threshold = 0.15) {
+    const ref = useRef(null)
+    useEffect(() => {
+        const el = ref.current
+        if (!el) return
+        const obs = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) { el.classList.add('reveal'); obs.disconnect() }
+        }, { threshold })
+        obs.observe(el)
+        return () => obs.disconnect()
+    }, [])
+    return ref
+}
 
-      useEffect(() => {
-        gsap.fromTo(lineRef.current,
-        { scaleY: 0, transformOrigin: 'top center' },
-        {
-            scaleY: 1,
-            ease: 'none',
-            scrollTrigger: {
-            trigger: lineRef.current,
-            start: 'top center',
-            end: 'bottom center',
-            scrub: true  // ties animation to scroll position
-            }
-        }
-        );
-    }, []);
-    return <section className="grid 
-                               grid-cols-2 
-                               max-sm:flex 
-                               max-sm:flex-wrap  
-                               max-sm:gap-10
-                               min-h-[40vh] 
-                               lg:h-[80vh] 
-                               mt-10 
-                               bg-green-100 
-                               p-5 
-                               gap-1" > 
-    <div className="h-full bg-cover bg-center rounded-4xl max-sm:w-full " style={{backgroundImage:"url('/imgs/HowItWorks_bg.png')"}}>
-        <div className="flex flex-col items-center gap-5 mt-20 max-sm:mt-5 p-1 max-sm:gap-2 max-sm:w-full">
-            <h1 className="font-bold text-7xl max-sm:text-6xl text-center lg:mt-20 text-green-700">How it works</h1>
-            <p className='text-gray-500 font-semibold'>Explore Baguio in three simple steps.</p>
-        </div>
-    </div>
-    <div style={{ position: 'relative', padding: '2rem' }}>
-      {/* The growing green line */}
-      <div style={{ position: 'absolute', left: '20px', top: 0, bottom: 0, width: '2px', background: '#e5e7eb' }}>
-        <div ref={lineRef} style={{
-          width: '100%',
-          height: '100%',
-          background: '#16a34a',
-          transformOrigin: 'top center',
-          scaleY: 0
-        }} />
-      </div>
+export const HowitWorks = () => {
+    const headingRef = useReveal()
 
-      {/* Steps */}
-      {[
-        { title: 'Discover Places', desc: 'Browse tourist spots with interactive maps' },
-        { title: 'Learn the History', desc: 'Read detailed background stories' },
-        { title: 'Ask the AI Guide', desc: 'Get instant itinerary suggestions' },
-      ].map((step, i) => (
-        <div key={i} style={{ display: 'flex', gap: '2rem', marginBottom: '3rem', paddingLeft: '3rem' }}>
-          <div style={{
-            position: 'absolute', left: '12px',
-            width: '16px', height: '16px',
-            borderRadius: '50%', background: '#16a34a',
-            border: '2px solid white'
-          }} />
-          <div className='mt-5'>
-            <h3 style={{ fontWeight: 700, fontSize: '1.5rem' ,color:'black'}}>{step.title}</h3>
-            <p className='text-gray-500'>{step.desc}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-    </section>
+    return (
+        <section className="mt-24 px-6 max-w-7xl mx-auto">
+
+            {/* Header */}
+            <div ref={headingRef} className="fromBottom text-center mb-14">
+                <span className="inline-block text-xs font-semibold text-emerald-600 uppercase tracking-widest bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full mb-4">
+                    How It Works
+                </span>
+                <h2 className="font-bold text-4xl text-green-900 leading-tight">
+                    Explore Baguio in three<br className="hidden sm:block" /> simple steps
+                </h2>
+                <p className="text-gray-400 text-sm mt-3 max-w-md mx-auto leading-relaxed">
+                    Everything you need to plan the perfect Baguio trip — all in one place.
+                </p>
+            </div>
+
+            {/* Steps */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+
+                {/* Connector line desktop */}
+                <div className="hidden md:block absolute top-10 left-[calc(16.67%+1.5rem)] right-[calc(16.67%+1.5rem)] h-px bg-gradient-to-r from-transparent via-emerald-200 to-transparent z-0" />
+
+                {STEPS.map((step, i) => {
+                    const cardRef = useReveal()
+                    return (
+                        <div
+                            key={i}
+                            ref={cardRef}
+                            className={`${step.anim} ${step.delay} relative z-10 group bg-white border border-gray-100 rounded-3xl p-7 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col gap-5`}
+                        >
+                            <span className="absolute top-5 right-5 font-bold text-gray-100 select-none text-5xl leading-none">
+                                {step.number}
+                            </span>
+                            <div className="w-14 h-14 rounded-2xl bg-green-900 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                                {step.icon}
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-green-900 text-lg mb-2">{step.title}</h3>
+                                <p className="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
+                            </div>
+                            <div className="h-1 w-10 rounded-full bg-emerald-400 group-hover:w-16 transition-all duration-300" />
+                        </div>
+                    )
+                })}
+            </div>
+        </section>
+    )
 }

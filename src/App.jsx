@@ -70,10 +70,10 @@ function App(){
                      />
       </div>
    <HeroSection />
-    <div className="hiddenEl"><FeaturedSpots /></div>
-    <div className="hiddenEl"><AboutSection /></div>
-    <div className="hiddenEl"><HowitWorks  /></div>
-    <div className="hiddenEl"><CalltoAction  /></div>
+    <FeaturedSpots />
+    <AboutSection />
+    <HowitWorks />
+    <CalltoAction />
     <div className="hiddenEl">
       <svg
         xmlns="http://www.w3.org/2000/svg"
