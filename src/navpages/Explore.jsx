@@ -3,6 +3,148 @@ import { DashboardNav } from "../dashboard/DashboardNav"
 import { MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 
+/* ─────────────────────────────────────────────
+   Inject keyframe animations once
+───────────────────────────────────────────── */
+const STYLES = `
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.94) translateY(16px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+
+  .anim-fade-up   { animation: fadeUp  0.55s cubic-bezier(.22,.68,0,1.2) both; }
+  .anim-scale-in  { animation: scaleIn 0.45s cubic-bezier(.22,.68,0,1.15) both; }
+  .anim-fade-in   { animation: fadeIn  0.4s ease both; }
+
+  /* staggered children */
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.19s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.26s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.33s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.40s; }
+
+  /* Card hover lift */
+  .card-lift {
+    transition: transform 0.35s cubic-bezier(.22,.68,0,1.2),
+                box-shadow 0.35s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 20px 40px -12px rgba(0,0,0,0.14);
+  }
+
+  /* Image zoom inside cards */
+  .img-zoom {
+    transition: transform 0.55s cubic-bezier(.22,.68,0,1.1);
+  }
+  .card-lift:hover .img-zoom {
+    transform: scale(1.08);
+  }
+
+  /* Overlay shimmer on hover */
+  .card-lift::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(255,255,255,0.08) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .card-lift:hover::after {
+    opacity: 1;
+    animation: shimmer 0.7s ease forwards;
+  }
+
+  /* Modal backdrop */
+  .modal-backdrop {
+    animation: fadeIn 0.25s ease both;
+  }
+  .modal-panel {
+    animation: scaleIn 0.38s cubic-bezier(.22,.68,0,1.15) both;
+  }
+
+  /* Modal image overlay reveal */
+  .modal-gradient {
+    background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 60%);
+    transition: opacity 0.4s ease;
+  }
+
+  /* Button press effect */
+  .btn-press {
+    transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-press:hover  { transform: translateY(-1px); box-shadow: 0 6px 20px -4px rgba(22,163,74,0.45); }
+  .btn-press:active { transform: translateY(1px);  box-shadow: none; }
+
+  .btn-ghost {
+    transition: transform 0.15s ease, background-color 0.2s ease;
+  }
+  .btn-ghost:hover  { transform: translateY(-1px); }
+  .btn-ghost:active { transform: translateY(1px); }
+
+  /* Star badge pulse on mount */
+  @keyframes badgePop {
+    0%   { transform: scale(0.7); opacity: 0; }
+    70%  { transform: scale(1.12); }
+    100% { transform: scale(1);   opacity: 1; }
+  }
+  .badge-pop { animation: badgePop 0.4s cubic-bezier(.22,.68,0,1.4) 0.25s both; }
+
+  /* Highlight pill entrance */
+  .pill-appear {
+    animation: fadeUp 0.35s cubic-bezier(.22,.68,0,1.2) both;
+  }
+
+  /* Close button spin */
+  .close-btn {
+    transition: transform 0.25s cubic-bezier(.22,.68,0,1.4), background-color 0.2s ease;
+  }
+  .close-btn:hover { transform: rotate(90deg) scale(1.1); }
+
+  /* "View details →" arrow slide */
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s ease, color 0.2s ease;
+  }
+  .arrow-link:hover { gap: 8px; }
+`
+
+function injectStyles() {
+  if (typeof document === "undefined") return
+  if (document.getElementById("explore-transitions")) return
+  const el = document.createElement("style")
+  el.id = "explore-transitions"
+  el.textContent = STYLES
+  document.head.appendChild(el)
+}
+
 const topPlaces = [
     {
         name: "Burnham Park",
@@ -24,7 +166,7 @@ const topPlaces = [
         badge: "Scenic",
         badgeColor: "bg-blue-500",
         hours: "6:00 AM – 7:00 PM",
-        entry: "Free entry",
+        entry: "₱10",
         about: "Mines View Park is a renowned observation deck in the northeastern limits of Baguio City, Philippines, that provides breathtaking panoramic views of the Cordillera Mountains and the abandoned gold and copper mines of Itogon. It is a popular tourist destination, known for its viewing deck, traditional cultural costumes, and gift shops.",
         highlights: ["Mountain overlook", "Souvenir shops", "Photo spots", "Indigenous crafts"],
     },
@@ -36,7 +178,7 @@ const topPlaces = [
         badge: "Nature",
         badgeColor: "bg-green-600",
         hours: "Open 24 hours",
-        entry: "Free entry",
+        entry: "₱85",
         about: "Camp John Hay is one of the most popular tourist attractions in Baguio City. During the early 1900s, it served as an American military rest and recreation base before evolving into a mountain resort and eco-tourism destination. Today, it is noted for its pine trees, cold weather, tranquil ambiance, and historical sites.",
         highlights: ["Pine forests", "Golf course", "Heritage trails", "Restaurants"],
     },
@@ -48,7 +190,7 @@ const topPlaces = [
         badge: "Art",
         badgeColor: "bg-purple-600",
         hours: "9:00 AM – 6:00 PM",
-        entry: "₱200 adults",
+        entry: "₱200",
         about: "The BenCab Museum is a prominent art and cultural destination near Baguio City. Founded by National Artist Benedicto Cabrera, it showcases Filipino artworks, Cordilleran antiquities, lovely gardens, and breathtaking mountain views. Visitors love the tranquil atmosphere, eco-trails, and relaxing experience in nature.",
         highlights: ["Contemporary art", "Indigenous artifacts", "Hillside café", "Garden trail"],
     },
@@ -57,55 +199,55 @@ const topPlaces = [
 const otherPlaces = [
     {
         name: "Tam-awan Village",
-        location: "Pinsao Proper",
+        location: "366-C Long Long Benguet Road, Pinsao Proper, Baguio City, Benguet, Philippines",
         rating: 4.5,
         badge: "Hidden Gem",
         badgeColor: "bg-amber-100 text-amber-700",
-        hours: "9:00 AM – 6:00 PM",
-        entry: "₱50 entry",
+        hours: "7:00 AM – 8:00 PM",
+        entry: "₱100",
         description: "A reconstructed Cordillera village with authentic Ifugao and Kalinga huts. Catch live indigenous dance performances...",
-        about: "A reconstructed Cordillera village featuring authentic Ifugao and Kalinga huts perched on a hillside with panoramic views of Baguio. Catch live indigenous dance performances and local artisan workshops.",
+        about: "Tam-awan Village is a cultural and artistic destination in Baguio City that showcases the rich heritage of the Cordillera region. The village features traditional huts, local artworks, galleries, and peaceful gardens surrounded by pine trees. Visitors can experience indigenous culture, admire paintings from local artists, and enjoy the calm mountain atmosphere. It is also a popular place for photography, relaxation, and learning about the traditions of Northern Luzon.",
         highlights: ["Cultural shows", "Kalinga huts", "Art workshops", "City views"],
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=1200&auto=format&fit=crop",
+        image: "https://elretirobaguio.com/wp-content/uploads/2022/02/Tam-Awan-Village-1024x683.jpg",
     },
     {
         name: "Wright Park",
-        location: "Leonard Wood Road",
+        location: "Romulo Drive, Baguio City, Benguet, Philippines.",
         rating: 4.4,
         badge: "Family Friendly",
         badgeColor: "bg-green-100 text-green-700",
-        hours: "Open 24 hours",
+        hours: "6:00 AM - 10:00 PM",
         entry: "Free entry",
         description: "Famous for its 'Pool of Pines' reflecting pond and horseback riding circle. A short stroll from The Mansion...",
-        about: "Famous for its iconic 'Pool of Pines' reflecting pond lined with tall pine trees and a horseback riding circle. A short, scenic stroll from The Mansion and Lourdes Grotto.",
+        about: "Wright Park is one of the most famous tourist attractions in Baguio City, known for its long pool, tall pine trees, and horseback riding activities. Located near The Mansion, the park offers a relaxing environment where visitors can enjoy walking, taking photos, and experiencing the cool mountain air. Horse rentals are popular among tourists, especially families and children. The peaceful scenery and natural beauty make Wright Park a favorite destination for both locals and travelers.",
         highlights: ["Horseback riding", "Pool of Pines", "Pine tree walk", "Photo spots"],
-        image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&auto=format&fit=crop",
+        image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/98/d7/ab/caption.jpg?w=900&h=500&s=1",
     },
     {
         name: "Diplomat Hotel Ruins",
-        location: "Dominican Hill",
+        location: "Dominican Hill, Mirador Road, Baguio City, Benguet, Philippines.",
         rating: 4.2,
         badge: "Hidden Gem",
         badgeColor: "bg-amber-100 text-amber-700",
-        hours: "8:00 AM – 5:00 PM",
-        entry: "Free entry",
+        hours: "7:00 AM – 5:00 PM",
+        entry: "₱10",
         description: "An abandoned hilltop retreat house with a haunting WWII history. Worth visiting for the sweeping views of Baguio...",
-        about: "An abandoned hilltop retreat house turned WWII refuge with eerie ruins and a rich, haunting history. The rooftop offers some of the most sweeping panoramic views of Baguio City.",
+        about: "Diplomat Hotel, also known as the Dominican Hill Retreat House, is a historic landmark in Baguio City famous for its old architecture and panoramic views. Built in the early 1900s, the abandoned structure became popular because of stories and legends connected to the place. Visitors explore the site to admire its history, peaceful surroundings, and scenic mountain landscape. It is also a favorite location for photography, sightseeing, and learning about Baguio's cultural and historical background during different periods of time.",
         highlights: ["WWII history", "Panoramic views", "Photography", "Ruins tour"],
-        image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop",
+        image: "https://upload.wikimedia.org/wikipedia/commons/9/97/Diplomat_Hotel_in_Baguio_City.JPG",
     },
     {
         name: "The Mansion",
-        location: "Leonard Wood Road",
+        location: "Romulo Drive, Baguio City, Benguet, Philippines.",
         rating: 4.3,
         badge: "Historic",
         badgeColor: "bg-stone-100 text-stone-700",
-        hours: "8:00 AM – 6:00 PM",
+        hours: "9:00 AM – 5:00 PM",
         entry: "Free entry",
         description: "The official summer residence of the Philippine president. Iconic white iron gates and manicured gardens...",
-        about: "The official summer residence of the President of the Philippines. Visitors enjoy the iconic ornate white iron gates and manicured gardens without entering the main house.",
+        about: "The Mansion is the official summer residence of the President of the Philippines, located along Leonard Wood Road, Baguio City. Built in 1908, it features a grand gate, Spanish-inspired architecture, and well-kept gardens. It is a popular tourist spot where visitors can take photos outside and enjoy the scenic surroundings. The Mansion is also located directly across Wright Park, making it easy to visit both in one trip.",
         highlights: ["Historic gates", "Manicured gardens", "Presidential residence", "Photo spots"],
-        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=1200&auto=format&fit=crop",
+        image: "https://media.philstar.com/photos/2020/10/03/mansion-baguio_2020-10-03_18-47-38.jpg",
     },
     {
         name: "Botanical Garden",
@@ -113,12 +255,12 @@ const otherPlaces = [
         rating: 4.1,
         badge: "Nature",
         badgeColor: "bg-green-100 text-green-700",
-        hours: "7:00 AM – 7:00 PM",
-        entry: "Free entry",
+        hours: "6:00 AM – 6:00 PM",
+        entry: "₱100",
         description: "A free public garden showcasing the flora and indigenous culture of the Cordillera region...",
-        about: "A free public garden nestled within Baguio, showcasing the diverse flora of the Cordillera region alongside displays of indigenous cultural attire and life-size ethnic village dioramas.",
+        about: "Baguio Botanical Garden is a peaceful attraction in Baguio City featuring gardens, cultural huts, and art displays. It showcases traditional Cordillera houses, sculptures, and landscaped flower areas that reflect local heritage. Visitors can stroll along paths surrounded by pine trees, plants, and creative installations. It is also a popular place for photos, relaxation, and learning about indigenous culture. Located near Wright Park area, it is easy to include in a sightseeing tour of Baguio. The garden offers a calm environment ideal for nature lovers and families visiting the city especially during cool mornings and afternoons.",
         highlights: ["Native flora", "Ethnic village", "Free admission", "Family-friendly"],
-        image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1200&auto=format&fit=crop",
+        image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/4a/00/23/caption.jpg?w=1000&h=-1&s=1",
     },
     {
         name: "Good Shepherd Convent",
@@ -129,14 +271,15 @@ const otherPlaces = [
         hours: "7:00 AM – 5:00 PM",
         entry: "Free entry",
         description: "Famous for its ube jam and strawberry products made by nuns. A must-stop for pasalubong...",
-        about: "Run by the Good Shepherd Sisters, this convent is Baguio's most beloved pasalubong stop. Their handcrafted ube jam, peanut brittle, and strawberry preserves are iconic Baguio souvenirs.",
+        about: "Good Shepherd Convent is a famous shop in Baguio City known for its homemade products like ube jam, strawberry jam, peanut brittle, and other local delicacies. It is run by the Good Shepherd Sisters and supports their mission. Visitors often line up to buy pasalubong items.",
         highlights: ["Ube jam", "Peanut brittle", "Strawberry preserves", "Pasalubong"],
-        image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200&auto=format&fit=crop",
+        image: "https://mybaguiocityguide.com/wp-content/uploads/2023/08/good-shepherd-baguio.jpg",
     },
 ]
 
 const PlaceModal = ({ place, onClose }) => {
     useEffect(() => {
+        injectStyles()
         if (place) {
             document.body.style.overflow = 'hidden'
         } else {
@@ -148,35 +291,36 @@ const PlaceModal = ({ place, onClose }) => {
     if (!place) return null
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 modal-backdrop"
             onClick={onClose}
         >
             <div
-                className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl"
+                className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl modal-panel"
                 onClick={e => e.stopPropagation()}
             >
                 {/* IMAGE */}
-                <div className="relative">
+                <div className="relative overflow-hidden">
                     <img
                         src={place.image}
                         alt={place.name}
-                        className="w-full h-64 object-cover"
+                        className="w-full h-64 object-cover img-zoom"
+                        style={{ animation: 'scaleIn 0.6s cubic-bezier(.22,.68,0,1.1) both' }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute inset-0 modal-gradient" />
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full p-1.5 transition"
+                        className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white rounded-full p-1.5 close-btn"
                     >
                         <XMarkIcon className="w-5 h-5" />
                     </button>
-                    <div className="absolute bottom-4 left-4">
+                    <div className="absolute bottom-4 left-4 anim-fade-up" style={{ animationDelay: '0.1s' }}>
                         <div className="flex items-center gap-1.5 text-white/80 text-sm mb-1">
                             <MapPinIcon className="w-4 h-4" />
                             {place.location}
                         </div>
                         <h2 className="text-2xl font-bold text-white">{place.name}</h2>
                     </div>
-                    <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 text-sm font-semibold">
+                    <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 text-sm font-semibold badge-pop">
                         <StarIcon className="w-4 h-4 text-yellow-300" />
                         {place.rating}
                     </div>
@@ -185,13 +329,13 @@ const PlaceModal = ({ place, onClose }) => {
                 {/* BODY */}
                 <div className="p-6">
                     {/* INFO PILLS */}
-                    <div className="grid grid-cols-3 gap-3 mb-6">
+                    <div className="grid grid-cols-3 gap-3 mb-6 stagger">
                         {[
                             { label: "CATEGORY", value: place.badge },
                             { label: "HOURS", value: place.hours, icon: <ClockIcon className="w-3.5 h-3.5 inline mr-1 text-gray-400" /> },
                             { label: "ENTRY", value: place.entry },
                         ].map((item, i) => (
-                            <div key={i} className="bg-gray-50 rounded-xl p-3">
+                            <div key={i} className="bg-gray-50 rounded-xl p-3 anim-fade-up">
                                 <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
                                     {item.label}
                                 </p>
@@ -203,25 +347,29 @@ const PlaceModal = ({ place, onClose }) => {
                     </div>
 
                     {/* ABOUT */}
-                    <h3 className="font-bold text-gray-900 mb-2">About this place</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed mb-5">{place.about}</p>
+                    <h3 className="font-bold text-gray-900 mb-2 anim-fade-up" style={{ animationDelay: '0.22s' }}>About this place</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed mb-5 anim-fade-up" style={{ animationDelay: '0.27s' }}>{place.about}</p>
 
                     {/* HIGHLIGHTS */}
-                    <h3 className="font-bold text-gray-900 mb-3">Highlights</h3>
+                    <h3 className="font-bold text-gray-900 mb-3 anim-fade-up" style={{ animationDelay: '0.32s' }}>Highlights</h3>
                     <div className="flex flex-wrap flex-row gap-2 mb-6">
                         {place.highlights.map((h, i) => (
-                            <span key={i} className="bg-green-50 text-green-700 text-sm px-3 py-1 rounded-full border border-green-100">
+                            <span
+                                key={i}
+                                className="bg-green-50 text-green-700 text-sm px-3 py-1 rounded-full border border-green-100 pill-appear"
+                                style={{ animationDelay: `${0.35 + i * 0.07}s` }}
+                            >
                                 {h}
                             </span>
                         ))}
                     </div>
 
                     {/* ACTIONS */}
-                    <div className="flex gap-3">
-                        <button className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-2xl transition text-sm">
+                    <div className="flex gap-3 anim-fade-up" style={{ animationDelay: '0.45s' }}>
+                        <button className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-2xl text-sm btn-press">
                             Add to itinerary
                         </button>
-                        <button className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-800 font-semibold py-3 rounded-2xl transition text-sm">
+                        <button className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-800 font-semibold py-3 rounded-2xl text-sm btn-ghost">
                             Ask AI Guide
                         </button>
                     </div>
@@ -234,6 +382,8 @@ const PlaceModal = ({ place, onClose }) => {
 export const Explore = () => {
     const [selected, setSelected] = useState(null)
 
+    useEffect(() => { injectStyles() }, [])
+
     return (
         <section className="min-h-screen bg-white">
             <DashboardNav />
@@ -243,37 +393,39 @@ export const Explore = () => {
             <div className="max-w-6xl mx-auto px-6 py-8">
 
                 {/* HEADER */}
-                <div className="flex items-center justify-end mb-8">
+                <div className="flex items-center justify-end mb-8 anim-fade-in">
                     <span className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full font-medium">
                         <SparklesIcon className="w-4 h-4" />
                         12 places
                     </span>
                 </div>
 
-                <div className="mb-10">
+                <div className="mb-10 anim-fade-up">
                     <h1 className="text-3xl font-bold text-gray-900">Explore Baguio</h1>
                     <p className="text-gray-500 mt-1">Discover top destinations and hidden gems around the City of Pines.</p>
                 </div>
 
                 {/* TOP PLACES */}
                 <div className="mb-12">
-                    <h2 className="text-xl font-bold text-gray-900 mb-1">Top Places</h2>
-                    <p className="text-sm text-gray-400 mb-5">The must-visit landmarks of Baguio</p>
+                    <h2 className="text-xl font-bold text-gray-900 mb-1 anim-fade-up" style={{ animationDelay: '0.08s' }}>Top Places</h2>
+                    <p className="text-sm text-gray-400 mb-5 anim-fade-up" style={{ animationDelay: '0.12s' }}>The must-visit landmarks of Baguio</p>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 stagger">
                         {topPlaces.map((place, i) => (
                             <div
                                 key={i}
                                 onClick={() => setSelected(place)}
-                                className="rounded-2xl overflow-hidden border border-gray-100 hover:shadow-md transition-all duration-300 cursor-pointer group"
+                                className="rounded-2xl overflow-hidden border border-gray-100 cursor-pointer group relative card-lift anim-scale-in"
                             >
-                                <div className="relative">
+                                <div className="overflow-hidden">
                                     <img
                                         src={place.image}
                                         alt={place.name}
-                                        className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-300"
+                                        className="w-full h-44 object-cover img-zoom"
                                     />
-                                    <span className={`absolute top-3 left-3 ${place.badgeColor} text-white text-xs font-semibold px-2.5 py-1 rounded-lg`}>
+                                    <span className={`absolute top-3 left-3 ${place.badgeColor} text-white text-xs font-semibold px-2.5 py-1 rounded-lg`}
+                                        style={{ transition: 'transform 0.3s ease', zIndex: 1 }}
+                                    >
                                         {place.badge}
                                     </span>
                                 </div>
@@ -297,25 +449,23 @@ export const Explore = () => {
 
                 {/* OTHER PLACES */}
                 <div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-1">Other Places to Discover</h2>
-                    <p className="text-sm text-gray-400 mb-5">Local favorites, hidden gems, and off-the-beaten-path finds</p>
+                    <h2 className="text-xl font-bold text-gray-900 mb-1 anim-fade-up" style={{ animationDelay: '0.05s' }}>Other Places to Discover</h2>
+                    <p className="text-sm text-gray-400 mb-5 anim-fade-up" style={{ animationDelay: '0.1s' }}>Local favorites, hidden gems, and off-the-beaten-path finds</p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 stagger">
                         {otherPlaces.map((place, i) => (
                             <div
                                 key={i}
                                 onClick={() => setSelected(place)}
-                                className="border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer"
+                                className="border border-gray-100 rounded-2xl overflow-hidden cursor-pointer relative card-lift anim-scale-in"
                             >
-
                                 {/* IMAGE */}
-                                <div className="relative">
+                                <div className="relative overflow-hidden">
                                     <img
                                         src={place.image}
                                         alt={place.name}
-                                        className="w-full h-40 object-cover hover:scale-105 transition-transform duration-300"
+                                        className="w-full h-40 object-cover img-zoom"
                                     />
-
                                     <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${place.badgeColor}`}>
                                         {place.badge}
                                     </span>
@@ -340,7 +490,7 @@ export const Explore = () => {
                                         {place.description}
                                     </p>
 
-                                    <button className="mt-3 text-green-600 hover:text-green-700 font-semibold text-sm transition">
+                                    <button className="mt-3 text-green-600 hover:text-green-700 font-semibold text-sm arrow-link">
                                         View details →
                                     </button>
                                 </div>
