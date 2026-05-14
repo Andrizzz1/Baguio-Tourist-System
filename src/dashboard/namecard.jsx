@@ -1,30 +1,72 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 const weather_api = import.meta.env.VITE_open_weather_api;
 
-export const NameCard = ()=>{
+export const NameCard = () => {
     const user = JSON.parse(localStorage.getItem('user'))
     const firstName = user?.username?.split(' ')[0] || 'User';
     const [weather, setWeather] = useState()
-    const fetchDATA = async()=>{
-        try{
-            const weatherRes =  await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=16.402332&lon=120.596008&appid=${weather_api}&units=metric`)
+    const fetchDATA = async () => {
+        try {
+            const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=16.402332&lon=120.596008&appid=${weather_api}&units=metric`)
             const WeatherData = await weatherRes.json();
-            console.log(WeatherData) 
-            setWeather({...WeatherData})
-        }catch(err){
+            console.log(WeatherData)
+            setWeather({ ...WeatherData })
+        } catch (err) {
             console.log(err)
         }
     }
 
-    useEffect(()=>{fetchDATA()}, [])
+    useEffect(() => { fetchDATA() }, [])
+
     return <section className="text-black flex justify-center m-5">
-        <div className="relative overflow-hidden p-10 rounded-3xl h-72 grid bg-cover bg-center text-white w-7xl" 
-        style={{backgroundImage:`linear-gradient(120deg, rgba(4, 120, 87, 0.92), rgba(6, 95, 70, 0.72)),url('/imgs/bg.png')`}}>
-            <div className="font-semibold text-white text-sm bg-emerald-500 w-fit h-fit py-1 px-2  rounded-2xl">{weather?.main?.temp || "Loading temperature..."}°C  · {weather?.weather?.[0]?.description || "Loading weather..."}</div>
-                <div>
-                    <h1 className="font-semibold text-emerald-50 text-5xl">Kamusta, {firstName}!</h1>
-                </div>
-            <p className="max-w-xl text-emerald-100">Ready to explore the Summer Capital? Discover hidden trails, local cuisine, and the rich Cordilleran history — all guided by AI.</p>
+        <style>{`
+            @keyframes cardIn {
+                from { opacity: 0; transform: translateY(14px) scale(0.98); }
+                to   { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            @keyframes badgeIn {
+                from { opacity: 0; transform: translateY(-8px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes headingIn {
+                from { opacity: 0; transform: translateX(-16px); }
+                to   { opacity: 1; transform: translateX(0); }
+            }
+            @keyframes subtitleIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+            .nc-card {
+                animation: cardIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            }
+            .nc-card:hover {
+                transform: translateY(-3px) scale(1.005);
+                box-shadow: 0 24px 48px rgba(4, 120, 87, 0.28);
+            }
+            .nc-badge {
+                animation: badgeIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both;
+            }
+            .nc-heading {
+                animation: headingIn 0.55s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+            }
+            .nc-subtitle {
+                animation: subtitleIn 0.55s ease 0.55s both;
+            }
+        `}</style>
+
+        <div className="nc-card relative overflow-hidden p-10 rounded-3xl h-72 grid bg-cover bg-center text-white w-7xl"
+            style={{ backgroundImage: `linear-gradient(120deg, rgba(4, 120, 87, 0.92), rgba(6, 95, 70, 0.72)),url('/imgs/bg.png')` }}>
+
+            <div className="nc-badge font-semibold text-white text-sm bg-emerald-500 w-fit h-fit py-1 px-2 rounded-2xl">
+                {weather?.main?.temp || "Loading temperature..."}°C · {weather?.weather?.[0]?.description || "Loading weather..."}
+            </div>
+
+            <div>
+                <h1 className="nc-heading font-semibold text-emerald-50 text-5xl">Kamusta, {firstName}!</h1>
+            </div>
+
+            <p className="nc-subtitle max-w-xl text-emerald-100">Ready to explore the Summer Capital? Discover hidden trails, local cuisine, and the rich Cordilleran history — all guided by AI.</p>
         </div>
     </section>
 }
