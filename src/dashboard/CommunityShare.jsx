@@ -203,7 +203,7 @@ export const ShareToCommunity = () => {
             {/* Header */}
             <div className="flex items-center justify-between mb-4 c-fade-up">
                 <div>
-                    <h2 className="text-gray-800 font-bold text-lg">Community</h2>
+                    <h2 className="text-gray-800 font-bold text-lg">Your Posts</h2>
                     <p className="text-gray-400 text-sm">Share your Baguio finds, reviews, and hidden gems.</p>
                 </div>
                 <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full members-badge">

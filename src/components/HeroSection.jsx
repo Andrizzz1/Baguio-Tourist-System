@@ -75,6 +75,13 @@ export const HeroSection = () => {
                 .hero-btn-login:hover  { background: rgba(120,210,150,0.12); border-color: rgba(120,210,150,0.85); color: #e8f4ec; transform: scale(1.07); box-shadow: 0 0 22px rgba(60,180,90,0.2); }
                 .hero-btn-chat:hover   { background: linear-gradient(135deg,#22803e,#196233); transform: scale(1.07); box-shadow: 0 6px 32px rgba(30,150,70,0.45); }
                 .hero-btn-login, .hero-btn-chat { transition: all 0.3s ease; }
+
+                @media (min-height: 900px) and (min-width: 600px) and (orientation: portrait) {
+                    .hero-h1 {
+                         /* equivalent to text-6xl */
+                        margin-top: 10rem;
+                    }
+                }
             `}</style>
 
             <div
@@ -141,10 +148,10 @@ export const HeroSection = () => {
                     </svg>
                 </div>
 
-                {/* Content — unchanged layout */}
-                <div className={`hiddenEl px-65 py-40 max-xl:px-40 max-lg:px-35 max-md:px-20 max-sm:px-2 text-center max-sm:flex max-sm:flex-col relative z-10 transform transition-all duration-1000 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+                {/* Content */}
+                <div className={`px-6 py-32 sm:px-16 md:px-28 lg:px-40 xl:px-52 text-center flex flex-col items-center relative z-10 transition-all duration-1000 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
 
-                    <div className="transition-all duration-700 ease-in-out hover:scale-105 mb-1">
+                    <div className=" hero-h1 transition-all duration-700 ease-in-out hover:scale-105 mb-1">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
                             <span style={{ display: 'inline-block', width: 32, height: 1, background: 'rgba(120,210,150,0.4)' }} />
                             <TypeAnimation
@@ -170,7 +177,7 @@ export const HeroSection = () => {
                     </div>
 
                     <h1
-                        className='font-bold text-8xl max-sm:text-5xl transition-all duration-700 ease-in-out hover:tracking-wide'
+                        className=' font-bold text-8xl max-sm:text-5xl transition-all duration-700 ease-in-out  hover:tracking-wide'
                         style={{ color: '#e8f4ec', textShadow: '0 2px 40px rgba(0,80,30,0.5)' }}
                     >
                         Navigating the <br className='max-lg:hidden' />

@@ -34,7 +34,7 @@ export const AboutSection = () => {
     const textRef    = useReveal()
 
     return (
-        <section className="mt-24 px-6 max-w-7xl mx-auto">
+        <section className="mt-24 px-4 sm:px-6 max-w-7xl mx-auto overflow-hidden">
 
             {/* Heading */}
             <div ref={headingRef} className="fromBottom text-center mb-14">
@@ -50,7 +50,7 @@ export const AboutSection = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
                 {/* Left — Image slides in from left */}
-                <div ref={imageRef} className="fromLeft relative pb-8">
+                <div ref={imageRef} className="fromLeft relative pb-10 px-4 sm:px-0">
                     <div className="absolute -top-4 -left-4 w-full h-full rounded-3xl border-2 border-emerald-200 z-0" />
                     <div className="absolute -bottom-4 -right-4 w-2/3 h-2/3 rounded-3xl bg-green-50 z-0" />
                     <div className="relative z-10 rounded-3xl overflow-hidden shadow-xl">
@@ -74,7 +74,7 @@ export const AboutSection = () => {
                 </div>
 
                 {/* Right — Text slides in from right */}
-                <div ref={textRef} className="fromRight pt-10 lg:pt-0">
+                <div ref={textRef} className="fromRight pt-14 lg:pt-0">
                     <p className="text-gray-500 text-sm leading-relaxed mb-8">
                         We built this platform to help tourists explore Baguio City with ease. Instead of just listing places to visit, we give you the full picture — history, culture, AI guidance, and a community of fellow travelers to learn from.
                     </p>

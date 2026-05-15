@@ -42,13 +42,34 @@ function useReveal(threshold = 0.15) {
     return ref
 }
 
+function StepCard({ number, icon, title, desc, anim, delay }) {
+    const ref = useReveal()
+    return (
+        <div
+            ref={ref}
+            className={`${anim} ${delay} relative z-10 group bg-white border border-gray-100 rounded-3xl p-6 sm:p-7 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col gap-5`}
+        >
+            <span className="absolute top-5 right-5 font-bold text-gray-100 select-none text-5xl leading-none">
+                {number}
+            </span>
+            <div className="w-14 h-14 rounded-2xl bg-green-900 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                {icon}
+            </div>
+            <div>
+                <h3 className="font-bold text-green-900 text-lg mb-2">{title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{desc}</p>
+            </div>
+            <div className="h-1 w-10 rounded-full bg-emerald-400 group-hover:w-16 transition-all duration-300" />
+        </div>
+    )
+}
+
 export const HowitWorks = () => {
     const headingRef = useReveal()
 
     return (
-        <section className="mt-24 px-6 max-w-7xl mx-auto">
+        <section className="mt-24 px-4 sm:px-6 max-w-7xl mx-auto">
 
-            {/* Header */}
             <div ref={headingRef} className="fromBottom text-center mb-14">
                 <span className="inline-block text-xs font-semibold text-emerald-600 uppercase tracking-widest bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full mb-4">
                     How It Works
@@ -61,35 +82,11 @@ export const HowitWorks = () => {
                 </p>
             </div>
 
-            {/* Steps */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-
-                {/* Connector line desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative">
                 <div className="hidden md:block absolute top-10 left-[calc(16.67%+1.5rem)] right-[calc(16.67%+1.5rem)] h-px bg-gradient-to-r from-transparent via-emerald-200 to-transparent z-0" />
-
-                {STEPS.map((step, i) => {
-                    const cardRef = useReveal()
-                    return (
-                        <div
-                            key={i}
-                            ref={cardRef}
-                            className={`${step.anim} ${step.delay} relative z-10 group bg-white border border-gray-100 rounded-3xl p-7 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col gap-5`}
-                        >
-                            <span className="absolute top-5 right-5 font-bold text-gray-100 select-none text-5xl leading-none">
-                                {step.number}
-                            </span>
-                            <div className="w-14 h-14 rounded-2xl bg-green-900 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
-                                {step.icon}
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-green-900 text-lg mb-2">{step.title}</h3>
-                                <p className="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
-                            </div>
-                            <div className="h-1 w-10 rounded-full bg-emerald-400 group-hover:w-16 transition-all duration-300" />
-                        </div>
-                    )
-                })}
+                {STEPS.map((step, i) => <StepCard key={i} {...step} />)}
             </div>
+
         </section>
     )
 }
