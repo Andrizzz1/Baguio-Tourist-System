@@ -39,8 +39,8 @@ export const DashboardNav = () => {
     }
 
     return (
-        <nav className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-40">
-            <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
+        <nav className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-40 ">
+            <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between gap-4 ">
 
                 {/* Logo */}
                 <h1 className="text-xl font-extrabold text-green-900 shrink-0">
@@ -48,7 +48,7 @@ export const DashboardNav = () => {
                 </h1>
 
                 {/* Desktop Nav Links */}
-                <div className="hidden md:flex items-center gap-1">
+                <div className="hidden lg:flex items-center gap-1">
                     {NAV_LINKS.map(({ label, path }) => (
                         <button
                             key={label}
@@ -67,7 +67,7 @@ export const DashboardNav = () => {
                 </div>
 
                 {/* Desktop Right — Search + Profile */}
-                <div className="hidden md:flex items-center gap-3">
+                <div className="hidden lg:flex items-center gap-3">
                     <div className="flex items-center gap-2 bg-green-50 border border-gray-200 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-green-700 transition-all">
                         <MagnifyingGlassIcon className="w-4 h-4 text-gray-400 shrink-0" />
                         <input
@@ -121,7 +121,7 @@ export const DashboardNav = () => {
                 </div>
 
                 {/* Mobile Right — Hamburger */}
-                <div className="flex md:hidden items-center gap-2">
+                <div className="flex lg:hidden items-center gap-2">
                     <button
                         onClick={() => setMenuOpen(prev => !prev)}
                         className="p-2 rounded-xl text-gray-600 hover:text-green-900 hover:bg-green-50 transition-all duration-200"
@@ -132,7 +132,7 @@ export const DashboardNav = () => {
             </div>
 
             {/* Mobile Dropdown Menu */}
-            <div className={`md:hidden overflow-hidden transition-all duration-300 ${menuOpen ? 'max-h-screen border-t border-gray-100' : 'max-h-0'}`}>
+            <div className={`lg:hidden overflow-hidden transition-all duration-300 ${menuOpen ? 'max-h-screen border-t border-gray-100' : 'max-h-0'}`}>
                 <div className="px-5 py-4 flex flex-col gap-1 bg-white">
 
                     {/* Mobile User Info */}
