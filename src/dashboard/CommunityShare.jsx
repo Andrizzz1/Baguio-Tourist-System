@@ -109,7 +109,7 @@ const STYLES = `
   }
 `
 
-function injectCommunityStyles() {
+export const injectCommunityStyles =() =>{
   if (typeof document === 'undefined') return
   if (document.getElementById('community-transitions')) return
   const el = document.createElement('style')
