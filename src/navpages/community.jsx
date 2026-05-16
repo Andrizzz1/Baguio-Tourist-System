@@ -18,18 +18,14 @@ const DEFAULT_CONTRIBUTORS = [
 
 
 
+
+
 export const Community = () => {
     const user        = JSON.parse(localStorage.getItem('user'))
     const displayName = user?.username || 'Traveler'
     const initials    = displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 
-    const [posts, setPosts] = useState(() => {
-        try {
-            const saved = JSON.parse(localStorage.getItem('communityPosts'))
-            return saved?.length ? saved : DEFAULT_POSTS
-        } catch { return DEFAULT_POSTS }
-    })
-
+    const [posts, setPosts] = useState([])
     const [postText,     setPostText]     = useState('')
     const [location,     setLocation]     = useState('')
     const [showLocation, setShowLocation] = useState(false)
@@ -39,9 +35,24 @@ export const Community = () => {
     const fileRef = useRef(null)
 
     const formatMembers = (n) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n
+    const fetchPosts = async () => {
+    try {
+        const res = await fetch("/api/community-posts");
+        const data = await res.json();
 
-
-    
+        if (res.ok) {
+            setPosts(data);
+        } else {
+            console.log(data.error);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+    useEffect(() => {
+    fetchPosts();
+    }, []);
+        
     useEffect(() => {
         injectCommunityStyles()
         const fetchCommunityStats = async () => {
@@ -71,33 +82,52 @@ export const Community = () => {
         reader.readAsDataURL(file)
     }
 
-    const clearImage = () => {
-        setImagePreview(null)
-        setImageBase64(null)
-        if (fileRef.current) fileRef.current.value = ''
-    }
-
-    const handlePost = () => {
-        if (!postText.trim() && !imageBase64) return
-        const newPost = {
-            id:        Date.now(),
-            author:    displayName,
-            username:  user?.email?.split('@')[0] || 'traveler',
-            initials,
-            content:   postText,
-            location:  location || 'Baguio City',
-            image:     imageBase64,
-            category:  'Community Post',
-            createdAt: 'Just now',
+        const clearImage = () => {
+            setImagePreview(null)
+            setImageBase64(null)
+            if (fileRef.current) fileRef.current.value = ''
         }
-        const updated = [newPost, ...posts]
-        setPosts(updated)
-        localStorage.setItem('communityPosts', JSON.stringify(updated))
-        setPostText('')
-        setLocation('')
-        setShowLocation(false)
-        clearImage()
-    }
+
+        const handlePost = async () => {
+        if (!postText.trim() && !imageBase64) return;
+
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) {
+            alert("Please login first.");
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/community-posts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    content: postText,
+                    location: location || "Baguio City",
+                    image_url: imageBase64
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setPostText("");
+                setLocation("");
+                setShowLocation(false);
+                clearImage();
+
+                fetchPosts();
+            } else {
+                console.log(data.error);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const canPost = postText.trim().length > 0 || imageBase64 !== null
 
@@ -220,18 +250,23 @@ export const Community = () => {
 
                         {/* Feed */}
                         <div className="flex flex-col gap-4">
-                            {posts.map(post => (
-                                <div key={post.id} className="bg-white border border-gray-100 rounded-3xl shadow-sm p-5 hover:shadow-md transition-shadow duration-200">
+                            {posts.map(post => {
+                                const postInitials = post.username
+                                ? post.username.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                                : 'U'
+                                
+                                return (
+                                <div key={post.post_id} className="bg-white border border-gray-100 rounded-3xl shadow-sm p-5 hover:shadow-md transition-shadow duration-200">
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="w-9 h-9 rounded-full bg-green-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                                            {post.initials}
+                                            {postInitials }
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-gray-800">{post.author}</p>
-                                            <p className="text-xs text-gray-400">@{post.username} · {post.createdAt}</p>
+                                            <p className="text-sm font-semibold text-gray-800">{post.username}</p>
+                                            <p className="text-xs text-gray-400">@{post.email?.split('@')[0]} · {new Date(post.created_at).toLocaleString()}</p>
                                         </div>
                                         <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-1 rounded-full font-medium shrink-0">
-                                            {post.category}
+                                            Community Post
                                         </span>
                                     </div>
 
@@ -239,8 +274,8 @@ export const Community = () => {
                                         <p className="text-sm text-gray-700 leading-relaxed mb-3">{post.content}</p>
                                     )}
 
-                                    {post.image && (
-                                        <img src={post.image} alt="post" className="w-full max-h-72 object-cover rounded-2xl mb-3 border border-gray-100" />
+                                    {post.image_url && (
+                                        <img src={post.image_url} alt="post" className="w-full max-h-72 object-cover rounded-2xl mb-3 border border-gray-100" />
                                     )}
 
                                     <div className="flex items-center gap-1 text-xs text-gray-400">
@@ -248,7 +283,7 @@ export const Community = () => {
                                         {post.location}
                                     </div>
                                 </div>
-                            ))}
+                            )})}
                         </div>
                     </div>
 
