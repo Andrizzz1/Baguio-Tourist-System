@@ -301,6 +301,63 @@ const otherPlaces = [
         highlights: ["Ukay-ukay","Street food", "Affordable shopping","Nighttime vibe","Bargain culture"],
         image: "https://ik.imagekit.io/tvlk/blog/2024/08/shutterstock_2422562731.jpg",
     },
+    {
+        name: "Strawberry Farm",
+        location: "Betag, La Trinidad, Benguet, Philippines",
+        rating: "4.0",
+        badge: "Farm",
+        badgeColor: "bg-olive-100 text-olive-700",
+        hours: "6:00AM - 6:00PM",
+        entry: "₱100",
+        description: "The La Trinidad Strawberry Farm is located in Benguet near Baguio City. It features wide strawberry fields where visitors can pick fresh strawberries during the season. The farm also sells strawberry-based foods like ice cream and jam. It offers a cool climate, scenic views, and a relaxing agricultural experience.",
+        about: "The La Trinidad Strawberry Farm in Benguet is a famous tourist spot near Baguio City. It is known for strawberry picking, fresh produce, and cool mountain scenery. Visitors enjoy strawberries, local products, and the relaxing farm atmosphere.",
+        highlights: ["Strawberry picking experience","Fresh local produce", "Scenic mountain farm view","Photo spots","Support for local agriculture"],
+        image: "https://mybaguiocityguide.com/wp-content/uploads/2023/10/pexels-photo-4546316.jpeg",
+
+    },
+    {
+        name: "Baguio Cathedral",
+        location: "Session Road, Baguio City, Benguet, Philippines",
+        rating: "4.2",
+        badge: "Church",
+        badgeColor: "bg-yellow-100 text-yellow-700",
+        hours: "5:00AM - 6:00PM",
+        entry: "Free entry",
+        description: "The Baguio Cathedral, also called Our Lady of the Atonement Metropolitan Cathedral, is a Roman Catholic church located on a hill near Session Road in Baguio City. It is famous for its pink façade, stained-glass windows, and twin bell towers. Built in the 1900s, it serves as an important place of worship for locals. It also attracts tourists because of its scenic view overlooking the city and its peaceful, historic atmosphere.",
+        about: "The Baguio Cathedral, officially Our Lady of the Atonement Metropolitan Cathedral, is a famous Catholic church in Baguio City. It is known for its pink exterior, twin bell towers, and hilltop location near Session Road. It serves as a major religious center and popular tourist landmark in the city.",
+        highlights: ["Pink twin-spired design","Scenic viewpoint", "Long staircase access","Peaceful prayer atmosphere","Historic and cultural importance"],
+        image: "https://upload.wikimedia.org/wikipedia/commons/3/35/Baguio_Cathedral_%28Carlu_Street%2C_Baguio_City%3B_02-25-2024%29.jpg",
+
+    },
+    {
+        name: "Sky Ranch Baguio",
+        location: "Luneta Hill, Upper Session Road, Baguio City, Benguet.",
+        rating: "4.5",
+        badge: "Fun Attractions",
+        badgeColor: "bg-teal-100 text-teal-700",
+        hours: "10:00AM - 10:00PM",
+        entry: "₱50",
+        description: "Sky Ranch Baguio is a small amusement park in Luneta Hill beside SM City Baguio. It features rides such as the Ferris wheel, Viking ship, and kiddie attractions. Visitors enjoy panoramic city views, cool mountain air, and a fun carnival atmosphere. It is ideal for families, friends, and tourists.",
+        about: "Sky Ranch Baguio is a popular amusement park located beside SM City Baguio at Luneta Hill. It is part of the Sky Ranch chain operated by SM Prime Holdings. The park offers family-friendly and thrill rides like the Sky Eye Ferris wheel, Viking, and carousel. It also provides scenic views of Baguio’s mountains and cool weather, making it a relaxing yet fun destination for tourists, families, and friends visiting the city for leisure and entertainment.",
+        highlights: ["Sky Eye Ferris wheel","Viking ride", "Beautiful sunset and night lights views","Cool mountain air","Carousel and kiddie rides"],
+        image: "https://res.klook.com/image/upload/w_750,h_469,c_fill,q_85/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/amkpzceprvw9euydab4i.jpg",
+
+    },
+    {
+        name: "SM City Baguio",
+        location: "Luneta Hill, Upper Session Road, Baguio City, Benguet, Philippines.",
+        rating: "4.4",
+        badge: "View Decks",
+        badgeColor: "bg-lime-100 text-lime-700",
+        hours: "10:00AM - 9:00PM",
+        entry: "Free entry",
+        description: "SM City Baguio is a popular mall in the city center featuring retail stores, restaurants, cinemas, and open-air walkways. It is unique for its eco-friendly design and cool ventilation without air conditioning. Visitors enjoy shopping, food trips, and panoramic views of Baguio while relaxing in a modern urban space.",
+        about: "SM City Baguio is a large shopping mall located at Luneta Hill along Upper Session Road. It is owned by SM Prime Holdings and is known for its cool, open-air design. The mall offers shopping, dining, and entertainment with scenic views of Baguio’s mountains and city landscape.",
+        highlights: ["Scenic mountain and city views","Restaurants and cafés", "Rooftop garden and event spaces","Open-air design","Scenic mountain and city views"],
+        image: "https://baguioheraldexpressonline.com/wp-content/uploads/2020/06/sm-baguio-new.jpg",
+
+    },
+    
 ]
 
 const PlaceModal = ({ place, onClose }) => {
@@ -422,7 +479,7 @@ export const Explore = () => {
                 <div className="flex items-center justify-end mb-8 anim-fade-in">
                     <span className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full font-medium">
                         <SparklesIcon className="w-4 h-4" />
-                        12 places
+                        16 places
                     </span>
                 </div>
 
