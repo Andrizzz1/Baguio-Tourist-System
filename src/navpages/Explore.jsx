@@ -275,6 +275,32 @@ const otherPlaces = [
         highlights: ["Ube jam", "Peanut brittle", "Strawberry preserves", "Pasalubong"],
         image: "https://mybaguiocityguide.com/wp-content/uploads/2023/08/good-shepherd-baguio.jpg",
     },
+    {
+        name: "Igorot Stone Kingdom",
+        location: "Long Long Benguet Road, Pinsao Proper, Baguio City, Benguet, Philippines",
+        rating: "4.4",
+        badge: "Family & Fun Attractions",
+        badgeColor: "bg-green-100 text-green-700",
+        hours: "7:00 AM - 6:00PM",
+        entry: "100",
+        description: "Igorot Stone Kingdom Inc. is a cultural-themed tourist attraction in Baguio City inspired by Igorot folklore, Cordilleran craftsmanship, and the legend of Sab-angan. It was built by engineer Pio Velasco and officially opened in 2021. The attraction is known for its massive stone structures, castle-like towers, bridges, and rice terrace-inspired walls made using traditional riprap stone-laying techniques.",
+        about: "The Igorot Stone Kingdom is a vast 6,000-square-meter cultural theme park in Baguio City that highlights the Igorot people's architectural prowess, heritage, and folklore. It was constructed on a mountainside and has tall stone terraces, tunnels, and castles that are evocative of both the famous Banaue Rice Terraces and ancient indigenous buildings.",
+        highlights: ["Banaue-Inspired Terraces", "Towering Castles", "Cultural Statues & Architecture", "Traditional Attire"],
+        image: "https://upload.wikimedia.org/wikipedia/commons/7/76/Igorot_Stone_Kingdom.jpg",
+    },
+    {
+        name: "Baguio Night Market",
+        location: "Harrison Road in Baguio City, Philippines.",
+        rating: "4.0",
+        badge: "Market",
+        badgeColor: "bg-red-100 text-red-700",
+        hours: "9:00 PM - 2:00AM",
+        entry: "Free entry",
+        description: "The Baguio Night Market is a popular street market along Harrison Road near Burnham Park. It opens every night when the road is closed to vehicles. It offers affordable ukay-ukay clothes, accessories, souvenirs, and street food. Tourists and locals visit for shopping, food, and the lively nighttime atmosphere in Baguio City.",
+        about: "The Baguio Night Market is a popular street market along Harrison Road near Burnham Park. It opens every night when the road is closed to vehicles. It offers affordable ukay-ukay clothes, accessories, souvenirs, and street food. Tourists and locals visit for shopping, food, and the lively nighttime atmosphere in Baguio City.",
+        highlights: ["Ukay-ukay","Street food", "Affordable shopping","Nighttime vibe","Bargain culture"],
+        image: "https://ik.imagekit.io/tvlk/blog/2024/08/shutterstock_2422562731.jpg",
+    },
 ]
 
 const PlaceModal = ({ place, onClose }) => {
