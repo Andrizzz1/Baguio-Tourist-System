@@ -136,9 +136,7 @@ app.post('/api/login', async (req, res) => {
     }
 
 })
-  app.get('/{*splat}', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+
 
 app.get("/api/community-stats", async (req, res) => {
     try {
@@ -154,7 +152,7 @@ app.get("/api/community-stats", async (req, res) => {
     }
 });
 
-app.post("api/community-posts.js", async(req,res)=>{
+app.post("/api/community-posts.js", async(req,res)=>{
     const { user_id, content, location, image_url } = req.body;
     if(!user_id){
         return res.status(400).json({ error: "user_id is required" });
@@ -192,6 +190,10 @@ app.get("/api/community-posts", async (req, res) => {
     } catch (error) {
        return res.status(500).json({ error: error.message });
     }
+});
+
+  app.get('/{*splat}', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => console.log(`Running on port ${PORT}`));
