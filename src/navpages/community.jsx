@@ -88,49 +88,61 @@ export const Community = () => {
             if (fileRef.current) fileRef.current.value = ''
         }
 
-        const handlePost = async () => {
-        if (!postText.trim() && !imageBase64) return;
+       const handlePost = async () => {
+    if (!postText.trim() && !imageBase64 && !location.trim()) return;
 
-        const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
 
-        if (!user) {
-            alert("Please login first.");
-            return;
+    if (!user) {
+        alert("Please login first.");
+        return;
+    }
+
+    const userId = user.id || user.users_id;
+
+    if (!userId) {
+        console.log("User in localStorage:", user);
+        alert("User ID missing. Please log out and log in again.");
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/community-posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                content: postText,
+                location: location || "Baguio City",
+                image_url: imageBase64 || null
+            })
+        });
+
+        const data = await res.json();
+
+        console.log("POST status:", res.status);
+        console.log("POST response:", data);
+
+        if (res.ok) {
+            setPostText("");
+            setLocation("");
+            setShowLocation(false);
+            clearImage();
+            fetchPosts();
+        } else {
+            alert(data.error);
         }
+    } catch (error) {
+        console.log("Post error:", error);
+    }
+};
 
-        
-        try {
-            const res = await fetch("/api/community-posts", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user_id: user.id,
-                    content: postText,
-                    location: location || "Baguio City",
-                    image_url: imageBase64
-                })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                setPostText("");
-                setLocation("");
-                setShowLocation(false);
-                clearImage();
-
-                fetchPosts();
-            } else {
-                console.log(data.error);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const canPost = postText.trim().length > 0 || imageBase64 !== null
+    const canPost =
+    postText.trim().length > 0 ||
+    imageBase64 !== null ||
+    location.trim().length > 0
 
     return (
         <section className="min-h-screen bg-gray-50">
