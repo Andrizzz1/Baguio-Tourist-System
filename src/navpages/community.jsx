@@ -98,6 +98,7 @@ export const Community = () => {
             return;
         }
 
+        
         try {
             const res = await fetch("/api/community-posts", {
                 method: "POST",

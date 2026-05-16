@@ -152,7 +152,7 @@ app.get("/api/community-stats", async (req, res) => {
     }
 });
 
-app.post("/api/community-posts.js", async(req,res)=>{
+app.post("/api/community-posts", async(req,res)=>{
     const { user_id, content, location, image_url } = req.body;
     if(!user_id){
         return res.status(400).json({ error: "user_id is required" });
