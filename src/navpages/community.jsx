@@ -12,19 +12,12 @@ const TRENDING = [
     { tag: '#PineTrails',         count: '489'  },
 ]
 
-const DEFAULT_CONTRIBUTORS = [
-
-]
-
-
-
-
-
+const DEFAULT_CONTRIBUTORS = []
 export const Community = () => {
     const user        = JSON.parse(localStorage.getItem('user'))
     const displayName = user?.username || 'Traveler'
     const initials    = displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-
+    const [contributors, setContributors] = useState([])
     const [posts, setPosts] = useState([])
     const [postText,     setPostText]     = useState('')
     const [location,     setLocation]     = useState('')
@@ -33,8 +26,10 @@ export const Community = () => {
     const [imageBase64,  setImageBase64]  = useState(null)
     const [totalMembers, setTotalMembers] = useState(0)
     const fileRef = useRef(null)
-
+    
     const formatMembers = (n) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n
+
+   
     const fetchPosts = async () => {
     try {
         const res = await fetch("/api/community-posts");
@@ -52,7 +47,26 @@ export const Community = () => {
     useEffect(() => {
     fetchPosts();
     }, []);
-        
+    
+
+    useEffect(()=>{
+        const TopContributors = async ()=>{
+            try{
+                const res = await fetch('/api/top-contributers')
+                const data = await res.json()
+
+                  if (res.ok) {
+                    setContributors(data);
+                } else {
+                    console.log(data.error);
+                }
+            }catch(err){
+                console.log(err)
+            }
+        }
+
+        TopContributors()
+    },[])
     useEffect(() => {
         injectCommunityStyles()
         const fetchCommunityStats = async () => {
@@ -88,7 +102,7 @@ export const Community = () => {
             if (fileRef.current) fileRef.current.value = ''
         }
 
-       const handlePost = async () => {
+    const handlePost = async () => {
     if (!postText.trim() && !imageBase64 && !location.trim()) return;
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -164,7 +178,7 @@ export const Community = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-6 max-sm:flex max-sm:flex-wrap max-sm:flex-col-reverse ">
 
                     {/* ── LEFT — Composer + Feed ── */}
                     <div className="flex flex-col gap-5">
@@ -179,7 +193,7 @@ export const Community = () => {
                                     <textarea
                                         value={postText}
                                         onChange={e => setPostText(e.target.value.slice(0, 500))}
-                                        placeholder="Share an experience, review a spot, or recommend a hidden gem..."
+                                        placeholder="Share an experience..."
                                         rows={3}
                                         className="w-full resize-none bg-green-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-700 transition-all leading-relaxed"
                                     />
@@ -330,22 +344,26 @@ export const Community = () => {
                                 <h3 className="font-bold text-gray-800 text-sm">Top Contributors</h3>
                             </div>
                             <div className="flex flex-col gap-4">
-                                {DEFAULT_CONTRIBUTORS.map((c, i) => (
-                                    <div key={i} className="flex items-center justify-between gap-3">
+                                {contributors.map((c) => {
+                                    const contributorInitials = c.username
+                                    ? c.username.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                                    : 'U'
+                                return(
+                                    <div key={c.user_id} className="flex items-center justify-between gap-3">
                                         <div className="flex items-center gap-3 min-w-0">
                                             <div className="w-8 h-8 rounded-full bg-green-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                                                {c.initials}
+                                                {contributorInitials}
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-sm font-semibold text-gray-800 truncate">{c.name}</p>
-                                                <p className="text-xs text-gray-400">{c.sub}</p>
+                                                <p className="text-sm font-semibold text-gray-800 truncate">{c.username}</p>
+                                                <p className="text-xs text-gray-400">{c.total_post} posts</p>
                                             </div>
                                         </div>
                                         <button className="text-xs font-semibold text-green-900 border border-green-200 hover:bg-green-50 px-3 py-1.5 rounded-full transition-colors duration-200 shrink-0">
                                             Follow
                                         </button>
                                     </div>
-                                ))}
+                                )})}
                             </div>
                         </div>
 
