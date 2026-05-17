@@ -11,7 +11,10 @@ import { ProtectedRoute } from './auth/ProtectedRoute.jsx'
 import { Community } from './navpages/community.jsx'
 import { Saved } from './navpages/Saved.jsx'
 import { Explore } from './navpages/Explore.jsx'
+
+
 createRoot(document.getElementById('root')).render(
+  
   <StrictMode>
     <BrowserRouter>
       <Routes>

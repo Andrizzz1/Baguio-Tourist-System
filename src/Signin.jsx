@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect } from 'react'
-
+import { GoogleAuthProvider,signInWithPopup } from "firebase/auth"
+import { auth } from './firebase'
 export const Signin = () => {
     const navigate = useNavigate()
     const [email, setEmail] = useState("")
@@ -11,7 +12,7 @@ export const Signin = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [focusedField, setFocusedField] = useState(null)
     const [showPassword, setShowPassword] = useState(false)
-
+    const provider = new GoogleAuthProvider();
     useEffect(() => {
         // Trigger mount animation
         const t = setTimeout(() => setMounted(true), 50)
@@ -44,6 +45,27 @@ export const Signin = () => {
             setIsLoading(false)
         }
     }
+
+    const handleGoogleSignIn = async () => {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const firebaseUser = result.user;
+
+        console.log("Google user:", firebaseUser);
+
+        localStorage.setItem("user", JSON.stringify({
+            username: firebaseUser.displayName,
+            email: firebaseUser.email,
+            photoURL: firebaseUser.photoURL,
+            provider: "google"
+        }));
+
+        navigate("/dashboard");
+    } catch (error) {
+        console.log("Google sign in error:", error);
+        setError(error.message);
+    }
+};
 
     return (
         <>
@@ -627,7 +649,7 @@ export const Signin = () => {
                         </div>
 
                         {/* Social Buttons */}
-                        <div className="social-group fade-up delay-6">
+                        <div onClick={handleGoogleSignIn}  className="social-group fade-up delay-6">
                             <button className="social-btn">
                                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" />
                                 <span style={{ position: 'relative', zIndex: 1, color: '#111' }}>Continue with Google</span>

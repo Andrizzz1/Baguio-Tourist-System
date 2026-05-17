@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
-
+import { GoogleAuthProvider,signInWithPopup } from "firebase/auth"
+import { auth } from './firebase'
 export const RegisterAcc = () => {
     const navigate = useNavigate()
     const [showEmail, setShowEmail] = useState(false)
@@ -11,6 +12,8 @@ export const RegisterAcc = () => {
     const canvasRef = useRef(null)
     const animRef = useRef(null)
     const [username, setUsername] = useState("")
+
+    const provider = new GoogleAuthProvider();
     async function handleRegister(){
         if (!username || !email || !password) return
 
@@ -270,6 +273,37 @@ export const RegisterAcc = () => {
         }
     }, [])
 
+
+        const handleGoogleSignIn = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const firebaseUser = result.user;
+
+            const response = await fetch("/api/social-login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: firebaseUser.displayName,
+                    email: firebaseUser.email,
+                    provider: "google"
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                navigate("/dashboard");
+            } else {
+                setError(data.error || "Google login failed");
+            }
+        } catch (error) {
+            console.log("Google sign in error:", error);
+            setError(error.message);
+        }
+        };
     return (
         <section className="min-h-screen grid md:grid-cols-2">
 
@@ -317,7 +351,7 @@ export const RegisterAcc = () => {
                     <p className="text-gray-500 text-center mt-2 mb-6">Start your journey today</p>
 
                     {/* SOCIAL BUTTONS */}
-                    <div className="flex flex-col gap-3">
+                    <div onClick={handleGoogleSignIn} className="flex flex-col gap-3">
                         <button className="flex text-black items-center justify-center  gap-3 w-full border border-gray-200 hover:bg-gray-50 py-2.5 rounded-xl font-medium transition">
                             <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" />
                             Continue with Google
