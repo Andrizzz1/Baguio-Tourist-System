@@ -192,6 +192,51 @@ app.get("/api/community-posts", async (req, res) => {
     }
 });
 
+app.get("/api/dasboard-post", async (req, res) =>{
+
+    const { userId } = req.query;
+       try{
+        const result = await pool.query(`
+               SELECT
+                    community_posts.post_id,
+                    community_posts.content,
+                    community_posts.location,
+                    community_posts.image_url,
+                    community_posts.created_at,
+                    users.users_id,
+                    users.username,
+                    users.email
+                FROM community_posts
+                JOIN users on community_posts.user_id = users.users_id
+                WHERE community_posts.user_id = $1
+                ORDER BY community_posts.created_at DESC   
+            `,[userId]);
+        
+        return res.status(200).json(result.rows);
+    }catch{
+        return res.status(500).json({ error: error.message });
+    }
+})
+app.get("/api/top-contributers", async (req, res) =>{
+       try{
+        const result = await pool.query(`
+               SELECT	
+                    COUNT(community_posts.content) AS total_post,
+                    users.users_id,
+                    users.username
+                FROM community_posts
+                JOIN users on community_posts.user_id = users.users_id
+                GROUP BY users.users_id, users.username
+                ORDER BY total_post DESC  
+                LIMIT 5;  
+            `);
+        
+        return res.status(200).json(result.rows);
+    }catch{
+        return res.status(500).json({ error: error.message });
+    }
+})
+
   app.get('/{*splat}', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
