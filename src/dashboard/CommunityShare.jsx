@@ -190,7 +190,7 @@ const handleDeletePost = async (postId) => {
         if (!confirmDelete) return;
 
         try {
-            const res = await fetch(`/api/delete-community-post?postId=${postId}`, {
+            const res = await fetch(`/api/community-post-delete?postId=${postId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
