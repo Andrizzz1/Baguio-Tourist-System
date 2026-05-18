@@ -13,6 +13,7 @@ const TRENDING = [
     { tag: '#PineTrails',         count: '489'  },
 ]
 
+
 export const Community = () => {
     const user        = JSON.parse(localStorage.getItem('user'))
     const displayName = user?.username || 'Traveler'
@@ -28,7 +29,7 @@ export const Community = () => {
     const [imageBase64,  setImageBase64]  = useState(null)
     const [totalMembers, setTotalMembers] = useState(0)
     const fileRef = useRef(null)
-
+    const [trends,setTrends] = useState([])
     const formatMembers = (n) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n
 
     const fetchPosts = async () => {
@@ -47,18 +48,28 @@ export const Community = () => {
 
     // Trigger fade-in for newly loaded posts
     useEffect(() => {
-        if (posts.length === 0) return
-        const ids = posts.map(p => p.post_id)
-        ids.forEach((id, i) => {
-            setTimeout(() => {
-                setVisiblePosts(prev => new Set([...prev, id]))
-            }, i * 80)
-        })
-    }, [posts])
+    fetchPosts();
+    }, []);
+    
 
-    useEffect(() => {
-        fetchPosts()
-    }, [])
+    useEffect(()=>{
+    const Trending = async ()=>{
+        try{
+                const res = await fetch("/api/community-trends");
+                const data = await res.json();
+                setTrends(data);
+            }catch(err){
+            console.log(err)
+            }
+        }
+        Trending()
+    },[])
+
+    useEffect(()=>{
+        const TopContributors = async ()=>{
+            try{
+                const res = await fetch('/api/top-contributers')
+                const data = await res.json()
 
     useEffect(() => {
         const TopContributors = async () => {
@@ -407,8 +418,8 @@ export const Community = () => {
                                 <h3 className="font-bold text-gray-800 text-sm">Trending in Baguio</h3>
                             </div>
                             <div className="flex flex-col gap-3">
-                                {TRENDING.map((t, i) => (
-                                    <div key={i} className="flex items-center justify-between">
+                                {trends.map((t) => (
+                                    <div key={t.tag} className="flex items-center justify-between">
                                         <span className="text-sm font-semibold text-green-900">{t.tag}</span>
                                         <span className="text-xs text-gray-400">{t.count} posts</span>
                                     </div>
@@ -427,18 +438,17 @@ export const Community = () => {
                             <div className="flex flex-col gap-4">
                                 {contributors.map((c) => {
                                     const contributorInitials = c.username
-                                        ? c.username.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-                                        : 'U'
-                                    return (
-                                        <div key={c.user_id} className="flex items-center justify-between gap-3">
-                                            <div className="flex items-center gap-3 min-w-0">
-                                                <div className="w-8 h-8 rounded-full bg-green-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                                                    {contributorInitials}
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-sm font-semibold text-gray-800 truncate">{c.username}</p>
-                                                    <p className="text-xs text-gray-400">{c.total_post} posts</p>
-                                                </div>
+                                    ? c.username.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                                    : 'U'
+                                return(
+                                    <div key={c.users_id} className="flex items-center justify-between gap-3">
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-8 h-8 rounded-full bg-green-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                                {contributorInitials}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-semibold text-gray-800 truncate">{c.username}</p>
+                                                <p className="text-xs text-gray-400">{c.total_post} posts</p>
                                             </div>
                                             <button className="text-xs font-semibold text-green-900 border border-green-200 hover:bg-green-50 px-3 py-1.5 rounded-full transition-colors duration-200 shrink-0">
                                                 Follow
