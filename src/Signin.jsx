@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect } from 'react'
-import { GoogleAuthProvider,signInWithPopup } from "firebase/auth"
+import { GoogleAuthProvider,signInWithPopup,OAuthProvider  } from "firebase/auth"
 import { auth } from './firebase'
 export const Signin = () => {
     const navigate = useNavigate()
@@ -13,6 +13,7 @@ export const Signin = () => {
     const [focusedField, setFocusedField] = useState(null)
     const [showPassword, setShowPassword] = useState(false)
     const provider = new GoogleAuthProvider();
+    const providerApple = new OAuthProvider('apple.com');
     useEffect(() => {
         // Trigger mount animation
         const t = setTimeout(() => setMounted(true), 50)
@@ -46,26 +47,36 @@ export const Signin = () => {
         }
     }
 
-    const handleGoogleSignIn = async () => {
-    try {
-        const result = await signInWithPopup(auth, provider);
-        const firebaseUser = result.user;
-
-        console.log("Google user:", firebaseUser);
-
-        localStorage.setItem("user", JSON.stringify({
-            username: firebaseUser.displayName,
-            email: firebaseUser.email,
-            photoURL: firebaseUser.photoURL,
-            provider: "google"
-        }));
-
-        navigate("/dashboard");
-    } catch (error) {
-        console.log("Google sign in error:", error);
-        setError(error.message);
-    }
-};
+     const handleGoogleSignIn = async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const firebaseUser = result.user;
+    
+                const response = await fetch("/api/social-login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: firebaseUser.displayName,
+                        email: firebaseUser.email,
+                        provider: "google"
+                    })
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                    navigate("/dashboard");
+                } else {
+                    setError(data.error || "Google login failed");
+                }
+            } catch (error) {
+                console.log("Google sign in error:", error);
+                setError(error.message);
+            }
+            };
 
     return (
         <>
@@ -649,8 +660,8 @@ export const Signin = () => {
                         </div>
 
                         {/* Social Buttons */}
-                        <div onClick={handleGoogleSignIn}  className="social-group fade-up delay-6">
-                            <button className="social-btn">
+                        <div  className="social-group fade-up delay-6">
+                            <button onClick={handleGoogleSignIn}  className="social-btn">
                                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" />
                                 <span style={{ position: 'relative', zIndex: 1, color: '#111' }}>Continue with Google</span>
                             </button>
@@ -660,12 +671,7 @@ export const Signin = () => {
                                 </svg>
                                 <span style={{ position: 'relative', zIndex: 1, color: '#111' }}>Continue with Facebook</span>
                             </button>
-                            <button className="social-btn">
-                                <svg viewBox="0 0 24 24" fill="currentColor" style={{ position: 'relative', zIndex: 1 }}>
-                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                                </svg>
-                                <span style={{ position: 'relative', zIndex: 1, color: '#111' }}>Continue with Apple</span>
-                            </button>
+
                         </div>
 
                         <p className="footer-text fade-up delay-7">

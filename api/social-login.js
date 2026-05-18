@@ -18,6 +18,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Email is required" });
     }
 
+    const authProvider = provider || "social";
+
     try {
         const existingUser = await pool.query(
             "SELECT * FROM users WHERE email = $1",
@@ -33,7 +35,7 @@ export default async function handler(req, res) {
                     id: user.users_id,
                     username: user.username,
                     email: user.email,
-                    provider: provider || "google"
+                    provider: authProvider
                 }
             });
         }
@@ -42,7 +44,11 @@ export default async function handler(req, res) {
             `INSERT INTO users (username, email, password_hash)
              VALUES ($1, $2, $3)
              RETURNING *`,
-            [username || "Google User", email, "GOOGLE_AUTH_USER"]
+            [
+                username || `${authProvider} User`,
+                email,
+                `${authProvider.toUpperCase()}_AUTH_USER`
+            ]
         );
 
         const user = newUser.rows[0];
@@ -53,7 +59,7 @@ export default async function handler(req, res) {
                 id: user.users_id,
                 username: user.username,
                 email: user.email,
-                provider: provider || "google"
+                provider: authProvider
             }
         });
     } catch (error) {

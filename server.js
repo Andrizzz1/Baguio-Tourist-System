@@ -285,7 +285,38 @@ app.post("/api/social-login", async (req, res) =>{
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
-})
+    })
+
+ 
+app.get("/api/community-trends", async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT content
+            FROM community_posts
+            WHERE created_at >= NOW() - INTERVAL '7 days'
+        `);
+
+        const counts = {};
+
+        result.rows.forEach((row) => {
+            const hashtags = row.content?.match(/#[A-Za-z0-9_]+/g) || [];
+
+            hashtags.forEach((tag) => {
+                const cleanTag = tag.toLowerCase();
+                counts[cleanTag] = (counts[cleanTag] || 0) + 1;
+            });
+        });
+
+        const trends = Object.entries(counts)
+            .map(([tag, count]) => ({ tag, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5);
+
+        res.json(trends);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
   app.get('/{*splat}', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
