@@ -318,6 +318,37 @@ app.get("/api/community-trends", async (req, res) => {
     }
 });
 
+app.delete("/api/community-posts/:postId", async (req, res) => {
+    const { postId } = req.params;
+    const { user_id } = req.body;
+
+    if (!user_id) {
+        return res.status(400).json({ error: "user_id is required" });
+    }
+
+    try {
+        const result = await pool.query(
+            `DELETE FROM community_posts
+             WHERE post_id = $1 AND user_id = $2
+             RETURNING *`,
+            [postId, user_id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                error: "Post not found or you are not allowed to delete this post"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Post deleted successfully",
+            deletedPost: result.rows[0]
+        });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+
   app.get('/{*splat}', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });

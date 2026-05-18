@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { DashboardNav } from '../dashboard/DashboardNav'
 import {
     PhotoIcon, MapPinIcon, PaperAirplaneIcon,
-    XMarkIcon, UserGroupIcon, SparklesIcon
+    XMarkIcon, UserGroupIcon, SparklesIcon, TrashIcon
 } from '@heroicons/react/24/solid'
 import { injectCommunityStyles } from '../dashboard/CommunityShare'
 const TRENDING = [
@@ -177,6 +177,20 @@ export const Community = () => {
     imageBase64 !== null ||
     location.trim().length > 0
 
+    const handleDelete = async (postId) => {
+        try {
+            const res = await fetch(`/api/community-posts/${postId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: user?.id || user?.users_id })
+            })
+            if (res.ok) fetchPosts()
+            else console.log('Delete failed')
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     return (
         <section className="min-h-screen bg-gray-50">
             <DashboardNav />
@@ -314,6 +328,15 @@ export const Community = () => {
                                         <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-1 rounded-full font-medium shrink-0">
                                             Community Post
                                         </span>
+                                        {(post.user_id === (user?.id || user?.users_id)) && (
+                                            <button
+                                                onClick={() => handleDelete(post.post_id)}
+                                                className="p-1.5 rounded-xl text-gray-300 hover:text-rose-500 hover:bg-rose-50 transition-all duration-200 shrink-0"
+                                                title="Delete post"
+                                            >
+                                                <TrashIcon className="w-4 h-4" />
+                                            </button>
+                                        )}
                                     </div>
 
                                     {post.content && (
