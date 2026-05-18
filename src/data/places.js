@@ -1,0 +1,18 @@
+export const ALL_PLACES = [
+    { name: 'Burnham Park',          location: 'Harrison Road, Baguio City',           badge: 'Iconic'          },
+    { name: 'Mines View Park',       location: 'Outlook Drive, Baguio City',           badge: 'Scenic'          },
+    { name: 'Camp John Hay',         location: 'Loakan Road, Baguio City',             badge: 'Nature'          },
+    { name: 'BenCab Museum',         location: 'Km. 6 Asin Road, Tuba, Benguet',      badge: 'Art'             },
+    { name: 'Tam-awan Village',      location: 'Pinsao Proper, Baguio City',           badge: 'Hidden Gem'      },
+    { name: 'Wright Park',           location: 'Romulo Drive, Baguio City',            badge: 'Family Friendly' },
+    { name: 'Diplomat Hotel Ruins',  location: 'Dominican Hill, Baguio City',          badge: 'Hidden Gem'      },
+    { name: 'The Mansion',           location: 'Romulo Drive, Baguio City',            badge: 'Historic'        },
+    { name: 'Botanical Garden',      location: 'Leonard Wood Road, Baguio City',       badge: 'Nature'          },
+    { name: 'Good Shepherd Convent', location: 'Upper General Luna Road, Baguio City', badge: 'Local Favorite'  },
+    { name: 'Igorot Stone Kingdom',  location: 'Pinsao Proper, Baguio City',           badge: 'Family & Fun'    },
+    { name: 'Baguio Night Market',   location: 'Harrison Road, Baguio City',           badge: 'Market'          },
+    { name: 'Strawberry Farm',       location: 'La Trinidad, Benguet',                 badge: 'Farm'            },
+    { name: 'Baguio Cathedral',      location: 'Session Road, Baguio City',            badge: 'Church'          },
+    { name: 'Sky Ranch Baguio',      location: 'Luneta Hill, Upper Session Road',      badge: 'Fun Attractions' },
+    { name: 'SM City Baguio',        location: 'Luneta Hill, Upper Session Road',      badge: 'View Decks'      },
+]

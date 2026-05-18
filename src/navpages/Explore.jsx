@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useSearchParams } from "react-router-dom"
 import { DashboardNav } from "../dashboard/DashboardNav"
 import { MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
@@ -464,124 +465,189 @@ const PlaceModal = ({ place, onClose }) => {
 
 export const Explore = () => {
     const [selected, setSelected] = useState(null)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const allPlaces = [...topPlaces, ...otherPlaces]
 
+    const q          = searchParams.get('q') || ''
+    const placeName  = searchParams.get('place') || ''
+
+    // inject styles once
     useEffect(() => { injectStyles() }, [])
+
+    // open modal when ?place= is in URL
+    useEffect(() => {
+        if (placeName) {
+            const match = allPlaces.find(
+                p => p.name.toLowerCase() === placeName.toLowerCase()
+            )
+            if (match) setSelected(match)
+        } else {
+            setSelected(null)
+        }
+    }, [placeName])
+
+    const filtered = q.trim()
+        ? allPlaces.filter(p =>
+            p.name.toLowerCase().includes(q.toLowerCase()) ||
+            p.location.toLowerCase().includes(q.toLowerCase()) ||
+            p.badge.toLowerCase().includes(q.toLowerCase())
+          )
+        : null
+
+    const clearFilter = () => setSearchParams({})
 
     return (
         <section className="min-h-screen bg-white">
             <DashboardNav />
-
             <PlaceModal place={selected} onClose={() => setSelected(null)} />
 
             <div className="max-w-6xl mx-auto px-6 py-8">
 
-                {/* HEADER */}
-                <div className="flex items-center justify-end mb-8 anim-fade-in">
-                    <span className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full font-medium">
-                        <SparklesIcon className="w-4 h-4" />
-                        16 places
-                    </span>
-                </div>
-
-                <div className="mb-10 anim-fade-up">
-                    <h1 className="text-3xl font-bold text-gray-900">Explore Baguio</h1>
-                    <p className="text-gray-500 mt-1">Discover top destinations and hidden gems around the City of Pines.</p>
-                </div>
-
-                {/* TOP PLACES */}
-                <div className="mb-12">
-                    <h2 className="text-xl font-bold text-gray-900 mb-1 anim-fade-up" style={{ animationDelay: '0.08s' }}>Top Places</h2>
-                    <p className="text-sm text-gray-400 mb-5 anim-fade-up" style={{ animationDelay: '0.12s' }}>The must-visit landmarks of Baguio</p>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 stagger">
-                        {topPlaces.map((place, i) => (
-                            <div
-                                key={i}
-                                onClick={() => setSelected(place)}
-                                className="rounded-2xl overflow-hidden border border-gray-100 cursor-pointer group relative card-lift anim-scale-in"
+                {/* ── FILTERED VIEW ── */}
+                {filtered ? (
+                    <div>
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-900">
+                                    Results for <span className="text-emerald-600">"{q}"</span>
+                                </h1>
+                                <p className="text-gray-400 text-sm mt-0.5">
+                                    {filtered.length === 0
+                                        ? 'No places matched your search.'
+                                        : `${filtered.length} place${filtered.length !== 1 ? 's' : ''} found`}
+                                </p>
+                            </div>
+                            <button
+                                onClick={clearFilter}
+                                className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-green-900 bg-gray-100 hover:bg-green-50 px-4 py-2 rounded-full transition-all duration-200"
                             >
-                                <div className="overflow-hidden">
-                                    <img
-                                        src={place.image}
-                                        alt={place.name}
-                                        className="w-full h-44 object-cover img-zoom"
-                                    />
-                                    <span className={`absolute top-3 left-3 ${place.badgeColor} text-white text-xs font-semibold px-2.5 py-1 rounded-lg`}
-                                        style={{ transition: 'transform 0.3s ease', zIndex: 1 }}
+                                <XMarkIcon className="w-4 h-4" />
+                                Clear
+                            </button>
+                        </div>
+
+                        {filtered.length === 0 ? (
+                            <div className="text-center py-24">
+                                <p className="text-5xl mb-4">🔍</p>
+                                <p className="text-gray-400 text-sm">No places found for "{q}"</p>
+                                <button onClick={clearFilter} className="mt-4 text-green-700 font-semibold text-sm hover:underline">
+                                    Browse all places
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 stagger">
+                                {filtered.map((place, i) => (
+                                    <div
+                                        key={i}
+                                        onClick={() => setSelected(place)}
+                                        className="border border-gray-100 rounded-2xl overflow-hidden cursor-pointer relative card-lift anim-scale-in"
                                     >
-                                        {place.badge}
-                                    </span>
-                                </div>
-                                <div className="p-3">
-                                    <div className="flex items-center justify-between">
-                                        <h3 className="font-semibold text-gray-900 text-sm">{place.name}</h3>
-                                        <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
-                                            <StarIcon className="w-3.5 h-3.5" />
-                                            {place.rating}
-                                        </span>
+                                        <div className="relative overflow-hidden">
+                                            <img src={place.image} alt={place.name} className="w-full h-44 object-cover img-zoom" />
+                                            <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${
+                                                place.badgeColor?.includes('text-') ? place.badgeColor : `${place.badgeColor} text-white`
+                                            }`}>
+                                                {place.badge}
+                                            </span>
+                                        </div>
+                                        <div className="p-4">
+                                            <div className="flex items-center justify-between mb-1">
+                                                <h3 className="font-bold text-gray-900 text-base">{place.name}</h3>
+                                                <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
+                                                    <StarIcon className="w-3.5 h-3.5" />
+                                                    {place.rating}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1 text-gray-400 text-xs">
+                                                <MapPinIcon className="w-3.5 h-3.5" />
+                                                {place.location}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-1 mt-1 text-gray-400 text-xs">
-                                        <MapPinIcon className="w-3.5 h-3.5" />
-                                        {place.location}
-                                    </div>
-                                </div>
+                                ))}
                             </div>
-                        ))}
+                        )}
                     </div>
-                </div>
 
-                {/* OTHER PLACES */}
-                <div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-1 anim-fade-up" style={{ animationDelay: '0.05s' }}>Other Places to Discover</h2>
-                    <p className="text-sm text-gray-400 mb-5 anim-fade-up" style={{ animationDelay: '0.1s' }}>Local favorites, hidden gems, and off-the-beaten-path finds</p>
+                ) : (
+                    /* ── DEFAULT VIEW ── */
+                    <>
+                        <div className="flex items-center justify-end mb-8 anim-fade-in">
+                            <span className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full font-medium">
+                                <SparklesIcon className="w-4 h-4" />
+                                16 places
+                            </span>
+                        </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 stagger">
-                        {otherPlaces.map((place, i) => (
-                            <div
-                                key={i}
-                                onClick={() => setSelected(place)}
-                                className="border border-gray-100 rounded-2xl overflow-hidden cursor-pointer relative card-lift anim-scale-in"
-                            >
-                                {/* IMAGE */}
-                                <div className="relative overflow-hidden">
-                                    <img
-                                        src={place.image}
-                                        alt={place.name}
-                                        className="w-full h-40 object-cover img-zoom"
-                                    />
-                                    <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${place.badgeColor}`}>
-                                        {place.badge}
-                                    </span>
-                                </div>
+                        <div className="mb-10 anim-fade-up">
+                            <h1 className="text-3xl font-bold text-gray-900">Explore Baguio</h1>
+                            <p className="text-gray-500 mt-1">Discover top destinations and hidden gems around the City of Pines.</p>
+                        </div>
 
-                                {/* CONTENT */}
-                                <div className="p-4">
-                                    <div className="flex items-center justify-between mb-1">
-                                        <h3 className="font-bold text-gray-900 text-base">{place.name}</h3>
-                                        <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
-                                            <StarIcon className="w-3.5 h-3.5" />
-                                            {place.rating}
-                                        </span>
+                        {/* TOP PLACES */}
+                        <div className="mb-12">
+                            <h2 className="text-xl font-bold text-gray-900 mb-1 anim-fade-up" style={{ animationDelay: '0.08s' }}>Top Places</h2>
+                            <p className="text-sm text-gray-400 mb-5 anim-fade-up" style={{ animationDelay: '0.12s' }}>The must-visit landmarks of Baguio</p>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 stagger">
+                                {topPlaces.map((place, i) => (
+                                    <div key={i} onClick={() => setSelected(place)}
+                                        className="rounded-2xl overflow-hidden border border-gray-100 cursor-pointer group relative card-lift anim-scale-in"
+                                    >
+                                        <div className="overflow-hidden">
+                                            <img src={place.image} alt={place.name} className="w-full h-44 object-cover img-zoom" />
+                                            <span className={`absolute top-3 left-3 ${place.badgeColor} text-white text-xs font-semibold px-2.5 py-1 rounded-lg`} style={{ zIndex: 1 }}>
+                                                {place.badge}
+                                            </span>
+                                        </div>
+                                        <div className="p-3">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="font-semibold text-gray-900 text-sm">{place.name}</h3>
+                                                <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
+                                                    <StarIcon className="w-3.5 h-3.5" />{place.rating}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1 mt-1 text-gray-400 text-xs">
+                                                <MapPinIcon className="w-3.5 h-3.5" />{place.location}
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div className="flex items-center gap-1 mb-2 text-gray-400 text-xs">
-                                        <MapPinIcon className="w-3.5 h-3.5" />
-                                        {place.location}
-                                    </div>
-
-                                    <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">
-                                        {place.description}
-                                    </p>
-
-                                    <button className="mt-3 text-green-600 hover:text-green-700 font-semibold text-sm arrow-link">
-                                        View details →
-                                    </button>
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                </div>
+                        </div>
 
+                        {/* OTHER PLACES */}
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 mb-1 anim-fade-up" style={{ animationDelay: '0.05s' }}>Other Places to Discover</h2>
+                            <p className="text-sm text-gray-400 mb-5 anim-fade-up" style={{ animationDelay: '0.1s' }}>Local favorites, hidden gems, and off-the-beaten-path finds</p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 stagger">
+                                {otherPlaces.map((place, i) => (
+                                    <div key={i} onClick={() => setSelected(place)}
+                                        className="border border-gray-100 rounded-2xl overflow-hidden cursor-pointer relative card-lift anim-scale-in"
+                                    >
+                                        <div className="relative overflow-hidden">
+                                            <img src={place.image} alt={place.name} className="w-full h-40 object-cover img-zoom" />
+                                            <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full ${place.badgeColor}`}>
+                                                {place.badge}
+                                            </span>
+                                        </div>
+                                        <div className="p-4">
+                                            <div className="flex items-center justify-between mb-1">
+                                                <h3 className="font-bold text-gray-900 text-base">{place.name}</h3>
+                                                <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
+                                                    <StarIcon className="w-3.5 h-3.5" />{place.rating}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1 mb-2 text-gray-400 text-xs">
+                                                <MapPinIcon className="w-3.5 h-3.5" />{place.location}
+                                            </div>
+                                            <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">{place.description}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </section>
     )
