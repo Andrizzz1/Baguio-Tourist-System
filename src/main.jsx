@@ -2,6 +2,11 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
+
+// Apply dark mode before first render to prevent flash
+if (localStorage.getItem('darkMode') === '1') {
+    document.documentElement.classList.add('dark')
+}
 import App from './App.jsx'
 import { Aboutus } from './aboutUs.jsx'
 import { RegisterAcc } from './CreateAccount.jsx'

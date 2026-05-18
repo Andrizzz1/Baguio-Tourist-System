@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { PhotoIcon, MapPinIcon, PaperAirplaneIcon, XMarkIcon, UserGroupIcon } from '@heroicons/react/24/solid'
+import { PhotoIcon, MapPinIcon, PaperAirplaneIcon, XMarkIcon, UserGroupIcon, TrashIcon } from '@heroicons/react/24/solid'
 
 /* ── Inject styles once ── */
 const STYLES = `
@@ -155,6 +155,41 @@ export const ShareToCommunity = () => {
         fetchPosts();
     },[]);
 
+    const handleDeletePost = async (postId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id || user?.users_id;
+
+    if (!userId) {
+        alert("Please login first.");
+        return;
+    }
+
+    const confirmDelete = confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
+
+    try {
+        const res = await fetch(`/api/community-posts/${postId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_id: userId
+            })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            fetchPosts();
+        } else {
+            alert(data.error);
+        }
+    } catch (err) {
+        console.log("Delete post error:", err);
+    }
+};
+
     useEffect(() => {
         injectCommunityStyles()
         const fetchCommunityStats = async () => {
@@ -208,6 +243,13 @@ export const ShareToCommunity = () => {
                                 <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-1 rounded-full font-medium shrink-0">
                                     Community Post
                                 </span>
+                                <button
+                                    onClick={() => handleDeletePost(post.post_id)}
+                                    className="p-1.5 rounded-xl text-gray-300 hover:text-rose-500 hover:bg-rose-50 transition-all duration-200 shrink-0"
+                                    title="Delete post"
+                                >
+                                    <TrashIcon className="w-4 h-4" />
+                                </button>
                             </div>
 
                             {post.content && <p className="text-sm text-gray-700 leading-relaxed mb-3">{post.content}</p>}

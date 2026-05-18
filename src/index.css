@@ -73,3 +73,128 @@ body {
 .delay-300 { transition-delay: 300ms; }
 .delay-400 { transition-delay: 400ms; }
 .delay-500 { transition-delay: 500ms; }
+
+/* ── Dark mode ── */
+@variant dark (&:where(.dark, .dark *));
+
+.dark body {
+    background: #0d1f14 !important;
+    color: #e2ebe4 !important;
+}
+
+/* Page/section backgrounds */
+.dark section,
+.dark main,
+.dark .min-h-screen,
+.dark .bg-white,
+.dark .bg-gray-50,
+.dark .bg-green-50,
+.dark .bg-emerald-50 {
+    background-color: #0d1f14 !important;
+}
+
+/* Cards */
+.dark .rounded-3xl,
+.dark .rounded-2xl,
+.dark .rounded-xl {
+    background-color: #152a1e !important;
+    border-color: #1f3d2a !important;
+}
+
+/* Nav */
+.dark nav {
+    background-color: #0f2318 !important;
+    border-color: #1f3d2a !important;
+}
+
+/* Text */
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5,
+.dark .text-gray-900, .dark .text-gray-800, .dark .text-gray-700 {
+    color: #e2ebe4 !important;
+}
+.dark .text-gray-600, .dark .text-gray-500 {
+    color: #8aab92 !important;
+}
+.dark .text-gray-400 {
+    color: #5a7a62 !important;
+}
+
+/* Inputs & textareas */
+.dark input,
+.dark textarea {
+    background-color: #1a3024 !important;
+    border-color: #1f3d2a !important;
+    color: #e2ebe4 !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #4a6a52 !important;
+}
+
+/* Buttons with white/light bg */
+.dark .bg-white {
+    background-color: #152a1e !important;
+}
+.dark .bg-gray-100 {
+    background-color: #1a3024 !important;
+}
+.dark .bg-gray-50 {
+    background-color: #152a1e !important;
+}
+.dark .bg-green-50 {
+    background-color: #0f2318 !important;
+}
+.dark .bg-emerald-50 {
+    background-color: #0f2318 !important;
+}
+
+/* Borders */
+.dark .border-gray-100,
+.dark .border-gray-200 {
+    border-color: #1f3d2a !important;
+}
+
+/* Hover states */
+.dark .hover\:bg-green-50:hover,
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover {
+    background-color: #1a3024 !important;
+}
+
+/* Shadows — soften in dark */
+.dark .shadow-sm,
+.dark .shadow-md,
+.dark .shadow-lg,
+.dark .shadow-xl {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4) !important;
+}
+
+/* Emerald/green accents — keep them */
+.dark .text-emerald-600,
+.dark .text-emerald-700,
+.dark .text-green-700,
+.dark .text-green-900 {
+    color: #4ade80 !important;
+}
+.dark .bg-emerald-50,
+.dark .bg-green-100,
+.dark .bg-emerald-100 {
+    background-color: #0f2318 !important;
+}
+.dark .border-emerald-100,
+.dark .border-emerald-200,
+.dark .border-green-100,
+.dark .border-green-200 {
+    border-color: #1f3d2a !important;
+}
+
+/* Keep primary green buttons as-is */
+.dark .bg-green-900 {
+    background-color: #14532d !important;
+}
+
+/* Dropdown menus */
+.dark [class*="rounded"][class*="shadow"][class*="border"] {
+    background-color: #152a1e !important;
+    border-color: #1f3d2a !important;
+}
