@@ -318,9 +318,13 @@ app.get("/api/community-trends", async (req, res) => {
     }
 });
 
-app.delete("/api/community-posts/:postId", async (req, res) => {
-    const { postId } = req.params;
+app.delete("/api/community-post-delete", async (req, res) => {
+    const { postId } = req.query;
     const { user_id } = req.body;
+
+    if (!postId) {
+        return res.status(400).json({ error: "postId is required" });
+    }
 
     if (!user_id) {
         return res.status(400).json({ error: "user_id is required" });
