@@ -5,12 +5,7 @@ import {
     XMarkIcon, UserGroupIcon, SparklesIcon, TrashIcon
 } from '@heroicons/react/24/solid'
 import { injectCommunityStyles } from '../dashboard/CommunityShare'
-const TRENDING = [
-    { tag: '#StrawberryTaho',     count: '1.2k' },
-    { tag: '#SessionRoadCafés',   count: '864'  },
-    { tag: '#SunriseAtMinesView', count: '612'  },
-    { tag: '#PineTrails',         count: '489'  },
-]
+
 
 
 export const Community = () => {
