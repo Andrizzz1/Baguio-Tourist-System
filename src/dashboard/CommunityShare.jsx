@@ -185,10 +185,32 @@ const handleDeletePost = async (postId) => {
         } else {
             alert(data.error);
         }
-    } catch (err) {
-        console.log("Delete post error:", err);
-    }
-};
+
+        const confirmDelete = confirm("Are you sure you want to delete this post?");
+        if (!confirmDelete) return;
+
+        try {
+            const res = await fetch(`/api/delete-community-post?postId=${postId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: userId
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                await fetchPosts();
+            } else {
+                alert(data.error);
+            }
+        } catch (err) {
+            console.log("Delete post error:", err);
+        }
+    };
 
     useEffect(() => {
         injectCommunityStyles()
