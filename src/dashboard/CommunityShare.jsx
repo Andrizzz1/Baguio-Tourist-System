@@ -207,7 +207,7 @@ const handleDeletePost = async (postId) => {
             } else {
                 alert(data.error);
             }
-        } catch (err) {
+        }catch (err) {
             console.log("Delete post error:", err);
         }
     };
@@ -222,7 +222,7 @@ const handleDeletePost = async (postId) => {
                 console.log("COMMUNITY DATA:", data)
                 if (res.ok) setTotalMembers(data.totalMembers)
                 else console.log("API error:", data.error)
-            } catch (error) {
+            }catch (error) {
                 console.log("Fetch error:", error)
             }
         }
