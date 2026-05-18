@@ -9,7 +9,12 @@ const pool = new Pool({
 
 
 export default async function handler(req, res) {
-    const { postId } = req.params;
+
+     if (req.method !== "DELETE") {
+        return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    const { postId } = req.query;
     const { user_id } = req.body;
 
     if (!user_id) {
