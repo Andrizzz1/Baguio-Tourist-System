@@ -9,7 +9,7 @@ const pool = new Pool({
 
 
 export default async function handler(req, res) {
-    const { postId } = req.params;
+    const { postId } = rreq.query
     const { user_id } = req.body;
 
     if (!user_id) {
