@@ -54,9 +54,15 @@ export const Community = () => {
         try{
                 const res = await fetch("/api/community-trends");
                 const data = await res.json();
-                setTrends(data);
+                if (res.ok && Array.isArray(data)) {
+                    setTrends(data);
+                } else {
+                    setTrends([]);
+                    console.log(err);
+                }
             }catch(err){
-            console.log(err)
+                setTrends([]);
+                console.log(data.error || "Invalid trends data");
             }
         }
         Trending()
