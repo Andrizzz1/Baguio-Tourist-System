@@ -5,6 +5,7 @@ import {
     XMarkIcon, UserGroupIcon, SparklesIcon, TrashIcon
 } from '@heroicons/react/24/solid'
 import { injectCommunityStyles } from '../dashboard/CommunityShare'
+
 const TRENDING = [
     { tag: '#StrawberryTaho',     count: '1.2k' },
     { tag: '#SessionRoadCafés',   count: '864'  },
@@ -12,6 +13,43 @@ const TRENDING = [
     { tag: '#PineTrails',         count: '489'  },
 ]
 
+const transitionStyles = `
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .anim-fade-in-down  { animation: fadeInDown  0.5s cubic-bezier(0.22,1,0.36,1) both; }
+  .anim-fade-in-up    { animation: fadeInUp    0.5s cubic-bezier(0.22,1,0.36,1) both; }
+  .anim-fade-in       { animation: fadeIn      0.5s ease both; }
+  .anim-slide-left    { animation: slideInLeft  0.55s cubic-bezier(0.22,1,0.36,1) both; }
+  .anim-slide-right   { animation: slideInRight 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+
+  .delay-1 { animation-delay: 0.08s; }
+  .delay-2 { animation-delay: 0.16s; }
+  .delay-3 { animation-delay: 0.24s; }
+  .delay-4 { animation-delay: 0.32s; }
+  .delay-5 { animation-delay: 0.40s; }
+  .delay-6 { animation-delay: 0.48s; }
+  .delay-7 { animation-delay: 0.56s; }
+  .delay-8 { animation-delay: 0.64s; }
+`
 
 export const Community = () => {
     const user        = JSON.parse(localStorage.getItem('user'))
@@ -193,17 +231,20 @@ export const Community = () => {
 
     return (
         <section className="min-h-screen bg-gray-50">
+            {/* Transition keyframes */}
+            <style>{transitionStyles}</style>
+
             <DashboardNav />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
                 {/* Page header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
-                    <div>
+                    <div className="anim-slide-left delay-1">
                         <h1 className="text-2xl font-bold text-gray-900">Community</h1>
                         <p className="text-gray-400 text-sm mt-0.5">Share your Baguio finds, reviews, and hidden gems.</p>
                     </div>
-                    <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-full w-fit">
+                    <div className="anim-fade-in delay-2 flex items-center gap-2 bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-full w-fit">
                         <UserGroupIcon className="w-4 h-4 text-emerald-600" />
                         <span className="text-xs font-semibold text-emerald-700">
                             {formatMembers(totalMembers)} members
@@ -217,7 +258,7 @@ export const Community = () => {
                     <div className="flex flex-col gap-5">
 
                         {/* Composer */}
-                        <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-5">
+                        <div className="anim-fade-in-up delay-2 bg-white border border-gray-100 rounded-3xl shadow-sm p-5">
                             <div className="flex gap-3">
                                 <div className="w-10 h-10 rounded-full bg-green-900 flex items-center justify-center text-white text-sm font-bold shrink-0 mt-0.5">
                                     {initials}
@@ -310,13 +351,14 @@ export const Community = () => {
 
                         {/* Feed */}
                         <div className="flex flex-col gap-4">
-                            {posts.map(post => {
+                            {posts.map((post, idx) => {
                                 const postInitials = post.username
                                 ? post.username.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
                                 : 'U'
-                                
+                                const delayClass = `delay-${Math.min(idx + 1, 8)}`
+
                                 return (
-                                <div key={post.post_id} className="bg-white border border-gray-100 rounded-3xl shadow-sm p-5 hover:shadow-md transition-shadow duration-200">
+                                <div key={post.post_id} className={`anim-fade-in-up ${delayClass} bg-white border border-gray-100 rounded-3xl shadow-sm p-5 hover:shadow-md transition-shadow duration-200`}>
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="w-9 h-9 rounded-full bg-green-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
                                             {postInitials }
@@ -360,7 +402,7 @@ export const Community = () => {
                     <div className="flex flex-col gap-5">
 
                         {/* Trending */}
-                        <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-5">
+                        <div className="anim-slide-right delay-3 bg-white border border-gray-100 rounded-3xl shadow-sm p-5">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
                                     <SparklesIcon className="w-4 h-4 text-emerald-600" />
@@ -378,7 +420,7 @@ export const Community = () => {
                         </div>
 
                         {/* Top Contributors */}
-                        <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-5">
+                        <div className="anim-slide-right delay-5 bg-white border border-gray-100 rounded-3xl shadow-sm p-5">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
                                     <UserGroupIcon className="w-4 h-4 text-emerald-600" />
