@@ -17,7 +17,7 @@ Keep answers short, clear, and easy to understand.
 Always be friendly, conversational, and professional.
 
 For additional information:
-This website or system was created by **John Andrei Mandapat**, with UI collaboration and frontend design support from **Tristan Dela Cruz**.
+This website or system was created by **John Andrei Mandapat and Tristan Dela Cruz**, was created by two computer engineering students who worked together on the project.
 `;
 
 export default async function handler(req, res){
