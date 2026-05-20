@@ -378,6 +378,7 @@ const otherPlaces = [
 
 
 const PlaceModal = ({ place, onClose }) => {
+    if (!place) return null 
     const [chatbot, showChatbot] = useState(true)
     const [messages, setMessages] = useState([])
     const [input, setInput] = useState('')
@@ -627,6 +628,16 @@ const PlaceModal = ({ place, onClose }) => {
                                 <PaperAirplaneIcon className="w-4 h-4 text-white" />
                             </button>
                             </div>
+                            <div className="text-xs flex flex-wrap justify-around gap-2 p-1.5 border-t-gray-200 border-t-2 mt-5">
+                    
+                                {CHIPS.map((c,i)=>(
+                                    <p key={i} className="cursor-pointer bg-gray-100 border-gray-200 p-1 rounded-2xl border-2">{c}</p>
+                                ))}
+                            </div>
+                            <div className=" flex text-sm items-center gap-1">
+                                <input className="w-full outline-none  max-w-xl p-2 mt-2 focus:border-green-500 focus:border-2 rounded-2xl" type="text" placeholder={`Ask about ${place.name}...`}/>
+                                <button className="mt-2 bg-green-400 p-2 rounded-full"><PaperAirplaneIcon className="w-5 h-5" /></button>
+                            </div>               
                         </div>
                         )}
                 </div>
