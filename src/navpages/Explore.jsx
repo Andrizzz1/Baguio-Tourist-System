@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
 import { DashboardNav } from "../dashboard/DashboardNav"
-import {HeartIcon, MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon } from "@heroicons/react/24/solid"
+import {HeartIcon, MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon, PaperAirplaneIcon  } from "@heroicons/react/24/solid"
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline'
+import { p } from "framer-motion/client"
+import { RiRobot2Fill } from 'react-icons/ri'
 /* ─────────────────────────────────────────────
    Inject keyframe animations once
 ───────────────────────────────────────────── */
@@ -158,6 +160,7 @@ const topPlaces = [
         entry: "Free entry",
         about: "American architect Daniel Hudson Burnham created Burnham Park, a 32.84-hectare urban haven in the center of Baguio City, Philippines, in 1904. With a man-made lagoon, rose garden, and kids' playground, it acts as a major leisure center for walking, biking, and boating. It is usually open around-the-clock and requires no admission.",
         highlights: ["Boating lagoon", "Rose Garden", "Skating rink", "Bike rentals"],
+        save: false
     },
     {
         name: "Mines View Park",
@@ -170,6 +173,7 @@ const topPlaces = [
         entry: "₱10",
         about: "Mines View Park is a renowned observation deck in the northeastern limits of Baguio City, Philippines, that provides breathtaking panoramic views of the Cordillera Mountains and the abandoned gold and copper mines of Itogon. It is a popular tourist destination, known for its viewing deck, traditional cultural costumes, and gift shops.",
         highlights: ["Mountain overlook", "Souvenir shops", "Photo spots", "Indigenous crafts"],
+        save: false
     },
     {
         name: "Camp John Hay",
@@ -182,6 +186,7 @@ const topPlaces = [
         entry: "₱85",
         about: "Camp John Hay is one of the most popular tourist attractions in Baguio City. During the early 1900s, it served as an American military rest and recreation base before evolving into a mountain resort and eco-tourism destination. Today, it is noted for its pine trees, cold weather, tranquil ambiance, and historical sites.",
         highlights: ["Pine forests", "Golf course", "Heritage trails", "Restaurants"],
+        save: false
     },
     {
         name: "BenCab Museum",
@@ -194,6 +199,7 @@ const topPlaces = [
         entry: "₱200",
         about: "The BenCab Museum is a prominent art and cultural destination near Baguio City. Founded by National Artist Benedicto Cabrera, it showcases Filipino artworks, Cordilleran antiquities, lovely gardens, and breathtaking mountain views. Visitors love the tranquil atmosphere, eco-trails, and relaxing experience in nature.",
         highlights: ["Contemporary art", "Indigenous artifacts", "Hillside café", "Garden trail"],
+        save: false
     },
 ]
 
@@ -210,6 +216,7 @@ const otherPlaces = [
         about: "Tam-awan Village is a cultural and artistic destination in Baguio City that showcases the rich heritage of the Cordillera region. The village features traditional huts, local artworks, galleries, and peaceful gardens surrounded by pine trees. Visitors can experience indigenous culture, admire paintings from local artists, and enjoy the calm mountain atmosphere. It is also a popular place for photography, relaxation, and learning about the traditions of Northern Luzon.",
         highlights: ["Cultural shows", "Kalinga huts", "Art workshops", "City views"],
         image: "https://elretirobaguio.com/wp-content/uploads/2022/02/Tam-Awan-Village-1024x683.jpg",
+        
     },
     {
         name: "Wright Park",
@@ -223,6 +230,7 @@ const otherPlaces = [
         about: "Wright Park is one of the most famous tourist attractions in Baguio City, known for its long pool, tall pine trees, and horseback riding activities. Located near The Mansion, the park offers a relaxing environment where visitors can enjoy walking, taking photos, and experiencing the cool mountain air. Horse rentals are popular among tourists, especially families and children. The peaceful scenery and natural beauty make Wright Park a favorite destination for both locals and travelers.",
         highlights: ["Horseback riding", "Pool of Pines", "Pine tree walk", "Photo spots"],
         image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/98/d7/ab/caption.jpg?w=900&h=500&s=1",
+        save: false
     },
     {
         name: "Diplomat Hotel Ruins",
@@ -236,6 +244,7 @@ const otherPlaces = [
         about: "Diplomat Hotel, also known as the Dominican Hill Retreat House, is a historic landmark in Baguio City famous for its old architecture and panoramic views. Built in the early 1900s, the abandoned structure became popular because of stories and legends connected to the place. Visitors explore the site to admire its history, peaceful surroundings, and scenic mountain landscape. It is also a favorite location for photography, sightseeing, and learning about Baguio's cultural and historical background during different periods of time.",
         highlights: ["WWII history", "Panoramic views", "Photography", "Ruins tour"],
         image: "https://upload.wikimedia.org/wikipedia/commons/9/97/Diplomat_Hotel_in_Baguio_City.JPG",
+        save: false
     },
     {
         name: "The Mansion",
@@ -249,6 +258,7 @@ const otherPlaces = [
         about: "The Mansion is the official summer residence of the President of the Philippines, located along Leonard Wood Road, Baguio City. Built in 1908, it features a grand gate, Spanish-inspired architecture, and well-kept gardens. It is a popular tourist spot where visitors can take photos outside and enjoy the scenic surroundings. The Mansion is also located directly across Wright Park, making it easy to visit both in one trip.",
         highlights: ["Historic gates", "Manicured gardens", "Presidential residence", "Photo spots"],
         image: "https://media.philstar.com/photos/2020/10/03/mansion-baguio_2020-10-03_18-47-38.jpg",
+        save: false
     },
     {
         name: "Botanical Garden",
@@ -262,6 +272,7 @@ const otherPlaces = [
         about: "Baguio Botanical Garden is a peaceful attraction in Baguio City featuring gardens, cultural huts, and art displays. It showcases traditional Cordillera houses, sculptures, and landscaped flower areas that reflect local heritage. Visitors can stroll along paths surrounded by pine trees, plants, and creative installations. It is also a popular place for photos, relaxation, and learning about indigenous culture. Located near Wright Park area, it is easy to include in a sightseeing tour of Baguio. The garden offers a calm environment ideal for nature lovers and families visiting the city especially during cool mornings and afternoons.",
         highlights: ["Native flora", "Ethnic village", "Free admission", "Family-friendly"],
         image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/4a/00/23/caption.jpg?w=1000&h=-1&s=1",
+        save: false
     },
     {
         name: "Good Shepherd Convent",
@@ -275,6 +286,7 @@ const otherPlaces = [
         about: "Good Shepherd Convent is a famous shop in Baguio City known for its homemade products like ube jam, strawberry jam, peanut brittle, and other local delicacies. It is run by the Good Shepherd Sisters and supports their mission. Visitors often line up to buy pasalubong items.",
         highlights: ["Ube jam", "Peanut brittle", "Strawberry preserves", "Pasalubong"],
         image: "https://mybaguiocityguide.com/wp-content/uploads/2023/08/good-shepherd-baguio.jpg",
+        save: false
     },
     {
         name: "Igorot Stone Kingdom",
@@ -288,6 +300,7 @@ const otherPlaces = [
         about: "The Igorot Stone Kingdom is a vast 6,000-square-meter cultural theme park in Baguio City that highlights the Igorot people's architectural prowess, heritage, and folklore. It was constructed on a mountainside and has tall stone terraces, tunnels, and castles that are evocative of both the famous Banaue Rice Terraces and ancient indigenous buildings.",
         highlights: ["Banaue-Inspired Terraces", "Towering Castles", "Cultural Statues & Architecture", "Traditional Attire"],
         image: "https://upload.wikimedia.org/wikipedia/commons/7/76/Igorot_Stone_Kingdom.jpg",
+        save: false
     },
     {
         name: "Baguio Night Market",
@@ -301,6 +314,7 @@ const otherPlaces = [
         about: "The Baguio Night Market is a popular street market along Harrison Road near Burnham Park. It opens every night when the road is closed to vehicles. It offers affordable ukay-ukay clothes, accessories, souvenirs, and street food. Tourists and locals visit for shopping, food, and the lively nighttime atmosphere in Baguio City.",
         highlights: ["Ukay-ukay","Street food", "Affordable shopping","Nighttime vibe","Bargain culture"],
         image: "https://ik.imagekit.io/tvlk/blog/2024/08/shutterstock_2422562731.jpg",
+        save: false
     },
     {
         name: "Strawberry Farm",
@@ -314,6 +328,7 @@ const otherPlaces = [
         about: "The La Trinidad Strawberry Farm in Benguet is a famous tourist spot near Baguio City. It is known for strawberry picking, fresh produce, and cool mountain scenery. Visitors enjoy strawberries, local products, and the relaxing farm atmosphere.",
         highlights: ["Strawberry picking experience","Fresh local produce", "Scenic mountain farm view","Photo spots","Support for local agriculture"],
         image: "https://mybaguiocityguide.com/wp-content/uploads/2023/10/pexels-photo-4546316.jpeg",
+        save: false
 
     },
     {
@@ -328,7 +343,7 @@ const otherPlaces = [
         about: "The Baguio Cathedral, officially Our Lady of the Atonement Metropolitan Cathedral, is a famous Catholic church in Baguio City. It is known for its pink exterior, twin bell towers, and hilltop location near Session Road. It serves as a major religious center and popular tourist landmark in the city.",
         highlights: ["Pink twin-spired design","Scenic viewpoint", "Long staircase access","Peaceful prayer atmosphere","Historic and cultural importance"],
         image: "https://upload.wikimedia.org/wikipedia/commons/3/35/Baguio_Cathedral_%28Carlu_Street%2C_Baguio_City%3B_02-25-2024%29.jpg",
-
+        save: false
     },
     {
         name: "Sky Ranch Baguio",
@@ -342,7 +357,7 @@ const otherPlaces = [
         about: "Sky Ranch Baguio is a popular amusement park located beside SM City Baguio at Luneta Hill. It is part of the Sky Ranch chain operated by SM Prime Holdings. The park offers family-friendly and thrill rides like the Sky Eye Ferris wheel, Viking, and carousel. It also provides scenic views of Baguio’s mountains and cool weather, making it a relaxing yet fun destination for tourists, families, and friends visiting the city for leisure and entertainment.",
         highlights: ["Sky Eye Ferris wheel","Viking ride", "Beautiful sunset and night lights views","Cool mountain air","Carousel and kiddie rides"],
         image: "https://res.klook.com/image/upload/w_750,h_469,c_fill,q_85/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/amkpzceprvw9euydab4i.jpg",
-
+        save: false
     },
     {
         name: "SM City Baguio",
@@ -356,13 +371,16 @@ const otherPlaces = [
         about: "SM City Baguio is a large shopping mall located at Luneta Hill along Upper Session Road. It is owned by SM Prime Holdings and is known for its cool, open-air design. The mall offers shopping, dining, and entertainment with scenic views of Baguio’s mountains and city landscape.",
         highlights: ["Scenic mountain and city views","Restaurants and cafés", "Rooftop garden and event spaces","Open-air design","Scenic mountain and city views"],
         image: "https://baguioheraldexpressonline.com/wp-content/uploads/2020/06/sm-baguio-new.jpg",
-
+        save: false
     },
     
 ]
 
 const PlaceModal = ({ place, onClose }) => {
+    if (!place) return null 
     const [chatbot, showChatbot] = useState(true)
+
+    const CHIPS = [`How do I get to ${place.name} from city center?`, `History of The ${place.name} ?`,`Any food spots near ${place.name} ?`, 'Send Google Map location', ]
     useEffect(() => {
         injectStyles()
         if (place) {
@@ -470,11 +488,28 @@ const PlaceModal = ({ place, onClose }) => {
                                 <button onClick={()=>{showChatbot(true)}} className="flex cursor-pointer"><ArrowLeftIcon className="w-5"/><p>Back to details</p></button>
                                 <p>System AI Guide</p>
                             </div>
-                            <hr />
+  
                             {/* CHATS*/}
-                            <div>
+                            <div className="text-sm">
+                                <div className="flex gap-0.5">
+                                    <div>
+                                        <RiRobot2Fill  className="w-6 h-6" />
+                                    </div>
+                                    
+                                    <p className="bg-gray-100 p-1 rounded-xl">`Hi! I'm your Baguio AI Guide. Ask me anything about {place.name} — best time to visit, how to get there, what to eat nearby, or what to pair it with for a perfect day.`</p>
+                                </div>
 
                             </div>
+                            <div className="text-xs flex flex-wrap justify-around gap-2 p-1.5 border-t-gray-200 border-t-2 mt-5">
+                    
+                                {CHIPS.map((c,i)=>(
+                                    <p key={i} className="cursor-pointer bg-gray-100 border-gray-200 p-1 rounded-2xl border-2">{c}</p>
+                                ))}
+                            </div>
+                            <div className=" flex text-sm items-center gap-1">
+                                <input className="w-full outline-none  max-w-xl p-2 mt-2 focus:border-green-500 focus:border-2 rounded-2xl" type="text" placeholder={`Ask about ${place.name}...`}/>
+                                <button className="mt-2 bg-green-400 p-2 rounded-full"><PaperAirplaneIcon className="w-5 h-5" /></button>
+                            </div>               
                         </div>
                     </>)}
                 </div>
@@ -487,7 +522,6 @@ export const Explore = () => {
     const [selected, setSelected] = useState(null)
     const [searchParams, setSearchParams] = useSearchParams()
     const allPlaces = [...topPlaces, ...otherPlaces]
-     const [saved, setSaved] = useState(false)
     const q          = searchParams.get('q') || ''
     const placeName  = searchParams.get('place') || ''
 
@@ -594,7 +628,6 @@ export const Explore = () => {
                     <>
                         <div className="flex items-center justify-end mb-8 anim-fade-in">
                             <span className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full font-medium">
-                                <SparklesIcon className="w-4 h-4" />
                                 16 places
                             </span>
                         </div>
@@ -631,10 +664,10 @@ export const Explore = () => {
                                             </div>
                                         </div>
                                         <button
-                                            onClick={() => setSaved(p => !p)}
+                                            onClick={()=>{ place.save = !place.save }}
                                             className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center
                                                     transition-all duration-200 hover:scale-110 active:scale-95">
-                                            {saved
+                                            {place.save
                                                 ? <HeartIcon className="w-4 h-4 text-rose-500 fds-heart-pop" />
                                                 : <HeartOutline className="w-4 h-4 text-gray-400" />
                                             }
@@ -676,14 +709,14 @@ export const Explore = () => {
                                             <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">{place.description}</p>
                                         </div>
                                         <button
-                                            onClick={() => setSaved(p => !p)}
+                                            onClick={()=>{ place.save = !place.save }}
                                             className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center
                                                     transition-all duration-200 hover:scale-110 active:scale-95">
-                                            {saved
+                                            {place.save
                                                 ? <HeartIcon className="w-4 h-4 text-rose-500 fds-heart-pop" />
                                                 : <HeartOutline className="w-4 h-4 text-gray-400" />
                                             }
-                                        </button>
+                                        </button>  
                                     </div>
                                 ))}
                             </div>
