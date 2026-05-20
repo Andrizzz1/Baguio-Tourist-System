@@ -60,11 +60,11 @@ function SettingsModal({ onClose, darkMode, setDarkMode }) {
         const next = !darkMode
         setDarkMode(next)
         localStorage.setItem('darkMode', next ? '1' : '0')
-        document.documentElement.classList.toggle('dark', next)
         document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease'
     }
 
     const initials = (user.username || 'T').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">

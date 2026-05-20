@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
 import { DashboardNav } from "../dashboard/DashboardNav"
-import { MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon } from "@heroicons/react/24/solid"
+import {HeartIcon, MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon } from "@heroicons/react/24/solid"
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
-
+import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline'
 /* ─────────────────────────────────────────────
    Inject keyframe animations once
 ───────────────────────────────────────────── */
@@ -362,6 +362,7 @@ const otherPlaces = [
 ]
 
 const PlaceModal = ({ place, onClose }) => {
+    const [chatbot, showChatbot] = useState(true)
     useEffect(() => {
         injectStyles()
         if (place) {
@@ -392,7 +393,11 @@ const PlaceModal = ({ place, onClose }) => {
                     />
                     <div className="absolute inset-0 modal-gradient" />
                     <button
-                        onClick={onClose}
+                        onClick={()=>{
+                            onClose();
+                            showChatbot(true);
+                        }}
+                      
                         className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white rounded-full p-1.5 close-btn"
                     >
                         <XMarkIcon className="w-5 h-5" />
@@ -412,51 +417,66 @@ const PlaceModal = ({ place, onClose }) => {
 
                 {/* BODY */}
                 <div className="p-6">
-                    {/* INFO PILLS */}
-                    <div className="grid grid-cols-3 gap-3 mb-6 stagger">
-                        {[
-                            { label: "CATEGORY", value: place.badge },
-                            { label: "HOURS", value: place.hours, icon: <ClockIcon className="w-3.5 h-3.5 inline mr-1 text-gray-400" /> },
-                            { label: "ENTRY", value: place.entry },
-                        ].map((item, i) => (
-                            <div key={i} className="bg-gray-50 rounded-xl p-3 anim-fade-up">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
-                                    {item.label}
-                                </p>
-                                <p className="text-sm font-medium text-gray-800">
-                                    {item.icon}{item.value}
-                                </p>
+                    {chatbot?(
+                        <>
+                            {/* INFO PILLS */}
+                            <div className="grid grid-cols-3 gap-3 mb-6 stagger">
+                                {[
+                                    { label: "CATEGORY", value: place.badge },
+                                    { label: "HOURS", value: place.hours, icon: <ClockIcon className="w-3.5 h-3.5 inline mr-1 text-gray-400" /> },
+                                    { label: "ENTRY", value: place.entry },
+                                ].map((item, i) => (
+                                    <div key={i} className="bg-gray-50 rounded-xl p-3 anim-fade-up">
+                                        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                                            {item.label}
+                                        </p>
+                                        <p className="text-sm font-medium text-gray-800">
+                                            {item.icon}{item.value}
+                                        </p>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
 
-                    {/* ABOUT */}
-                    <h3 className="font-bold text-gray-900 mb-2 anim-fade-up" style={{ animationDelay: '0.22s' }}>About this place</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed mb-5 anim-fade-up" style={{ animationDelay: '0.27s' }}>{place.about}</p>
+                            {/* ABOUT */}
+                            <h3 className="font-bold text-gray-900 mb-2 anim-fade-up" style={{ animationDelay: '0.22s' }}>About this place</h3>
+                            <p className="text-sm text-gray-500 leading-relaxed mb-5 anim-fade-up" style={{ animationDelay: '0.27s' }}>{place.about}</p>
 
-                    {/* HIGHLIGHTS */}
-                    <h3 className="font-bold text-gray-900 mb-3 anim-fade-up" style={{ animationDelay: '0.32s' }}>Highlights</h3>
-                    <div className="flex flex-wrap flex-row gap-2 mb-6">
-                        {place.highlights.map((h, i) => (
-                            <span
-                                key={i}
-                                className="bg-green-50 text-green-700 text-sm px-3 py-1 rounded-full border border-green-100 pill-appear"
-                                style={{ animationDelay: `${0.35 + i * 0.07}s` }}
-                            >
-                                {h}
-                            </span>
-                        ))}
-                    </div>
+                            {/* HIGHLIGHTS */}
+                            <h3 className="font-bold text-gray-900 mb-3 anim-fade-up" style={{ animationDelay: '0.32s' }}>Highlights</h3>
+                            <div className="flex flex-wrap flex-row gap-2 mb-6">
+                                {place.highlights.map((h, i) => (
+                                    <span
+                                        key={i}
+                                        className="bg-green-50 text-green-700 text-sm px-3 py-1 rounded-full border border-green-100 pill-appear"
+                                        style={{ animationDelay: `${0.35 + i * 0.07}s` }}
+                                    >
+                                        {h}
+                                    </span>
+                                ))}
+                            </div>
+                            {/* ACTIONS */}
+                            <div className="flex gap-3 anim-fade-up" style={{ animationDelay: '0.45s' }}>
+                                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-2xl text-sm btn-press">
+                                    Add to itinerary
+                                </button>
+                                <button onClick={()=>{showChatbot(false)}} className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-800 font-semibold py-3 rounded-2xl text-sm btn-ghost">
+                                    Ask AI Guide
+                                </button>
+                            </div>
+                        </>        
+                    ):(<>
+                        <div>
+                            <div className="flex justify-between text-sm">
+                                <button onClick={()=>{showChatbot(true)}} className="flex cursor-pointer"><ArrowLeftIcon className="w-5"/><p>Back to details</p></button>
+                                <p>System AI Guide</p>
+                            </div>
+                            <hr />
+                            {/* CHATS*/}
+                            <div>
 
-                    {/* ACTIONS */}
-                    <div className="flex gap-3 anim-fade-up" style={{ animationDelay: '0.45s' }}>
-                        <button className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-2xl text-sm btn-press">
-                            Add to itinerary
-                        </button>
-                        <button className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-800 font-semibold py-3 rounded-2xl text-sm btn-ghost">
-                            Ask AI Guide
-                        </button>
-                    </div>
+                            </div>
+                        </div>
+                    </>)}
                 </div>
             </div>
         </div>
@@ -467,7 +487,7 @@ export const Explore = () => {
     const [selected, setSelected] = useState(null)
     const [searchParams, setSearchParams] = useSearchParams()
     const allPlaces = [...topPlaces, ...otherPlaces]
-
+     const [saved, setSaved] = useState(false)
     const q          = searchParams.get('q') || ''
     const placeName  = searchParams.get('place') || ''
 
@@ -610,9 +630,22 @@ export const Explore = () => {
                                                 <MapPinIcon className="w-3.5 h-3.5" />{place.location}
                                             </div>
                                         </div>
+                                        <button
+                                            onClick={() => setSaved(p => !p)}
+                                            className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center
+                                                    transition-all duration-200 hover:scale-110 active:scale-95">
+                                            {saved
+                                                ? <HeartIcon className="w-4 h-4 text-rose-500 fds-heart-pop" />
+                                                : <HeartOutline className="w-4 h-4 text-gray-400" />
+                                            }
+                                        </button>                                        
                                     </div>
+                                    
                                 ))}
+                                
                             </div>
+
+
                         </div>
 
                         {/* OTHER PLACES */}
@@ -642,6 +675,15 @@ export const Explore = () => {
                                             </div>
                                             <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">{place.description}</p>
                                         </div>
+                                        <button
+                                            onClick={() => setSaved(p => !p)}
+                                            className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center
+                                                    transition-all duration-200 hover:scale-110 active:scale-95">
+                                            {saved
+                                                ? <HeartIcon className="w-4 h-4 text-rose-500 fds-heart-pop" />
+                                                : <HeartOutline className="w-4 h-4 text-gray-400" />
+                                            }
+                                        </button>
                                     </div>
                                 ))}
                             </div>
