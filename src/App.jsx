@@ -53,7 +53,7 @@ function App(){
               onClick: ()=>navigate('/Register')
               }
               ];
-  return <div className="bg-green-50 ">
+  return <div className="bg-green-50 overflow-x-hidden">
     <NavBar />
     <div className='sm:hidden' >                         
                      <BubbleMenu
