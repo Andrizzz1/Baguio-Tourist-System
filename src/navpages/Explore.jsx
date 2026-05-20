@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect,useRef } from "react"
 import { useSearchParams } from "react-router-dom"
 import { DashboardNav } from "../dashboard/DashboardNav"
 import {HeartIcon, MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon, PaperAirplaneIcon  } from "@heroicons/react/24/solid"
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline'
-import { p } from "framer-motion/client"
 import { RiRobot2Fill } from 'react-icons/ri'
 /* ─────────────────────────────────────────────
    Inject keyframe animations once
@@ -376,11 +375,62 @@ const otherPlaces = [
     
 ]
 
+
+
 const PlaceModal = ({ place, onClose }) => {
     if (!place) return null 
     const [chatbot, showChatbot] = useState(true)
+    const [messages, setMessages] = useState([])
+    const [input, setInput] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [chip, setChips] = useState(true)
+    const bottomRef = useRef(null) 
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [messages])
 
-    const CHIPS = [`How do I get to ${place.name} from city center?`, `History of The ${place.name} ?`,`Any food spots near ${place.name} ?`, 'Send Google Map location', ]
+    const sendMessage = async(text) => {
+        const userMsg = text.trim() || input.trim()
+        if (!userMsg) return
+        setMessages(prev => [
+            ...prev,
+            { from: 'user', text: userMsg }
+        ])
+        setLoading(true)
+        const aiReply = await sendToAI(userMsg)
+        setLoading(false)
+        setMessages(prev =>[...prev, { text: aiReply, from: "bot" }])
+        setInput('')
+        setChips(false)
+    }
+
+    async function sendToAI(msg) {
+        try {
+            const response = await fetch("/api/FrontendChatbot", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: msg })
+            });
+
+            // ADD THESE DEBUG LINES
+            console.log("Status:", response.status);
+            const data = await response.json();
+            console.log("Full response:", data);  // see exactly what's coming back
+
+            if (!response.ok) {
+                return `API Error: ${data.error?.message || response.status}`;
+            }
+
+            return data.reply
+
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            return "Error contacting AI";
+        }
+
+    }
     useEffect(() => {
         injectStyles()
         if (place) {
@@ -392,10 +442,15 @@ const PlaceModal = ({ place, onClose }) => {
     }, [place])
 
     if (!place) return null
+
+
+     const CHIPS = [`How do I get to ${place.name} from city center?`, `History of The ${place.name} ?`,`Any food spots near ${place.name} ?`, 'Send Google Map location', ]
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 modal-backdrop"
-            onClick={onClose}
+            onClick={()=>{onClose(); 
+                        showChatbot(true);
+                        setMessages([]);}}
         >
             <div
                 className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl modal-panel"
@@ -414,6 +469,7 @@ const PlaceModal = ({ place, onClose }) => {
                         onClick={()=>{
                             onClose();
                             showChatbot(true);
+                            setMessages([]);
                         }}
                       
                         className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white rounded-full p-1.5 close-btn"
@@ -482,23 +538,95 @@ const PlaceModal = ({ place, onClose }) => {
                                 </button>
                             </div>
                         </>        
-                    ):(<>
-                        <div>
-                            <div className="flex justify-between text-sm">
-                                <button onClick={()=>{showChatbot(true)}} className="flex cursor-pointer"><ArrowLeftIcon className="w-5"/><p>Back to details</p></button>
-                                <p>System AI Guide</p>
+                    ) : (
+                        <div className="flex flex-col h-105">
+                            {/* Header */}
+                            <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
+                            <button
+                                onClick={() => showChatbot(true)}
+                                className="flex items-center gap-1 text-sm text-gray-500 hover:bg-gray-100 px-2 py-1.5 rounded-lg transition-colors"
+                            >
+                                <ArrowLeftIcon className="w-4 h-4" /> Back
+                            </button>
+                            <div className="flex-1 text-center">
+                                <p className="text-sm font-medium text-gray-800">AI Guide</p>
+                                <p className="text-xs text-gray-400">{place.name}</p>
                             </div>
-  
-                            {/* CHATS*/}
-                            <div className="text-sm">
-                                <div className="flex gap-0.5">
-                                    <div>
-                                        <RiRobot2Fill  className="w-6 h-6" />
-                                    </div>
-                                    
-                                    <p className="bg-gray-100 p-1 rounded-xl">`Hi! I'm your Baguio AI Guide. Ask me anything about {place.name} — best time to visit, how to get there, what to eat nearby, or what to pair it with for a perfect day.`</p>
-                                </div>
+                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                                <RiRobot2Fill className="w-4 h-4 text-emerald-600" />
+                            </div>
+                            </div>
 
+                            {/* Messages */}
+                            <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-3 bg-gray-50 px-3 rounded-xl my-3">
+                            <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3 bg-green-50">
+                                <div className="flex gap-0.5">
+                                    <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                    <RiRobot2Fill className="w-3.5 h-3.5 text-emerald-600" />
+                                    </div>
+                                    <div className="bg-white border border-gray-100 text-sm text-gray-700 px-3 py-2 rounded-2xl rounded-bl-sm max-w-[80%] leading-relaxed">
+                                    Hi! I'm your Baguio AI Guide. Ask me anything about <strong>{place.name}</strong> — best time to visit, how to get there, what to eat nearby, or what to pair it with for a perfect day.
+                                    </div>
+                                </div>
+                                    {messages.map((msg, i) => (
+                                        <div key={i} className={`flex gap-0.5 ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                            
+                                            {msg.from === 'bot' && (
+                                                <div className="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                                    <RiRobot2Fill className="w-3.5 h-3.5 text-emerald-600" />
+                                                </div>
+                                            )}
+                                        
+                                            <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm
+                                                ${msg.from === 'user'
+                                                    ? 'bg-green-900 text-white rounded-br-sm'
+                                                    : 'bg-white text-gray-700 rounded-bl-sm border border-gray-100'
+                                                }`}>
+                                                {msg.text}
+                                            </div>
+                                        </div>
+                                    ))}
+
+                        {loading && (
+                            <div className="flex justify-start">
+                            <div className="border-green-300 px-4 py-3 rounded-2xl flex gap-1 items-center">
+                                <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:0ms]"></span>
+                                <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:150ms]"></span>
+                                <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:300ms]"></span>
+                            </div>
+                            </div>
+                        )}
+                        <div ref={bottomRef} />
+                            </div>
+
+                            {/* Chip suggestions */}
+                            {chip?
+                            <div className="flex flex-wrap justify-center gap-2 mt-1">
+                                {CHIPS.map((c, i) => (
+                                <button
+                                    key={i}
+                                    className="text-xs px-3 py-1.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
+                                >
+                                    {c}
+                                </button>
+                                ))}
+                            </div>:null}
+                            </div>
+                            {/* Input */}
+                            <div className="flex items-center gap-2">
+                            <input
+                                value={input}
+                                onChange={e => setInput(e.target.value)}
+                                onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
+                                className="flex-1 text-sm px-4 py-2.5 rounded-full border border-gray-200 bg-gray-50 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                                type="text"
+                                placeholder={`Ask about ${place.name}...`}
+                            />
+                            <button
+                             onClick={() => sendMessage(input)}
+                             className="w-9 h-9 rounded-full bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center transition-colors">
+                                <PaperAirplaneIcon className="w-4 h-4 text-white" />
+                            </button>
                             </div>
                             <div className="text-xs flex flex-wrap justify-around gap-2 p-1.5 border-t-gray-200 border-t-2 mt-5">
                     
@@ -511,7 +639,7 @@ const PlaceModal = ({ place, onClose }) => {
                                 <button className="mt-2 bg-green-400 p-2 rounded-full"><PaperAirplaneIcon className="w-5 h-5" /></button>
                             </div>               
                         </div>
-                    </>)}
+                        )}
                 </div>
             </div>
         </div>
