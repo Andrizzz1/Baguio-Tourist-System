@@ -376,7 +376,17 @@ const otherPlaces = [
     
 ]
 
-
+function parseMessage(text) {
+    return text.replace(
+        /(https:\/\/www\.google\.com\/maps\/[^\s]+)/g,
+        (url) =>
+            '<a href="' + url + '" target="_blank" rel="noopener noreferrer"' +
+            ' style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;' +
+            'padding:7px 14px;border-radius:20px;background:#059669;' +
+            'color:#fff;font-size:12px;text-decoration:none;font-weight:500;">' +
+            '📍 Open in Google Maps</a>'
+    )
+}
 
 const PlaceModal = ({ place, onClose }) => {
     const [chatbot, showChatbot] = useState(true)
@@ -388,20 +398,6 @@ const PlaceModal = ({ place, onClose }) => {
     const bottomRef = useRef(null) 
 
 
-    function parseMessage(text) {
-    // detect any google maps URL and convert to a button
-    return text.replace(
-        /(https:\/\/www\.google\.com\/maps\/[^\s]+)/g,
-        (url) => `
-            <a href="${url}" target="_blank" rel="noopener noreferrer"
-                style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;
-                       padding:7px 14px;border-radius:20px;background:#059669;
-                       color:#fff;font-size:12px;text-decoration:none;font-weight:500;">
-                📍 Open in Google Maps
-            </a>
-        `
-    )
-}
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
