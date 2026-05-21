@@ -5,6 +5,7 @@ import {HeartIcon, MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon, Pap
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline'
 import { RiRobot2Fill } from 'react-icons/ri'
+const weather_api = import.meta.env.VITE_open_weather_api;
 /* ─────────────────────────────────────────────
    Inject keyframe animations once
 ───────────────────────────────────────────── */
@@ -384,34 +385,54 @@ const PlaceModal = ({ place, onClose }) => {
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
     const [chip, setChips] = useState(true)
+    const [weather, setWeather] = useState()
     const bottomRef = useRef(null) 
+
+
+    function parseMessage(text) {
+    // detect any google maps URL and convert to a button
+    return text.replace(
+        /(https:\/\/www\.google\.com\/maps\/[^\s]+)/g,
+        (url) => `
+            <a href="${url}" target="_blank" rel="noopener noreferrer"
+                style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+                       padding:7px 14px;border-radius:20px;background:#059669;
+                       color:#fff;font-size:12px;text-decoration:none;font-weight:500;">
+                📍 Open in Google Maps
+            </a>
+        `
+    )
+}
+
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [messages])
 
-    const sendMessage = async(text) => {
-        const userMsg = text.trim() || input.trim()
-        if (!userMsg) return
-        setMessages(prev => [
-            ...prev,
-            { from: 'user', text: userMsg }
-        ])
-        setLoading(true)
-        const aiReply = await sendToAI(userMsg)
-        setLoading(false)
-        setMessages(prev =>[...prev, { text: aiReply, from: "bot" }])
-        setInput('')
-        setChips(false)
-    }
 
-    async function sendToAI(msg) {
+        const fetchDATA = async () => {
+            try {
+                const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=16.402332&lon=120.596008&appid=${weather_api}&units=metric`)
+                const WeatherData = await weatherRes.json();
+                console.log(WeatherData)
+                setWeather({ ...WeatherData })
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    
+    useEffect(() => { fetchDATA() }, [])
+
+    async function sendToAI(msg , place, weather) {
         try {
-            const response = await fetch("/api/FrontendChatbot", {
+            const response = await fetch("/api/Explore-Chatbot", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ message: msg })
+                body: JSON.stringify({ message: msg, 
+                                       place: place,
+                                      weather: weather
+                })
             });
 
             // ADD THESE DEBUG LINES
@@ -431,6 +452,22 @@ const PlaceModal = ({ place, onClose }) => {
         }
 
     }
+
+    const sendMessage = async(text) => {
+        const userMsg = text.trim() || input.trim()
+        if (!userMsg) return
+        setMessages(prev => [
+            ...prev,
+            { from: 'user', text: userMsg }
+        ])
+        setLoading(true)
+        const aiReply = await sendToAI(userMsg, place, weather)
+        setLoading(false)
+        setMessages(prev =>[...prev, { text: aiReply, from: "bot" }])
+        setInput('')
+        setChips(false)
+    }
+
     useEffect(() => {
         injectStyles()
         if (place) {
@@ -450,7 +487,8 @@ const PlaceModal = ({ place, onClose }) => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 modal-backdrop"
             onClick={()=>{onClose(); 
                         showChatbot(true);
-                        setMessages([]);}}
+                        setMessages([]);
+                        setChips(true)}}
         >
             <div
                 className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl modal-panel"
@@ -470,6 +508,7 @@ const PlaceModal = ({ place, onClose }) => {
                             onClose();
                             showChatbot(true);
                             setMessages([]);
+                            setChips(true)
                         }}
                       
                         className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white rounded-full p-1.5 close-btn"
@@ -581,12 +620,14 @@ const PlaceModal = ({ place, onClose }) => {
                                                 ${msg.from === 'user'
                                                     ? 'bg-green-900 text-white rounded-br-sm'
                                                     : 'bg-white text-gray-700 rounded-bl-sm border border-gray-100'
-                                                }`}>
-                                                {msg.text}
-                                            </div>
+                                                }`}
+                                                dangerouslySetInnerHTML={{ 
+                                                    __html: msg.from === 'bot' ? parseMessage(msg.text) : msg.text 
+                                                }}
+                                            />
+
                                         </div>
                                     ))}
-
                         {loading && (
                             <div className="flex justify-start">
                             <div className="border-green-300 px-4 py-3 rounded-2xl flex gap-1 items-center">
@@ -594,6 +635,42 @@ const PlaceModal = ({ place, onClose }) => {
                                 <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:150ms]"></span>
                                 <span className="w-2 h-2 bg-[#67e548] rounded-full animate-bounce [animation-delay:300ms]"></span>
                             </div>
+                            </div>
+                        )}
+                        <div ref={bottomRef} />
+                            </div>
+
+                            {/* Chip suggestions */}
+                            {chip?
+                            <div className="flex flex-wrap justify-center gap-2 mt-1">
+                                {CHIPS.map((c, i) => (
+                                <button
+                                    key={i}
+                                    onClick={()=>{sendMessage(c);
+                                                  setChips(false)
+                                    }}
+                                    className="text-xs px-3 py-1.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
+                                >
+                                    {c}
+                                </button>
+                                ))}
+                            </div>:null}
+                            </div>
+                            {/* Input */}
+                            <div className="flex items-center gap-2">
+                            <input
+                                value={input}
+                                onChange={e => setInput(e.target.value)}
+                                onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
+                                className="flex-1 text-sm px-4 py-2.5 rounded-full border border-gray-200 bg-gray-50 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                                type="text"
+                                placeholder={`Ask about ${place.name}...`}
+                            />
+                            <button
+                             onClick={() => sendMessage(input)}
+                             className="w-9 h-9 rounded-full bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center transition-colors">
+                                <PaperAirplaneIcon className="w-4 h-4 text-white" />
+                            </button>
                             </div>
                         )}
                         <div ref={bottomRef} />
