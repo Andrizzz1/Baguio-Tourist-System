@@ -274,7 +274,7 @@ const otherPlaces = [
         description: "Famous for its ube jam and strawberry products made by nuns. A must-stop for pasalubong...",
         about: "Good Shepherd Convent is a famous shop in Baguio City known for its homemade products like ube jam, strawberry jam, peanut brittle, and other local delicacies. It is run by the Good Shepherd Sisters and supports their mission. Visitors often line up to buy pasalubong items.",
         highlights: ["Ube jam", "Peanut brittle", "Strawberry preserves", "Pasalubong"],
-        image: "https://mybaguiocityguide.com/wp-content/uploads/2023/08/good-shepherd-baguio.jpg",
+        image: "https://i0.wp.com/mybaguiocityguide.com/wp-content/uploads/2023/08/good-shepherd-baguio.jpg?fit=959%2C540&ssl=1",
     },
     {
         name: "Igorot Stone Kingdom",
@@ -356,6 +356,34 @@ const otherPlaces = [
         about: "SM City Baguio is a large shopping mall located at Luneta Hill along Upper Session Road. It is owned by SM Prime Holdings and is known for its cool, open-air design. The mall offers shopping, dining, and entertainment with scenic views of Baguio’s mountains and city landscape.",
         highlights: ["Scenic mountain and city views","Restaurants and cafés", "Rooftop garden and event spaces","Open-air design","Scenic mountain and city views"],
         image: "https://baguioheraldexpressonline.com/wp-content/uploads/2020/06/sm-baguio-new.jpg",
+
+    },
+    {
+        name: "The Great Wall of Baguio",
+        location: "Purok Ongasan, Loakan Proper, Baguio City.",
+        rating: "4.5",
+        badge: "Dragon Treasure Castle",
+        badgeColor: "bg-green-100 text-green-700",
+        hours: "7:00AM - 9:00PM",
+        entry: "₱165",
+        description: "The Great Wall of Baguio offers a relaxing and picturesque experience for tourists and travelers. Its long staircase design, vibrant colors, and elevated viewing areas make it an eye-catching destination. Surrounded by pine trees and mountain views, the place provides a peaceful atmosphere perfect for sightseeing, photography, and short breaks during road trips along the historic Kennon Road route.",
+        about: "The Great Wall of Baguio is a popular tourist attraction located along Kennon Road in Baguio. Inspired by the famous Great Wall of China, it features colorful stairways, scenic viewpoints, and mountain surroundings. Visitors often stop here to take photos, enjoy the cool weather, and admire the beautiful landscapes while traveling to or from the city of Baguio.",
+        highlights: ["Colorful staircase inspired by the Great Wall of China","Scenic mountain and pine tree views", "Popular photo and selfie destination","Cool and refreshing weather","Elevated viewing areas for sightseeing"],
+        image: "https://scontent.fcrk2-3.fna.fbcdn.net/v/t39.30808-6/681883540_26744297948499878_8707729083592269040_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFSksj_xQJwhWJk8L9FTarIFzx3g7GMH_4XPHeDsYwf_rMPZIy0-jAhIgoBcdGLvNqqyqahlZJQng3tv_qjupgO&_nc_ohc=jJQO9s4lHZQQ7kNvwGIAABJ&_nc_oc=AdqbmOCHlc6YHQHhcyczFjTC6T-kHeYSX6MxdK9D4DNmPPfG5RWUcWYpph40Zv9NdDo&_nc_zt=23&_nc_ht=scontent.fcrk2-3.fna&_nc_gid=ZvX0IRQqfj4xY7xz-HDuSg&_nc_ss=7b2a8&oh=00_Af6RFjINGCgBcaAkyE41sXXiNoeJ96pn2pShDnHTetZx0A&oe=6A153B77",
+
+    },
+       {
+        name: "Sunshine Park Baguio",
+        location: "Baguio, Benguet, Philippines, near SM Baguio, UP Baguio, and along the Military Cut-Off area in Baguio.",
+        rating: "4.1",
+        badge: "Public Park",
+        badgeColor: "bg-blue-100 text-blue-700",
+        hours: "24Hrs",
+        entry: "Free Entry",
+        description: "Sunshine Park offers a peaceful break in the city with trees, seating areas, and walkways. It’s ideal for resting, studying outdoors, and casual gatherings near SM Baguio and UP Baguio.",
+        about: "Sunshine Park is a small urban park in Baguio known for its relaxing atmosphere, open green space, and nearby universities. It’s a common hangout for students and locals.",
+        highlights: ["Relaxing spot for students and locals","Near SM Baguio and UP Baguio", "Open areas for sitting, studying","Peaceful urban green space","Surrounded by trees and fresh mountain air"],
+        image: "https://d2kihw5e8drjh5.cloudfront.net/eyJidWNrZXQiOiJ1dGEtaW1hZ2VzIiwia2V5IjoicGxhY2VfaW1nLzM1ZTkxYTJhNDdhZTQzNmQ4NzE2YmI1OTg3ZGQ5MDAzIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo2NDAsImhlaWdodCI6NjQwLCJmaXQiOiJpbnNpZGUifSwicm90YXRlIjpudWxsLCJ0b0Zvcm1hdCI6ICJ3ZWJwIn19",
 
     },
     
