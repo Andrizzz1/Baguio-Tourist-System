@@ -154,8 +154,7 @@ export const ShareToCommunity = () => {
     useEffect(()=>{
         fetchPosts();
     },[]);
-
-    const handleDeletePost = async (postId) => {
+const handleDeletePost = async (postId) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user?.id || user?.users_id;
 
@@ -168,7 +167,7 @@ export const ShareToCommunity = () => {
     if (!confirmDelete) return;
 
     try {
-        const res = await fetch(`/api/community-posts/${postId}`, {
+        const res = await fetch(`/api/community-post-delete?postId=${postId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -181,7 +180,7 @@ export const ShareToCommunity = () => {
         const data = await res.json();
 
         if (res.ok) {
-            fetchPosts();
+            await fetchPosts();
         } else {
             alert(data.error);
         }
@@ -189,7 +188,6 @@ export const ShareToCommunity = () => {
         console.log("Delete post error:", err);
     }
 };
-
     useEffect(() => {
         injectCommunityStyles()
         const fetchCommunityStats = async () => {
@@ -200,7 +198,7 @@ export const ShareToCommunity = () => {
                 console.log("COMMUNITY DATA:", data)
                 if (res.ok) setTotalMembers(data.totalMembers)
                 else console.log("API error:", data.error)
-            } catch (error) {
+            }catch (error) {
                 console.log("Fetch error:", error)
             }
         }

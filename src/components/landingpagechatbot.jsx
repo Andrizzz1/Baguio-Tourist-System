@@ -44,19 +44,19 @@ export const ChatbotModal = ({ onClose }) => {
 
     }
 
-    const sendMessage = async(text) => {
-        const userMsg = text.trim() || input.trim()
-        
-        if (!userMsg) return
-        setMessages(prev => [
-            ...prev,
-            { from: 'user', text: userMsg }
-        ])
-        setLoading(true)
-        const aiReply = await sendToAI(userMsg)
-        setLoading(false)
-        setMessages(prev =>[...prev, { text: aiReply, from: "bot" }])
-        setInput('')
+        const sendMessage = async(text) => {
+            const userMsg = text.trim() || input.trim()
+            
+            if (!userMsg) return
+            setMessages(prev => [
+                ...prev,
+                { from: 'user', text: userMsg }
+            ])
+            setLoading(true)
+            const aiReply = await sendToAI(userMsg)
+            setLoading(false)
+            setMessages(prev =>[...prev, { text: aiReply, from: "bot" }])
+            setInput('')
     }
 
     return (

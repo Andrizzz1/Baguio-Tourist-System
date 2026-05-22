@@ -55,18 +55,25 @@ export const NameCard = () => {
             }
         `}</style>
 
-        <div className="nc-card relative overflow-hidden p-10 rounded-3xl h-72 grid bg-cover bg-center text-white w-7xl"
+        <div className="nc-card relative overflow-hidden p-10 rounded-3xl h-auto grid grid-cols-2 max-sm:grid-cols-1 bg-cover items-center bg-center text-white w-7xl"
             style={{ backgroundImage: `linear-gradient(120deg, rgba(4, 120, 87, 0.92), rgba(6, 95, 70, 0.72)),url('/imgs/bg.png')` }}>
-
-            <div className="nc-badge font-semibold text-white text-sm bg-emerald-500 w-fit h-fit py-1 px-2 rounded-2xl">
-                {weather?.main?.temp || "Loading temperature..."}°C · {weather?.weather?.[0]?.description || "Loading weather..."}
-            </div>
-
             <div>
-                <h1 className="nc-heading font-semibold text-emerald-50 text-5xl">Kamusta, {firstName}!</h1>
+                <div className="nc-badge font-semibold text-white text-sm bg-emerald-500 w-fit h-fit py-1 px-2 rounded-2xl">
+                    {weather?.main?.temp || "Loading temperature..."}°C · {weather?.weather?.[0]?.description || "Loading weather..."}
+                </div>
+                <div>
+                    <h1 className="nc-heading font-semibold text-emerald-50 text-5xl">Kamusta, {firstName}!</h1>
+                </div>
+                <p className="nc-subtitle max-w-xl text-emerald-100">Ready to explore the Summer Capital? Discover hidden trails, local cuisine, and the rich Cordilleran history — all guided by AI.</p>
             </div>
-
-            <p className="nc-subtitle max-w-xl text-emerald-100">Ready to explore the Summer Capital? Discover hidden trails, local cuisine, and the rich Cordilleran history — all guided by AI.</p>
+            
+            <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-4  gap-x-0.5 place-items-center justify-items-center justify-center text-emerald-100  text-xs">
+                <div className="bg-green-500/15 p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p>0</p><p>Spots Visited</p></div>
+                <div className="bg-green-500/15  p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p>0</p><p className="mt-1">Saved Places</p></div>
+                <div className="bg-green-500/15  p-2 rounded-2xl  w-20 h-20 flex flex-col justify-around"><p>0</p><p className="mt-1">Plannned Trips</p></div>
+                <div className="bg-green-500/15  p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p>0</p><p className="mt-1">Followers</p></div>
+            </div>
         </div>
+
     </section>
 }

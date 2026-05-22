@@ -2,6 +2,54 @@ import { NavBar } from "./components/nav";
 import TiltedCard from "./utilities/TiltedCard";
 import BubbleMenu from "./utilities/BubbleMenu.jsx";
 import { useNavigate} from 'react-router-dom'
+
+const transitionStyles = `
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .animate-fade-in-down {
+    animation: fadeInDown 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.7s ease both;
+  }
+  .animate-slide-in-left {
+    animation: slideInLeft 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .animate-slide-in-right {
+    animation: slideInRight 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .delay-100 { animation-delay: 0.10s; }
+  .delay-200 { animation-delay: 0.20s; }
+  .delay-300 { animation-delay: 0.30s; }
+  .delay-400 { animation-delay: 0.40s; }
+  .delay-500 { animation-delay: 0.50s; }
+  .delay-600 { animation-delay: 0.60s; }
+  .delay-700 { animation-delay: 0.70s; }
+`;
+
 export const Aboutus = () => {
   const navigate = useNavigate()
     const items = [
@@ -36,9 +84,11 @@ export const Aboutus = () => {
     github,
     gmail,
     linkedin,
+    animationClass = "animate-fade-in-up",
+    animationDelay = "delay-300",
   }) {
     return (
-      <div className="group shadow-lg hover:shadow-2xl transition-all duration-500 ease-out text-center p-2 bg-white/90 backdrop-blur-md rounded-3xl flex items-center flex-wrap justify-center mt-5 mx-1 max-md:mx-5 pb-6 border border-green-100 hover:-translate-y-2 hover:scale-[1.02]">
+      <div className={`group shadow-lg hover:shadow-2xl transition-all duration-500 ease-out text-center p-2 bg-white/90 backdrop-blur-md rounded-3xl flex items-center flex-wrap justify-center mt-5 mx-1 max-md:mx-5 pb-6 border border-green-100 hover:-translate-y-2 hover:scale-[1.02] ${animationClass} ${animationDelay}`}>
 
         <div className="transition-all duration-500 group-hover:scale-105">
           <TiltedCard
@@ -120,6 +170,9 @@ export const Aboutus = () => {
   return (
     <section className="bg-linear-to-br from-green-50 via-green-100 to-green-50 min-h-screen transition-all duration-700">
 
+      {/* Inject keyframe styles */}
+      <style>{transitionStyles}</style>
+
       <NavBar />
 
       <div className="sm:hidden">
@@ -138,16 +191,19 @@ export const Aboutus = () => {
 
       <div className="pt-15 max-sm:pt-20 flex gap-5 justify-center flex-col text-center h-[calc(50vh-90px)] transition-all duration-700">
 
-        <p className="text-gray-600 border-2 border-green-400 px-4 rounded-2xl bg-green-300 mx-auto shadow-md hover:scale-105 transition-all duration-300">
+        {/* Badge — fades in first */}
+        <p className="text-gray-600 border-2 border-green-400 px-4 rounded-2xl bg-green-300 mx-auto shadow-md hover:scale-105 transition-all duration-300 animate-fade-in-down delay-100">
           THE CREATORS
         </p>
 
-        <h1 className="text-7xl font-bold max-sm:text-4xl text-black tracking-tight drop-shadow-sm transition-all duration-500 hover:tracking-wide">
+        {/* Main heading — slides up after badge */}
+        <h1 className="text-7xl font-bold max-sm:text-4xl text-black tracking-tight drop-shadow-sm transition-all duration-500 hover:tracking-wide animate-fade-in-up delay-200">
           Meet the Team <br />
           <span className="text-green-700">Behind the Mist</span>
         </h1>
 
-        <p className="max-w-sm mx-auto text-gray-600 leading-relaxed transition-all duration-300 hover:text-gray-800">
+        {/* Subtext — fades in last in the hero */}
+        <p className="max-w-sm mx-auto text-gray-600 leading-relaxed transition-all duration-300 hover:text-gray-800 animate-fade-in delay-400">
           We're just two students inspired by Baguio, building tools to help you
           discover hidden gems.
         </p>
@@ -155,6 +211,7 @@ export const Aboutus = () => {
 
       <div className="mt-10 flex flex-wrap justify-center gap-2 pb-16 transition-all duration-700">
 
+        {/* First card slides in from the left */}
         <ProfileCard
           imgSrc="/imgs/John.jpg"
           description="Andrei, a Computer Engineering student from Baguio with skills in frontend and backend development. He works on the core logic of the Baguio Tourist System, helping build a smart, reliable, and user-friendly platform through React, JavaScript, Node.js, and web-based system development."
@@ -163,8 +220,11 @@ export const Aboutus = () => {
           github="Andrizzz1"
           gmail="andreimandapat09@gmail.com"
           linkedin="https://www.linkedin.com/in/andrei-domsing-165750341/"
+          animationClass="animate-slide-in-left"
+          animationDelay="delay-500"
         />
 
+        {/* Second card slides in from the right */}
         <ProfileCard
           imgSrc="/imgs/TRISTAN.jpeg"
           description="Tristan, a Computer Engineering student, frontend developer with skills in UI/UX design, responsive web development, and modern frontend technologies, and project collaborator who contributed to the visual direction of the Baguio Tourist System by suggesting fonts, helping source images, and supporting the overall design and content setup of the platform."
@@ -173,6 +233,8 @@ export const Aboutus = () => {
           github="definitelynotyuriii"
           gmail="delacruztristan02@gmail.com"
           linkedin="https://www.linkedin.com/in/tristan-dela-cruz-268143374/"
+          animationClass="animate-slide-in-right"
+          animationDelay="delay-700"
         />
 
       </div>
