@@ -9,13 +9,27 @@ const pool = new Pool({
 
 export default async function handler(req, res) {
     if (req.method === "GET") {
-        const { userId } = req.query;
+        const { userId, countOnly } = req.query;
 
         if (!userId) {
             return res.status(400).json({ error: "userId is required" });
         }
 
         try {
+        if (countOnly === "true") {
+            const result = await pool.query(
+                `
+                SELECT COUNT(*) AS total_saved
+                FROM saved_spots
+                WHERE user_id = $1
+                `,
+                [userId]
+            );
+
+            return res.status(200).json({
+                totalSaved: Number(result.rows[0].total_saved)
+            });
+        }
             const result = await pool.query(
                 `
                 SELECT *
