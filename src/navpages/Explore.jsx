@@ -148,6 +148,8 @@ function injectStyles() {
   document.head.appendChild(el)
 }
 
+
+
 const topPlaces = [
     {
         name: "Burnham Park",
@@ -580,7 +582,7 @@ const PlaceModal = ({ place, onClose }) => {
                             {/* HIGHLIGHTS */}
                             <h3 className="font-bold text-gray-900 mb-3 anim-fade-up" style={{ animationDelay: '0.32s' }}>Highlights</h3>
                             <div className="flex flex-wrap flex-row gap-2 mb-6">
-                                {place.highlights.map((h, i) => (
+                                {(place.highlights || []).map((h, i) => (
                                     <span
                                         key={i}
                                         className="bg-green-50 text-green-700 text-sm px-3 py-1 rounded-full border border-green-100 pill-appear"
@@ -704,7 +706,8 @@ const PlaceModal = ({ place, onClose }) => {
 }
 
 export const Explore = () => {
-    const [selected, setSelected] = useState(null)
+    const [savedSpots, setSavedSpots] = useState([]);
+    const [selected, setSelected] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams()
     const allPlaces = [...topPlaces, ...otherPlaces]
     const q          = searchParams.get('q') || ''
@@ -734,7 +737,78 @@ export const Explore = () => {
         : null
 
     const clearFilter = () => setSearchParams({})
+const getSpotId = (spot) => {
+    return spot.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+};
 
+const handleToggleSaveSpot = async (spot) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id || user?.users_id;
+
+    if (!userId) {
+        alert("Please login first.");
+        return;
+    }
+
+    const spotId = getSpotId(spot);
+    const isSaved = savedSpots.includes(spotId);
+
+    if (isSaved) {
+        try {
+            const res = await fetch(`/api/saved-spots?userId=${userId}&spotId=${spotId}`, {
+                method: "DELETE"
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setSavedSpots((prev) => prev.filter((id) => id !== spotId));
+            } else {
+                alert(data.error);
+            }
+        } catch (err) {
+            console.log("Unsave spot error:", err);
+        }
+    } else {
+        try {
+            const res = await fetch("/api/saved-spots", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    spot_id: spotId,
+                    spot_name: spot.name,
+                    spot_location: spot.location,
+                    spot_rating: String(spot.rating),
+                    spot_badge: spot.badge,
+                    spot_hours: spot.hours,
+                    spot_entry: spot.entry,
+                    spot_description: spot.description,
+                    spot_about: spot.about,
+                    spot_highlights: spot.highlights,
+                    spot_image: spot.image
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setSavedSpots((prev) =>
+                    prev.includes(spotId) ? prev : [...prev, spotId]
+                );
+            } else {
+                alert(data.error);
+            }
+        } catch (err) {
+            console.log("Save spot error:", err);
+        }
+    }
+};
     return (
         <section className="min-h-screen bg-white">
             <DashboardNav />
@@ -848,15 +922,21 @@ export const Explore = () => {
                                                 <MapPinIcon className="w-3.5 h-3.5" />{place.location}
                                             </div>
                                         </div>
-                                        <button
-                                            onClick={()=>{ place.save = !place.save }}
-                                            className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center
-                                                    transition-all duration-200 hover:scale-110 active:scale-95">
-                                            {place.save
-                                                ? <HeartIcon className="w-4 h-4 text-rose-500 fds-heart-pop" />
-                                                : <HeartOutline className="w-4 h-4 text-gray-400" />
-                                            }
-                                        </button>                                        
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleToggleSaveSpot(place);
+                                        }}
+                                        className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                                            >
+                                        <HeartOutline
+                                            className={`w-4 h-4 transition-colors duration-200 ${
+                                                savedSpots.includes(getSpotId(place))
+                                                    ? "text-red-500 fill-red-500"
+                                                    : "text-gray-400"
+                                            }`}
+                                        />
+                                    </button>
                                     </div>
                                     
                                 ))}
@@ -893,15 +973,21 @@ export const Explore = () => {
                                             </div>
                                             <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">{place.description}</p>
                                         </div>
-                                        <button
-                                            onClick={()=>{ place.save = !place.save }}
-                                            className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center
-                                                    transition-all duration-200 hover:scale-110 active:scale-95">
-                                            {place.save
-                                                ? <HeartIcon className="w-4 h-4 text-rose-500 fds-heart-pop" />
-                                                : <HeartOutline className="w-4 h-4 text-gray-400" />
-                                            }
-                                        </button>  
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleToggleSaveSpot(place);
+                                        }}
+                                        className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                                            >
+                                        <HeartOutline
+                                            className={`w-4 h-4 transition-colors duration-200 ${
+                                                savedSpots.includes(getSpotId(place))
+                                                    ? "text-red-500 fill-red-500"
+                                                    : "text-gray-400"
+                                            }`}
+                                        />
+                                    </button>
                                     </div>
                                 ))}
                             </div>
