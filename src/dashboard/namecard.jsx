@@ -5,6 +5,7 @@ export const NameCard = () => {
     const user = JSON.parse(localStorage.getItem('user'))
     const firstName = user?.username?.split(' ')[0] || 'User';
     const [weather, setWeather] = useState()
+    const [savecount, setSavecount] = useState(0)
     const fetchDATA = async () => {
         try {
             const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=16.402332&lon=120.596008&appid=${weather_api}&units=metric`)
@@ -16,7 +17,27 @@ export const NameCard = () => {
         }
     }
 
-    useEffect(() => { fetchDATA() }, [])
+
+    const fetchSavedCount = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id || user?.users_id;
+
+    if (!userId) return;
+
+    try {
+        const res = await fetch(`/api/saved-spots?userId=${userId}&countOnly=true`);
+        const data = await res.json();
+
+        if (res.ok) {
+            setSavecount(data.totalSaved);
+        }
+    } catch (err) {
+        console.log(err);
+        }
+    };
+    useEffect(() => { fetchDATA();
+                    fetchSavedCount();
+     }, [])
 
     return <section className="text-black flex justify-center m-5">
         <style>{`
@@ -67,11 +88,11 @@ export const NameCard = () => {
                 <p className="nc-subtitle max-w-xl text-emerald-100">Ready to explore the Summer Capital? Discover hidden trails, local cuisine, and the rich Cordilleran history — all guided by AI.</p>
             </div>
             
-            <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-4  gap-x-0.5 place-items-center justify-items-center justify-center text-emerald-100  text-xs">
-                <div className="bg-green-500/15 p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p>0</p><p>Spots Visited</p></div>
-                <div className="bg-green-500/15  p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p>0</p><p className="mt-1">Saved Places</p></div>
-                <div className="bg-green-500/15  p-2 rounded-2xl  w-20 h-20 flex flex-col justify-around"><p>0</p><p className="mt-1">Plannned Trips</p></div>
-                <div className="bg-green-500/15  p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p>0</p><p className="mt-1">Followers</p></div>
+            <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-4 text-center  gap-x-0.5 place-items-center justify-items-center justify-center text-emerald-100  text-xs">
+                <div className="bg-green-500/15 p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p className="text-xl">0</p><p >Spots Visited</p></div>
+                <div className="bg-green-500/15  p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p className="text-xl">{savecount}</p><p className="mt-1">Saved Places</p></div>
+                <div className="bg-green-500/15  p-2 rounded-2xl  w-20 h-20 flex flex-col justify-around"><p className="text-xl">0</p><p className="mt-1">Plannned Trips</p></div>
+                <div className="bg-green-500/15  p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p className="text-xl">0</p><p className="mt-1">Followers</p></div>
             </div>
         </div>
 
