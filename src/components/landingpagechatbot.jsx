@@ -1,6 +1,6 @@
 import { useState,useEffect,useRef } from 'react'
 import { XMarkIcon, PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/solid'
-
+import { RiRobot2Fill } from 'react-icons/ri'
 const INITIAL_MESSAGES = [
     { from: 'bot', text: 'Hi there! 👋 I\'m Ask Baguio Bot, your smart travel guide for the City of Pines. How can I help you today?' },
 ]
@@ -67,7 +67,7 @@ export const ChatbotModal = ({ onClose }) => {
                 <div className="bg-green-900 px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="bg-green-700 p-2 rounded-xl">
-                            <img className='h-6' src="/imgs/chatbotLogo.png" alt="Chatlogo" />
+                            <RiRobot2Fill className="w-7 h-7 text-white" />
                         </div>
                         <div>
                             <h2 className="text-white font-bold text-lg leading-tight">Ask Baguio Bot</h2>
@@ -90,7 +90,7 @@ export const ChatbotModal = ({ onClose }) => {
                             
                             {msg.from === 'bot' && (
                                 <div className="w-7 h-7 rounded-full bg-green-900 flex items-center justify-center mr-2 mt-1 shrink-0">
-                                     <img className='h-6' src="/imgs/chatbotLogo.png" alt="Chatlogo" />
+                                     <RiRobot2Fill className="ml-1 w-4  text-white" />,
                                 </div>
                             )}
                            

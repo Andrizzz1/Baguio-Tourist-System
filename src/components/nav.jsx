@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router-dom'
 export const NavBar = ()=>{
     const navigate = useNavigate()
     return <div className="flex font-bold items-center justify-around py-4 max-sm:hidden bg-white ">
-             <h1 className="font-extrabold text-3xl text-green-900 uppercase max-sm:hidden">Ask Baguio</h1>
+       <div className='flex'>
+              <img className='w-10' src="/imgs/logo.png" alt="" />
+              <h1 className="font-extrabold text-3xl text-green-900 uppercase max-sm:hidden">Ask Baguio</h1>
+       </div>
+             
              <div className="flex gap-9 text-green-800 items-center max-sm:hidden">
                     <a href="#" className=" cursor-pointer 
                     relative
@@ -34,7 +38,7 @@ export const NavBar = ()=>{
                     hover:after:w-full
                     text-xl
                     max-sm:text-sm
-                    " onClick={()=>navigate('/AboutUs')}>About Us</a>
+                    " onClick={()=>navigate('/AboutUs')}>Developers</a>
                     <a href="#" onClick={()=>navigate('/Register')} className="hover:bg-green-600 transition-all duration-400 max-sm:text-sm text-xl cursor-pointer text-white bg-green-900 px-4 py-1.5 rounded-2xl">Sign Up</a>
                  
              </div>
