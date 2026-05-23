@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { MagnifyingGlassIcon, BookOpenIcon, SparklesIcon } from '@heroicons/react/24/solid'
+import { MagnifyingGlassIcon, BookOpenIcon} from '@heroicons/react/24/solid'
+import { RiRobot2Fill } from 'react-icons/ri'
 
 const STEPS = [
     {
@@ -20,7 +21,7 @@ const STEPS = [
     },
     {
         number: '03',
-        icon: <SparklesIcon className="w-7 h-7 text-white" />,
+        icon: <RiRobot2Fill className="w-7 h-7 text-white" />,
         title: 'Ask the AI Guide',
         desc: 'Get instant itinerary suggestions, travel tips, and personalized recommendations from our AI.',
         anim: 'fromRight',

@@ -1,8 +1,42 @@
 import { DashboardNav } from "../dashboard/DashboardNav"
 import { BookmarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 export const Saved = ()=>{
     const [selected, setSelected] = useState('all')
+    const [saveData,setSaveData] = useState([])
+
+
+    const [savedSpots, setSavedSpots] = useState([]);
+
+    const fetchSaved = async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id || user?.users_id;
+
+        if (!userId) {
+            console.log("No user ID found");
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/saved-spots?userId=${userId}`);
+            const data = await res.json();
+
+            if (res.ok && Array.isArray(data)) {
+                setSavedSpots(data);
+            } else {
+                console.log(data.error || "Invalid saved spots data");
+                setSavedSpots([]);
+            }
+        } catch (err) {
+            console.log("Fetch saved spots error:", err);
+            setSavedSpots([]);
+        }
+    };
+
+    useEffect(() => {
+        fetchSaved();
+    }, []);
+
     return <section>
         <DashboardNav/>
         <div className="flex justify-center m-5">
@@ -36,6 +70,21 @@ export const Saved = ()=>{
                 <input type="text" className="outline-0" placeholder="Search saved..." />
             </div>
         </div>
+        </div>
+
+        
+        <div className="flex flex-wrap justify-around mt-10 lg:mx-20">
+            {savedSpots.length > 0 ? (
+                savedSpots.map((spot) => (
+                    <div className="flex flex-col w-64" key={spot.saved_id}>
+                        <img className="rounded-2xl h-44" src={spot.spot_image} alt={spot.spot_name} />
+                        <h3>{spot.spot_name}</h3>
+                        <p>{spot.spot_location}</p>
+                    </div>
+                ))
+            ) : (
+                <p>No saved spots yet.</p>
+            )}
         </div>
     </section>
 }

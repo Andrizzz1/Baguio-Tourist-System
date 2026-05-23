@@ -1,5 +1,5 @@
 import { BookmarkIcon, MapPinIcon, MapIcon } from '@heroicons/react/24/outline'
-
+import { useNavigate } from 'react-router-dom'
 const actions = [
     {
         icon: <BookmarkIcon className="w-6 h-6 text-green-700" />,
@@ -22,8 +22,15 @@ const actions = [
 ]
 
 function ActionCard({ icon, name, desc, bg, index }) {
+    const navigate = useNavigate()
+    function buttonIdentifier(){
+        if(name === "Saved Spots"){
+             navigate('/saved')
+        }
+    }
     return (
         <div
+            
             className="group bg-white border border-gray-100 rounded-2xl p-5 flex flex-col gap-3 shadow-sm
                         hover:shadow-md hover:-translate-y-1 hover:border-green-200
                         transition-all duration-300 cursor-pointer qa-card"
@@ -37,7 +44,7 @@ function ActionCard({ icon, name, desc, bg, index }) {
                 <h3 className="font-semibold text-gray-800 text-sm">{name}</h3>
                 <p className="text-gray-400 text-xs mt-1 leading-relaxed">{desc}</p>
             </div>
-            <span className="text-xs text-green-700 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span onClick={buttonIdentifier} className="text-xs text-green-700 font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 Open →
             </span>
         </div>
