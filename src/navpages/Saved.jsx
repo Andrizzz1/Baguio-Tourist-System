@@ -4,8 +4,7 @@ import { useState, useEffect } from "react"
 export const Saved = ()=>{
     const [selected, setSelected] = useState('all')
     const [saveData,setSaveData] = useState([])
-
-
+    const [allData, setAllData] = useState([])
     const [savedSpots, setSavedSpots] = useState([]);
 
     const fetchSaved = async () => {
@@ -72,9 +71,9 @@ export const Saved = ()=>{
         </div>
         </div>
 
-        
+     
         <div className="flex flex-wrap justify-around mt-10 lg:mx-20">
-            {savedSpots.length > 0 ? (
+            {(savedSpots.length > 0 && selected === "saved")?(
                 savedSpots.map((spot) => (
                     <div className="flex flex-col w-64" key={spot.saved_id}>
                         <img className="rounded-2xl h-44" src={spot.spot_image} alt={spot.spot_name} />
