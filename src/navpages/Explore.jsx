@@ -520,7 +520,8 @@ const PlaceModal = ({ place, onClose }) => {
         }catch(err){
             console.log(err)
         }
-    }}
+    }
+}
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [messages])
