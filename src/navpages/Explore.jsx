@@ -139,6 +139,13 @@ const STYLES = `
   .arrow-link:hover { gap: 8px; }
 `
 
+    const getSpotId = (spot) => {
+        return spot.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    };
+
 function injectStyles() {
   if (typeof document === "undefined") return
   if (document.getElementById("explore-transitions")) return
@@ -425,10 +432,95 @@ const PlaceModal = ({ place, onClose }) => {
     const [loading, setLoading] = useState(false)
     const [chip, setChips] = useState(true)
     const [weather, setWeather] = useState()
+    const [itineraries, setIteneraries] = useState([]);
     const bottomRef = useRef(null) 
 
+    const fetchIteneraries = async () =>{
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id || user?.users_id;
 
+        if (!userId) return;
+        try {
+            const res = await fetch(`/api/itinerary?userId=${userId}`);
+            const data = await res.json();
+        
+            if (res.ok && Array.isArray(data)){
+                const AddedItinerary = data.map((spot) => spot.spot_id);
+                setIteneraries(AddedItinerary);
+            }else{
+                console.log(data.error || "Invalid Itinerary data")
+                
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    useEffect(()=>{
+        fetchIteneraries();
+    },[]);
 
+    const handleAddItinerary = async (spot) =>{
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id || user?.users_id;
+
+    if (!userId) {
+        alert("Please login first.");
+        return;
+    }
+    const ItineraryId = getSpotId(spot)
+    const isSaved = itineraries.includes(ItineraryId)
+    
+
+    if (isSaved){
+        try{
+            const res = await fetch(`/api/itinerary?spotId=${ItineraryId}&userId=${userId}`, {
+                method: "DELETE"
+            })
+
+            const data = await res.json();
+
+            if (res.ok){
+                setIteneraries(prev => prev.filter(id => id !== ItineraryId))
+            }else{
+                alert( "Failed to delete itinerary")
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }else{
+        try{
+            const res = await fetch("/api/itinerary",{
+                method: "POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    spot_id: ItineraryId,
+                    spot_name: spot.name,
+                    spot_location: spot.location,
+                    spot_rating: String(spot.rating),
+                    spot_badge: spot.badge,
+                    spot_hours: spot.hours,
+                    spot_entry: spot.entry,
+                    spot_description: spot.description,
+                    spot_about: spot.about,
+                    spot_highlights: spot.highlights,
+                    spot_image: spot.image                   
+                })
+            });
+
+            const data = await res.json();
+            if (res.ok){
+                setIteneraries((prev) =>
+                    prev.includes(ItineraryId) ? prev:[...prev, ItineraryId])
+            }else{
+                alert("Failed to add to itinerary")
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }}
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [messages])
@@ -438,7 +530,6 @@ const PlaceModal = ({ place, onClose }) => {
             try {
                 const weatherRes = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=16.402332&lon=120.596008&appid=' + weather_api + '&units=metric')
                 const WeatherData = await weatherRes.json();
-                console.log(WeatherData)
                 setWeather({ ...WeatherData })
             } catch (err) {
                 console.log(err)
@@ -594,7 +685,9 @@ const PlaceModal = ({ place, onClose }) => {
                             </div>
                             {/* ACTIONS */}
                             <div className="flex gap-3 anim-fade-up" style={{ animationDelay: '0.45s' }}>
-                                <button className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-2xl text-sm btn-press">
+                                <button
+                                 onClick={()=>{handleAddItinerary(place)}}
+                                 className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-2xl text-sm btn-press">
                                     Add to itinerary
                                 </button>
                                 <button onClick={()=>{showChatbot(false)}} className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-800 font-semibold py-3 rounded-2xl text-sm btn-ghost">
@@ -763,6 +856,49 @@ export const Explore = () => {
     } catch (err) {
         console.log("Fetch saved spots error:", err);
         }
+    };
+
+useEffect(() => {
+    fetchSavedSpots();
+}, []);    
+const handleToggleSaveSpot = async (spot) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id || user?.users_id;
+
+    if (!userId) {
+        alert("Please login first.");
+        return;
+    }
+
+    const spotId = getSpotId(spot);
+    const isSaved = savedSpots.includes(spotId);
+
+    if (isSaved) {
+        try {
+            const res = await fetch(`/api/saved-spots?userId=${userId}&spotId=${spotId}`, {
+                method: "DELETE"
+            });
+
+
+    const fetchSavedSpots = async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id || user?.users_id;
+
+        if (!userId) return;
+
+        try {
+            const res = await fetch(`/api/saved-spots?userId=${userId}`);
+            const data = await res.json();
+
+            if (res.ok && Array.isArray(data)) {
+                const savedIds = data.map((spot) => spot.spot_id);
+                setSavedSpots(savedIds);
+            } else {
+                console.log(data.error || "Invalid saved spots data");
+            }
+        } catch (err) {
+            console.log("Fetch saved spots error:", err);
+            }
     };
 
 useEffect(() => {
