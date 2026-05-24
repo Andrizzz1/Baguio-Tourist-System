@@ -872,7 +872,7 @@ const handleToggleSaveSpot = async (spot) => {
     if (isSaved) {
         try {
             const res = await fetch(`/api/saved-spots?userId=${userId}&spotId=${spotId}`, {
-                method: "DELETE"
+                method: "DELETE",
             });
 
             const data = await res.json();
@@ -880,46 +880,48 @@ const handleToggleSaveSpot = async (spot) => {
             if (res.ok) {
                 setSavedSpots((prev) => prev.filter((id) => id !== spotId));
             } else {
-                alert(data.error);
+                alert(data.error || "Failed to unsave spot");
             }
         } catch (err) {
             console.log("Unsave spot error:", err);
         }
-    } else {
-        try {
-            const res = await fetch("/api/saved-spots", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    spot_id: spotId,
-                    spot_name: spot.name,
-                    spot_location: spot.location,
-                    spot_rating: String(spot.rating),
-                    spot_badge: spot.badge,
-                    spot_hours: spot.hours,
-                    spot_entry: spot.entry,
-                    spot_description: spot.description,
-                    spot_about: spot.about,
-                    spot_highlights: spot.highlights,
-                    spot_image: spot.image
-                })
-            });
 
-            const data = await res.json();
+        return;
+    }
 
-            if (res.ok) {
-                setSavedSpots((prev) =>
-                    prev.includes(spotId) ? prev : [...prev, spotId]
-                );
-            } else {
-                alert(data.error);
-            }
-        } catch (err) {
-            console.log("Save spot error:", err);
+    try {
+        const res = await fetch("/api/saved-spots", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                spot_id: spotId,
+                spot_name: spot.name,
+                spot_location: spot.location,
+                spot_rating: String(spot.rating),
+                spot_badge: spot.badge,
+                spot_hours: spot.hours,
+                spot_entry: spot.entry,
+                spot_description: spot.description,
+                spot_about: spot.about,
+                spot_highlights: spot.highlights,
+                spot_image: spot.image,
+            }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            setSavedSpots((prev) =>
+                prev.includes(spotId) ? prev : [...prev, spotId]
+            );
+        } else {
+            alert(data.error || "Failed to save spot");
         }
+    } catch (err) {
+        console.log("Save spot error:", err);
     }
 };
     return (
