@@ -831,6 +831,54 @@ export const Explore = () => {
         : null
 
     const clearFilter = () => setSearchParams({})
+    const getSpotId = (spot) => {
+        return spot.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    };
+
+    const fetchSavedSpots = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id || user?.users_id;
+
+    if (!userId) return;
+
+    try {
+        const res = await fetch(`/api/saved-spots?userId=${userId}`);
+        const data = await res.json();
+
+        if (res.ok && Array.isArray(data)) {
+            const savedIds = data.map((spot) => spot.spot_id);
+            setSavedSpots(savedIds);
+        } else {
+            console.log(data.error || "Invalid saved spots data");
+        }
+    } catch (err) {
+        console.log("Fetch saved spots error:", err);
+        }
+    };
+
+useEffect(() => {
+    fetchSavedSpots();
+}, []);    
+const handleToggleSaveSpot = async (spot) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id || user?.users_id;
+
+    if (!userId) {
+        alert("Please login first.");
+        return;
+    }
+
+    const spotId = getSpotId(spot);
+    const isSaved = savedSpots.includes(spotId);
+
+    if (isSaved) {
+        try {
+            const res = await fetch(`/api/saved-spots?userId=${userId}&spotId=${spotId}`, {
+                method: "DELETE"
+            });
 
 
     const fetchSavedSpots = async () => {
