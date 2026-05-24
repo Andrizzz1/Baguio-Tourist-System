@@ -9,27 +9,27 @@ const pool = new Pool({
 
 export default async function handler(req, res) {
     if (req.method === "GET") {
-        const { userId, countOnly } = req.query;
-
+        const { userId } = req.query;
+        //, countOnly
         if (!userId) {
             return res.status(400).json({ error: "userId is required" });
         }
 
         try {
-            if (countOnly === "true") {
-                const result = await pool.query(
-                    `
-                    SELECT COUNT(*) AS total_itinerary
-                    FROM itinerary
-                    WHERE user_id = $1
-                    `,
-                    [userId]
-                );
+            // if (countOnly === "true") {
+            //     const result = await pool.query(
+            //         `
+            //         SELECT COUNT(*) AS total_itinerary
+            //         FROM itinerary
+            //         WHERE user_id = $1
+            //         `,
+            //         [userId]
+            //     );
 
-                return res.status(200).json({
-                    totalItinerary: Number(result.rows[0].total_itinerary)
-                });
-            }
+            //     return res.status(200).json({
+            //         totalItinerary: Number(result.rows[0].total_itinerary)
+            //     });
+            // }
 
             const result = await pool.query(
                 `

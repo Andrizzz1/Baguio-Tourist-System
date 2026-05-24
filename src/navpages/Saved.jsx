@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 export const Saved = ()=>{
     const [selected, setSelected] = useState('all')
     const [saveData,setSaveData] = useState([])
+    const [itineraries, setIteneraries] = useState([]);
     const [allData, setAllData] = useState([])
     const [savedSpots, setSavedSpots] = useState([]);
 
@@ -32,7 +33,30 @@ export const Saved = ()=>{
         }
     };
 
+    const fetchItinerary = async () =>{
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id || user?.users_id;
+
+        if (!userId) {
+            console.log("No user ID found");
+            return;
+        }
+        try{
+            const res = await fetch(`/api/itinerary?userId=${userId}`);
+            const data = await res.json();
+
+            if(res.ok && Array.isArray(data)){
+                setIteneraries(data);
+            }else{
+                setIteneraries([])
+            }
+        }catch(err){
+            console.log(err)
+            setIteneraries([])
+        }     
+    }
     useEffect(() => {
+        fetchItinerary();
         fetchSaved();
     }, []);
 
@@ -60,7 +84,7 @@ export const Saved = ()=>{
                 <ul className="flex flex-wrap gap-5 text-md items-center ">
                     <li onClick={()=>{setSelected("all")}} className={`cursor-pointer transition-all 1s ${selected==="all"?"bg-white p-1 rounded-full shadow-2xl":"text-gray-400"}`}>All</li>
                     <li onClick={()=>{setSelected("saved")}}  className={`cursor-pointer transition-all 1s ${selected==="saved"?"bg-white p-1 rounded-full shadow-2xl":"text-gray-400"}`}>Saved Spots</li>
-                    <li onClick={()=>{setSelected("itenerary")}}  className={`cursor-pointer transition-all 1s ${selected==="itenerary"?"bg-white p-1 rounded-full shadow-2xl":"text-gray-400"}`}>Itineraries</li>
+                    <li onClick={()=>{setSelected("itenerary")}}  className={`cursor-pointer transition-all 1s ${selected==="itenerary"?" bg-white p-1 rounded-full shadow-2xl":"text-gray-400"}`}>Itineraries</li>
                 </ul>
             </div>
 
@@ -72,8 +96,9 @@ export const Saved = ()=>{
         </div>
 
      
-        <div className="flex flex-wrap justify-around mt-10 lg:mx-20">
-            {(savedSpots.length > 0 && selected === "saved")?(
+        <div>
+            <div className={`flex flex-wrap justify-around mt-10 lg:mx-20 ${selected !== "saved"?"hidden":"block"}`}>
+            {savedSpots.length > 0 ?(
                 savedSpots.map((spot) => (
                     <div className="flex flex-col w-64" key={spot.saved_id}>
                         <img className="rounded-2xl h-44" src={spot.spot_image} alt={spot.spot_name} />
@@ -81,9 +106,26 @@ export const Saved = ()=>{
                         <p>{spot.spot_location}</p>
                     </div>
                 ))
-            ) : (
+            ): (
                 <p>No saved spots yet.</p>
-            )}
+            )}              
+            </div>
+
+            <div className={`flex flex-wrap justify-around mt-10 lg:mx-20 ${selected !== "itenerary"?"hidden":"block"}`}>
+                {itineraries.length > 0 ? (
+                    itineraries.map((itinerary) => (
+                        <div key={itinerary.itenerary_id} className="w-64 bg-white rounded-2xl shadow-lg overflow-hidden m-2">
+                            <img src={itinerary.spot_image} alt={itinerary.spot_name} className="w-full h-44 object-cover" />
+                            <div className="p-4">
+                                <h3 className="font-bold text-lg">{itinerary.spot_name}</h3>
+                                <p className="text-gray-600">{itinerary.spot_location}</p>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No itineraries saved yet.</p>
+                )}
+            </div>
         </div>
     </section>
 }
