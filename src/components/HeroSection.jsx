@@ -7,13 +7,14 @@ export const HeroSection = () => {
     const navigate = useNavigate()
     const [chatOpen, setChatOpen] = useState(false)
     const [visible, setVisible] = useState(false)
+    const [loginGlow, setLoginGlow] = useState(false)
+    const [chatGlow, setChatGlow] = useState(false)
     const canvasRef = useRef(null)
 
     useEffect(() => {
         setVisible(true)
     }, [])
 
-    // Floating particle canvas
     useEffect(() => {
         const canvas = canvasRef.current
         if (!canvas) return
@@ -51,9 +52,26 @@ export const HeroSection = () => {
         return () => cancelAnimationFrame(raf)
     }, [])
 
+    const handleLoginClick = () => {
+        setLoginGlow(true)
+        setTimeout(() => setLoginGlow(false), 700)
+        navigate('/Signin')
+    }
+
+    const handleChatClick = () => {
+        setChatGlow(true)
+        setTimeout(() => setChatGlow(false), 700)
+        setChatOpen(true)
+    }
+
     return (
         <section>
-            {/* Keyframes injected once */}
+            {/* Google Fonts - Playfair Display for heading */}
+            <link
+                href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap"
+                rel="stylesheet"
+            />
+
             <style>{`
                 @keyframes auroraShift {
                     0%   { opacity: 0.7; transform: scale(1) translateY(0); }
@@ -72,26 +90,149 @@ export const HeroSection = () => {
                     0%   { opacity: 0.18; transform: scale(1); }
                     100% { opacity: 0.34; transform: scale(1.12); }
                 }
-                .hero-btn-login:hover  { background: rgba(120,210,150,0.12); border-color: rgba(120,210,150,0.85); color: #e8f4ec; transform: scale(1.07); box-shadow: 0 0 22px rgba(60,180,90,0.2); }
-                .hero-btn-chat:hover   { background: linear-gradient(135deg,#22803e,#196233); transform: scale(1.07); box-shadow: 0 6px 32px rgba(30,150,70,0.45); }
-                .hero-btn-login, .hero-btn-chat { transition: all 0.3s ease; }
+
+                /* --- Background image slow zoom-drift --- */
+                @keyframes heroBgDrift {
+                    0%   { transform: scale(1.0) translate(0px, 0px); }
+                    33%  { transform: scale(1.06) translate(-8px, -5px); }
+                    66%  { transform: scale(1.04) translate(6px, -10px); }
+                    100% { transform: scale(1.0) translate(0px, 0px); }
+                }
+
+                /* --- Ripple burst on click --- */
+                @keyframes rippleBurst {
+                    0%   { transform: scale(0.6); opacity: 0.9; }
+                    60%  { transform: scale(2.2); opacity: 0.4; }
+                    100% { transform: scale(3.2); opacity: 0; }
+                }
+                @keyframes rippleBurst2 {
+                    0%   { transform: scale(0.4); opacity: 0.6; }
+                    60%  { transform: scale(1.8); opacity: 0.25; }
+                    100% { transform: scale(2.8); opacity: 0; }
+                }
+                @keyframes glowFlash {
+                    0%   { box-shadow: 0 0 0px rgba(60,180,90,0); }
+                    30%  { box-shadow: 0 0 50px rgba(60,200,100,0.8), 0 0 100px rgba(30,160,70,0.45); }
+                    100% { box-shadow: 0 0 0px rgba(60,180,90,0); }
+                }
+                @keyframes glowFlashChat {
+                    0%   { box-shadow: 0 4px 22px rgba(30,120,60,0.35); }
+                    30%  { box-shadow: 0 0 50px rgba(60,210,110,0.9), 0 0 120px rgba(20,170,70,0.55), inset 0 0 20px rgba(100,240,130,0.2); }
+                    100% { box-shadow: 0 4px 22px rgba(30,120,60,0.35); }
+                }
+
+                /* Pine tree subtle sway */
+                @keyframes treeSway {
+                    0%   { transform: scaleX(1) translateX(0); }
+                    50%  { transform: scaleX(1.005) translateX(2px); }
+                    100% { transform: scaleX(1) translateX(0); }
+                }
+
+                .hero-bg-image {
+                    position: absolute;
+                    inset: -5%;
+                    background-image: url('/imgs/pines-hero.jpg');
+                    background-size: cover;
+                    background-position: center;
+                    animation: heroBgDrift 20s ease-in-out infinite;
+                    will-change: transform;
+                }
+
+                .hero-tree-layer {
+                    animation: treeSway 12s ease-in-out infinite;
+                    transform-origin: bottom center;
+                }
+
+                /* --- Button base styles --- */
+                .hero-btn-login {
+                    position: relative;
+                    overflow: hidden;
+                    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+                }
+                .hero-btn-login:hover {
+                    background: rgba(120,210,150,0.12) !important;
+                    border-color: rgba(120,210,150,0.85) !important;
+                    color: #e8f4ec !important;
+                    transform: scale(1.07);
+                    box-shadow: 0 0 22px rgba(60,180,90,0.2);
+                }
+                .hero-btn-login.glow-active {
+                    animation: glowFlash 0.7s ease-out forwards;
+                    transform: scale(0.96);
+                }
+
+                .hero-btn-chat {
+                    position: relative;
+                    overflow: hidden;
+                    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+                }
+                .hero-btn-chat:hover {
+                    background: linear-gradient(135deg,#22803e,#196233) !important;
+                    transform: scale(1.07);
+                    box-shadow: 0 6px 32px rgba(30,150,70,0.45);
+                }
+                .hero-btn-chat.glow-active {
+                    animation: glowFlashChat 0.7s ease-out forwards;
+                    transform: scale(0.96);
+                }
+
+                /* Ripple element */
+                .btn-ripple {
+                    position: absolute;
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    top: 50%;
+                    left: 50%;
+                    margin: -30px 0 0 -30px;
+                    pointer-events: none;
+                }
+                .btn-ripple-1 {
+                    background: radial-gradient(circle, rgba(120,255,150,0.55) 0%, transparent 70%);
+                    animation: rippleBurst 0.7s ease-out forwards;
+                }
+                .btn-ripple-2 {
+                    background: radial-gradient(circle, rgba(80,230,120,0.35) 0%, transparent 70%);
+                    animation: rippleBurst2 0.7s ease-out 0.05s forwards;
+                }
+
+                /* City of Pines text glow */
+                .city-of-pines {
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    color: rgba(120,210,150,0.95);
+                    text-shadow:
+                        0 0 20px rgba(60,200,100,0.5),
+                        0 0 60px rgba(30,160,70,0.25),
+                        0 2px 40px rgba(0,80,30,0.5);
+                    transition: text-shadow 0.4s ease;
+                }
+                .city-of-pines:hover {
+                    text-shadow:
+                        0 0 30px rgba(80,230,120,0.75),
+                        0 0 80px rgba(40,200,90,0.45),
+                        0 0 120px rgba(20,150,60,0.25);
+                }
+
+                .hero-main-title {
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                    font-weight: 00;
+                }
 
                 @media (min-height: 900px) and (min-width: 600px) and (orientation: portrait) {
-                    .hero-h1 {
-                         /* equivalent to text-6xl */
-                        margin-top: 10rem;
-                    }
+                    .hero-h1 { margin-top: 10rem; }
                 }
             `}</style>
 
             <div
-                className="max-sm:flex max-sm:flex-col max-sm:justify-center h-[calc(100vh-70px)] max-sm:h-screen bg-cover bg-center rounded-t-xl relative overflow-hidden"
-                style={{
-                    backgroundImage: "url('/imgs/background.png')",
-                    backgroundColor: '#0a1a0f',
-                    backgroundBlendMode: 'multiply',
-                }}
+                className="max-sm:flex max-sm:flex-col max-sm:justify-center h-[calc(100vh-70px)] max-sm:h-screen rounded-t-xl relative overflow-hidden"
+                style={{ backgroundColor: '#0a1a0f' }}
             >
+                {/* Animated background image */}
+                <div className="hero-bg-image" />
+
+                {/* Dark overlay to keep text readable */}
+                <div className="absolute inset-0 pointer-events-none" style={{ background: 'rgba(5,18,8,0.42)' }} />
+
                 {/* Glow orbs */}
                 <div className="absolute pointer-events-none" style={{ width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(circle, rgba(30,110,55,0.35) 0%, transparent 70%)', top: -120, left: -80, animation: 'orbPulse 8s ease-in-out infinite alternate' }} />
                 <div className="absolute pointer-events-none" style={{ width: 280, height: 280, borderRadius: '50%', background: 'radial-gradient(circle, rgba(15,75,38,0.28) 0%, transparent 70%)', top: 40, right: 80, animation: 'orbPulse 10s ease-in-out infinite alternate', animationDelay: '-4s' }} />
@@ -126,9 +267,14 @@ export const HeroSection = () => {
                 {/* Particle canvas */}
                 <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none w-full h-full" />
 
-                {/* Pine tree silhouette */}
+                {/* Pine tree silhouette with subtle sway */}
                 <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: 160 }}>
-                    <svg viewBox="0 0 1200 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full" preserveAspectRatio="none">
+                    <svg
+                        viewBox="0 0 1200 160"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-full h-full hero-tree-layer"
+                        preserveAspectRatio="none"
+                    >
                         <polygon points="0,160 60,70 120,160" fill="#070f04" opacity="0.95"/>
                         <polygon points="40,160 110,50 180,160" fill="#0a1406" opacity="0.9"/>
                         <polygon points="90,160 150,65 210,160" fill="#070f04" opacity="0.85"/>
@@ -151,7 +297,7 @@ export const HeroSection = () => {
                 {/* Content */}
                 <div className={`px-6 py-32 sm:px-16 md:px-28 lg:px-40 xl:px-52 text-center flex flex-col items-center relative z-10 transition-all duration-1000 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
 
-                    <div className=" hero-h1 transition-all duration-700 ease-in-out hover:scale-105 mb-1">
+                    <div className="hero-h1 transition-all duration-700 ease-in-out hover:scale-105 mb-1">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
                             <span style={{ display: 'inline-block', width: 32, height: 1, background: 'rgba(120,210,150,0.4)' }} />
                             <TypeAnimation
@@ -169,6 +315,7 @@ export const HeroSection = () => {
                                     letterSpacing: '0.2em',
                                     textTransform: 'uppercase',
                                     fontWeight: 500,
+                                    fontFamily: "'Inter', sans-serif",
                                 }}
                                 repeat={Infinity}
                             />
@@ -177,14 +324,19 @@ export const HeroSection = () => {
                     </div>
 
                     <h1
-                        className=' font-bold text-8xl max-sm:text-5xl transition-all duration-700 ease-in-out  hover:tracking-wide'
+                        className='hero-main-title font-bold text-7xl max-sm:text-5xl transition-all duration-700 ease-in-out hover:tracking-wide'
                         style={{ color: '#e8f4ec', textShadow: '0 2px 40px rgba(0,80,30,0.5)' }}
                     >
                         Navigating the <br className='max-lg:hidden' />
-                        <span style={{ fontStyle: 'italic', color: 'rgba(120,210,150,0.9)' }}>City of Pines.</span>
+                        <span className="city-of-pines">City of Pines.</span>
                     </h1>
 
-                    <p className='mt-5 max-w-2xl mx-auto text-center transition-all duration-700 ease-in-out' style={{ color: 'rgba(180,210,185,0.7)' }}
+                    <p
+                        className='mt-5 max-w-2xl mx-auto text-center transition-all duration-700 ease-in-out'
+                        style={{
+                            color: 'rgba(180,210,185,0.7)',
+                            fontFamily: "'Inter', sans-serif",
+                        }}
                         onMouseEnter={e => e.target.style.color = 'rgba(200,230,205,0.9)'}
                         onMouseLeave={e => e.target.style.color = 'rgba(180,210,185,0.7)'}
                     >
@@ -192,8 +344,10 @@ export const HeroSection = () => {
                     </p>
 
                     <div className='flex items-center justify-center mx-auto mt-5 gap-5 max-w-xl'>
+
+                        {/* LOGIN button */}
                         <button
-                            className='hero-btn-login py-2 w-34 text-center px-5 rounded-4xl cursor-pointer active:scale-95'
+                            className={`hero-btn-login py-2 w-34 text-center px-5 cursor-pointer active:scale-95 ${loginGlow ? 'glow-active' : ''}`}
                             style={{
                                 background: 'rgba(232,244,236,0.07)',
                                 border: '1.5px solid rgba(120,210,150,0.4)',
@@ -203,15 +357,23 @@ export const HeroSection = () => {
                                 letterSpacing: '0.12em',
                                 fontSize: '0.75rem',
                                 fontWeight: 500,
+                                fontFamily: "'Inter', sans-serif",
                             }}
-                            onClick={() => navigate('/Signin')}
+                            onClick={handleLoginClick}
                         >
+                            {loginGlow && (
+                                <>
+                                    <span className="btn-ripple btn-ripple-1" />
+                                    <span className="btn-ripple btn-ripple-2" />
+                                </>
+                            )}
                             LOGIN
                         </button>
 
+                        {/* CHAT WITH AI button */}
                         <button
-                            onClick={() => setChatOpen(true)}
-                            className='hero-btn-chat py-2 px-5 cursor-pointer active:scale-95'
+                            onClick={handleChatClick}
+                            className={`hero-btn-chat py-2 px-5 cursor-pointer active:scale-95 ${chatGlow ? 'glow-active' : ''}`}
                             style={{
                                 background: 'linear-gradient(135deg, #1d6b35 0%, #14522a 100%)',
                                 border: '1.5px solid rgba(60,160,80,0.45)',
@@ -220,9 +382,16 @@ export const HeroSection = () => {
                                 letterSpacing: '0.12em',
                                 fontSize: '0.75rem',
                                 fontWeight: 500,
+                                fontFamily: "'Inter', sans-serif",
                                 boxShadow: '0 4px 22px rgba(30,120,60,0.35)',
                             }}
                         >
+                            {chatGlow && (
+                                <>
+                                    <span className="btn-ripple btn-ripple-1" />
+                                    <span className="btn-ripple btn-ripple-2" />
+                                </>
+                            )}
                             CHAT WITH AI
                         </button>
                     </div>
