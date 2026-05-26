@@ -137,6 +137,7 @@ const STYLES = `
     transition: gap 0.2s ease, color 0.2s ease;
   }
   .arrow-link:hover { gap: 8px; }
+
 `
 
     const getSpotId = (spot) => {
@@ -434,6 +435,43 @@ const PlaceModal = ({ place, onClose }) => {
     const [weather, setWeather] = useState()
     const [itineraries, setIteneraries] = useState([]);
     const bottomRef = useRef(null) 
+    const [toast, setToast] = useState(null)
+
+    const fetchIteneraries = async () =>{
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id || user?.users_id;
+
+        if (!userId) return;
+        try {
+            const res = await fetch(`/api/itinerary?userId=${userId}`);
+            const data = await res.json();
+        
+            if (res.ok && Array.isArray(data)){
+                const AddedItinerary = data.map((spot) => spot.spot_id);
+                setIteneraries(AddedItinerary);
+            }else{
+                console.log(data.error || "Invalid Itinerary data")
+                
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
+    useEffect(()=>{
+        fetchIteneraries();
+    },[]);
+
+    const handleAddItinerary = async (spot) =>{
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id || user?.users_id;
+
+    if (!userId) {
+        alert("Please login first.");
+        return;
+    }
+    const ItineraryId = getSpotId(spot)
+    const isSaved = itineraries.includes(ItineraryId)
+    
 
     const fetchIteneraries = async () =>{
         const user = JSON.parse(localStorage.getItem("user"));
@@ -477,12 +515,19 @@ const PlaceModal = ({ place, onClose }) => {
                 method: "DELETE"
             })
 
+    if (isSaved){
+        try{
+            const res = await fetch(`/api/itinerary?spotId=${ItineraryId}&userId=${userId}`, {
+                method: "DELETE"
+            })
+
             const data = await res.json();
 
             if (res.ok){
                 setIteneraries(prev => prev.filter(id => id !== ItineraryId))
+                showToast("Removed from itinerary!", "success") 
             }else{
-                alert( "Failed to delete itinerary")
+                showToast("Failed to remove from itinerary", "error")
             }
         }catch(err){
             console.log(err)
@@ -514,8 +559,9 @@ const PlaceModal = ({ place, onClose }) => {
             if (res.ok){
                 setIteneraries((prev) =>
                     prev.includes(ItineraryId) ? prev:[...prev, ItineraryId])
+                 showToast("Added from itinerary!", "success") 
             }else{
-                alert("Failed to add to itinerary")
+                showToast("Failed to remove from itinerary", "error")
             }
         }catch(err){
             console.log(err)
@@ -538,6 +584,7 @@ const PlaceModal = ({ place, onClose }) => {
         }
     
     useEffect(() => { fetchDATA() }, [])
+    
 
     async function sendToAI(msg , place, weather) {
         try {
@@ -569,7 +616,7 @@ const PlaceModal = ({ place, onClose }) => {
         }
 
     }
-
+    useEffect(() => { injectStyles() }, [])
     const sendMessage = async(text) => {
         const userMsg = text.trim() || input.trim()
         if (!userMsg) return
@@ -595,6 +642,10 @@ const PlaceModal = ({ place, onClose }) => {
         return () => { document.body.style.overflow = '' }
     }, [place])
 
+    const showToast = (message, type = "success") => {
+    setToast({ message, type })
+    setTimeout(() => setToast(null), 3000) // auto hide after 3s
+    }
     if (!place) return null
 
 
@@ -689,7 +740,7 @@ const PlaceModal = ({ place, onClose }) => {
                                 <button
                                  onClick={()=>{handleAddItinerary(place)}}
                                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-2xl text-sm btn-press">
-                                    Add to itinerary
+                                    {itineraries.includes(getSpotId(place))?"Remove To itinerary": 'Add to itinerary'  }
                                 </button>
                                 <button onClick={()=>{showChatbot(false)}} className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-800 font-semibold py-3 rounded-2xl text-sm btn-ghost">
                                     Ask AI Guide
@@ -795,6 +846,13 @@ const PlaceModal = ({ place, onClose }) => {
                         )}
                 </div>
             </div>
+            {/* Toast Notification */}
+                {toast && (
+                    <div className={`fixed bottom-5 right-5 z-50 px-4 py-5 rounded-xl shadow-lg text-white text-sm font-medium transition-all
+                        ${toast.type === "success" ? "bg-green-600" : "bg-red-500"}`}>
+                        {toast.message}
+                    </div>
+                )}
         </div>
     )
 }
