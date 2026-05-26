@@ -473,47 +473,6 @@ const PlaceModal = ({ place, onClose }) => {
     const isSaved = itineraries.includes(ItineraryId)
     
 
-    const fetchIteneraries = async () =>{
-        const user = JSON.parse(localStorage.getItem("user"));
-        const userId = user?.id || user?.users_id;
-
-        if (!userId) return;
-        try {
-            const res = await fetch(`/api/itinerary?userId=${userId}`);
-            const data = await res.json();
-        
-            if (res.ok && Array.isArray(data)){
-                const AddedItinerary = data.map((spot) => spot.spot_id);
-                setIteneraries(AddedItinerary);
-            }else{
-                console.log(data.error || "Invalid Itinerary data")
-                
-            }
-        }catch(err){
-            console.log(err)
-        }
-    }
-    useEffect(()=>{
-        fetchIteneraries();
-    },[]);
-
-    const handleAddItinerary = async (spot) =>{
-        const user = JSON.parse(localStorage.getItem("user"));
-        const userId = user?.id || user?.users_id;
-
-    if (!userId) {
-        alert("Please login first.");
-        return;
-    }
-    const ItineraryId = getSpotId(spot)
-    const isSaved = itineraries.includes(ItineraryId)
-    
-
-    if (isSaved){
-        try{
-            const res = await fetch(`/api/itinerary?spotId=${ItineraryId}&userId=${userId}`, {
-                method: "DELETE"
-            })
 
     if (isSaved){
         try{
@@ -1171,3 +1130,4 @@ const handleToggleSaveSpot = async (spot) => {
         </section>
     )
 }
+
