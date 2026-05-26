@@ -23,9 +23,11 @@ export const Saved = ()=>{
 
             if (res.ok && Array.isArray(data)) {
                 setSavedSpots(data);
+
             } else {
                 console.log(data.error || "Invalid saved spots data");
                 setSavedSpots([]);
+
             }
         } catch (err) {
             console.log("Fetch saved spots error:", err);
@@ -49,16 +51,28 @@ export const Saved = ()=>{
                 setIteneraries(data);
             }else{
                 setIteneraries([])
+
             }
         }catch(err){
             console.log(err)
             setIteneraries([])
+  
         }     
     }
-    useEffect(() => {
-        fetchItinerary();
-        fetchSaved();
-    }, []);
+        // Build allData only after both are fetched
+        useEffect(() => {
+        const loadAll = async () => {
+            await fetchItinerary();
+            await fetchSaved();
+        }
+        loadAll();
+        }, []);
+
+
+            // Combine both into allData whenever either changes
+        useEffect(() => {
+            setAllData([...savedSpots, ...itineraries]);
+        }, [savedSpots, itineraries]); //  runs whenever either state updates    
 
     return <section>
         <DashboardNav/>
@@ -124,6 +138,21 @@ export const Saved = ()=>{
                     ))
                 ) : (
                     <p>No itineraries saved yet.</p>
+                )}
+            </div>
+            <div className={`flex flex-wrap justify-around mt-10 lg:mx-20 ${selected !== "all"?"hidden":"block"}`}>
+                {allData.length > 0 ? (
+                    allData.map((data) => (
+                        <div key={data.itenerary_id} className="w-64 bg-white rounded-2xl shadow-lg overflow-hidden m-2">
+                            <img src={data.spot_image} alt={data.spot_name} className="w-full h-44 object-cover" />
+                            <div className="p-4">
+                                <h3 className="font-bold text-lg">{data.spot_name}</h3>
+                                <p className="text-gray-600">{data.spot_location}</p>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No data saved yet.</p>
                 )}
             </div>
         </div>
