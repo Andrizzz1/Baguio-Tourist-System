@@ -394,7 +394,7 @@ const otherPlaces = [
         description: "The Great Wall of Baguio offers a relaxing and picturesque experience for tourists and travelers. Its long staircase design, vibrant colors, and elevated viewing areas make it an eye-catching destination. Surrounded by pine trees and mountain views, the place provides a peaceful atmosphere perfect for sightseeing, photography, and short breaks during road trips along the historic Kennon Road route.",
         about: "The Great Wall of Baguio is a popular tourist attraction located along Kennon Road in Baguio. Inspired by the famous Great Wall of China, it features colorful stairways, scenic viewpoints, and mountain surroundings. Visitors often stop here to take photos, enjoy the cool weather, and admire the beautiful landscapes while traveling to or from the city of Baguio.",
         highlights: ["Colorful staircase inspired by the Great Wall of China","Scenic mountain and pine tree views", "Popular photo and selfie destination","Cool and refreshing weather","Elevated viewing areas for sightseeing"],
-        image: "https://scontent.fcrk2-3.fna.fbcdn.net/v/t39.30808-6/681883540_26744297948499878_8707729083592269040_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFSksj_xQJwhWJk8L9FTarIFzx3g7GMH_4XPHeDsYwf_rMPZIy0-jAhIgoBcdGLvNqqyqahlZJQng3tv_qjupgO&_nc_ohc=jJQO9s4lHZQQ7kNvwGIAABJ&_nc_oc=AdqbmOCHlc6YHQHhcyczFjTC6T-kHeYSX6MxdK9D4DNmPPfG5RWUcWYpph40Zv9NdDo&_nc_zt=23&_nc_ht=scontent.fcrk2-3.fna&_nc_gid=ZvX0IRQqfj4xY7xz-HDuSg&_nc_ss=7b2a8&oh=00_Af6RFjINGCgBcaAkyE41sXXiNoeJ96pn2pShDnHTetZx0A&oe=6A153B77",
+        image: "https://scontent.fcrk1-1.fna.fbcdn.net/v/t39.30808-6/681883540_26744297948499878_8707729083592269040_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFSksj_xQJwhWJk8L9FTarIFzx3g7GMH_4XPHeDsYwf_rMPZIy0-jAhIgoBcdGLvNqqyqahlZJQng3tv_qjupgO&_nc_ohc=qRAkCgjYy_kQ7kNvwHtYZUF&_nc_oc=Adqgt1_okLZoqxNzRaGADww61tGp80n9xKqK9U5At9AW2zn4xIHugVPGxF-7qv7ou9M&_nc_zt=23&_nc_ht=scontent.fcrk1-1.fna&_nc_gid=EDHGn14jZuHnQr7rqS7s8Q&_nc_ss=7b2a8&oh=00_Af6bVA07lWJX5kngffHQ4SfNFIh40ybPwQBn3-LMqyrQIQ&oe=6A1B6277",
 
     },
        {
@@ -408,7 +408,21 @@ const otherPlaces = [
         description: "Sunshine Park offers a peaceful break in the city with trees, seating areas, and walkways. It’s ideal for resting, studying outdoors, and casual gatherings near SM Baguio and UP Baguio.",
         about: "Sunshine Park is a small urban park in Baguio known for its relaxing atmosphere, open green space, and nearby universities. It’s a common hangout for students and locals.",
         highlights: ["Relaxing spot for students and locals","Near SM Baguio and UP Baguio", "Open areas for sitting, studying","Peaceful urban green space","Surrounded by trees and fresh mountain air"],
-        image: "https://d2kihw5e8drjh5.cloudfront.net/eyJidWNrZXQiOiJ1dGEtaW1hZ2VzIiwia2V5IjoicGxhY2VfaW1nLzM1ZTkxYTJhNDdhZTQzNmQ4NzE2YmI1OTg3ZGQ5MDAzIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo2NDAsImhlaWdodCI6NjQwLCJmaXQiOiJpbnNpZGUifSwicm90YXRlIjpudWxsLCJ0b0Zvcm1hdCI6ICJ3ZWJwIn19",
+        image: "https://scontent.fcrk1-3.fna.fbcdn.net/v/t39.30808-6/702684808_974932112090751_3936650052500409065_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHQfSn08oJWFONGIIoYfM-BrC6F5H7omGSsLoXkfuiYZKlfRsW7ZWS1JbOr-MkUtH8bdbAcd_eyH6TnVpMVy8No&_nc_ohc=rQBKFSOafDIQ7kNvwHCqViF&_nc_oc=Adp2NhF4tvwkmqrCa_2xymIiV5H43S18ANKcLnXrlQ_8ACXzou_sLI7NNYocCJfFZ3s&_nc_zt=23&_nc_ht=scontent.fcrk1-3.fna&_nc_gid=xOlgmVTSDZ2GkbGMe2pCyA&_nc_ss=7b2a8&oh=00_Af5Aqlj4kUWMfLEE4N8pBImmaJkPfn34lzaj0MpR8RgOcw&oe=6A1B77EE",
+
+    },
+        {
+        name: "Mt. Camisong Forest Park and Events",
+        location: "Sitio Peday, Brgy. Loacan, Itogon, Benguet.",
+        rating: "3.8",
+        badge: "Forest Park",
+        badgeColor: "bg-red-100 text-light-red-700",
+        hours: "7:00AM - 7:00PM",
+        entry: "₱500",
+        description: "A scenic forest park offering event spaces, fresh mountain air, and relaxing views. It is ideal for nature trips, gatherings, and sightseeing, providing a peaceful escape surrounded by pine trees and the cool highland atmosphere of Benguet.",
+        about: "The Mt. Camisong Forest Park and Events is a mountain destination in Tuba, Benguet known for its pine forests, cool climate, and natural surroundings near Baguio City.",
+        highlights: ["Relaxing spot for students and locals","Near SM Baguio and UP Baguio", "Open areas for sitting, studying","Peaceful urban green space","Surrounded by trees and fresh mountain air"],
+        image: "https://itogon.gov.ph/wp-content/uploads/2025/02/475218180_1018315113659444_8283416788382906297_n-4-1024x683.jpg",
 
     },
     
@@ -1019,7 +1033,7 @@ const handleToggleSaveSpot = async (spot) => {
                     <>
                         <div className="flex items-center justify-end mb-8 anim-fade-in">
                             <span className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full font-medium">
-                                16 places
+                                19 places
                             </span>
                         </div>
 
@@ -1130,4 +1144,3 @@ const handleToggleSaveSpot = async (spot) => {
         </section>
     )
 }
-
