@@ -1,26 +1,30 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowUturnLeftIcon } from '@heroicons/react/24/solid'
-import { GoogleAuthProvider,signInWithPopup } from "firebase/auth"
+import { ArrowUturnLeftIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid'
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import { auth } from './firebase'
+
 export const RegisterAcc = () => {
     const navigate = useNavigate()
-    const [showEmail, setShowEmail] = useState(false)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-    const canvasRef = useRef(null)
-    const animRef = useRef(null)
     const [username, setUsername] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
+    const [focusedField, setFocusedField] = useState(null)
+    const [googleLoading, setGoogleLoading] = useState(false)
+    const [facebookLoading, setFacebookLoading] = useState(false)
+    const [googleDone, setGoogleDone] = useState(false)
+    const [facebookDone, setFacebookDone] = useState(false)
 
-    const provider = new GoogleAuthProvider();
-    async function handleRegister(){
+    const provider = new GoogleAuthProvider()
+
+    async function handleRegister() {
         if (!username || !email || !password) return
-
         const response = await fetch('/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({username, email, password })
+            body: JSON.stringify({ username, email, password })
         })
         const data = await response.json()
         if (response.ok) {
@@ -30,405 +34,422 @@ export const RegisterAcc = () => {
         }
     }
 
-    useEffect(() => {
-        const canvas = canvasRef.current
-        if (!canvas) return
-        const ctx = canvas.getContext('2d')
-
-        const resize = () => {
-            canvas.width = canvas.offsetWidth
-            canvas.height = canvas.offsetHeight
-        }
-        resize()
-        window.addEventListener('resize', resize)
-
-        // Stars
-        const stars = Array.from({ length: 80 }, () => ({
-            x: Math.random(),
-            y: Math.random() * 0.6,
-            r: Math.random() * 1.2 + 0.3,
-            speed: Math.random() * 0.02 + 0.01,
-            phase: Math.random() * Math.PI * 2,
-        }))
-
-        // Fireflies
-        const fireflies = Array.from({ length: 18 }, () => ({
-            x: Math.random(),
-            y: 0.3 + Math.random() * 0.5,
-            vx: (Math.random() - 0.5) * 0.0008,
-            vy: (Math.random() - 0.5) * 0.0008,
-            phase: Math.random() * Math.PI * 2,
-            speed: 0.02 + Math.random() * 0.03,
-        }))
-
-        // Leaves
-        const leaves = Array.from({ length: 12 }, () => ({
-            x: Math.random(),
-            y: -0.05,
-            vx: (Math.random() - 0.5) * 0.001,
-            vy: 0.0005 + Math.random() * 0.0008,
-            rot: Math.random() * Math.PI * 2,
-            rotSpeed: (Math.random() - 0.5) * 0.05,
-            size: 4 + Math.random() * 4,
-            opacity: 0.5 + Math.random() * 0.4,
-        }))
-
-        // Pine trees
-        const trees = Array.from({ length: 10 }, (_, i) => ({
-            x: 0.05 + (i / 9) * 0.9,
-            scale: 0.6 + Math.random() * 0.6,
-            sway: 0,
-            swaySpeed: 0.008 + Math.random() * 0.006,
-            swayAmp: 0.012 + Math.random() * 0.012,
-            phase: Math.random() * Math.PI * 2,
-        }))
-
-        let t = 0
-
-        const drawPine = (x, y, scale, sway) => {
-            const w = canvas.width
-            const h = canvas.height
-            const px = x * w
-            const py = y * h
-            const s = scale * (h / 4.5)
-
-            ctx.save()
-            ctx.translate(px, py)
-            ctx.rotate(sway)
-
-            const tiers = [
-                { w: s * 0.55, h: s * 0.32, shade: '#1e5c2a' },
-                { w: s * 0.44, h: s * 0.28, shade: '#1a5226' },
-                { w: s * 0.33, h: s * 0.24, shade: '#24692f' },
-                { w: s * 0.22, h: s * 0.20, shade: '#2d7a38' },
-            ]
-
-            let ty = 0
-            tiers.forEach((tier, i) => {
-                ctx.beginPath()
-                ctx.moveTo(0, ty - tier.h)
-                ctx.lineTo(-tier.w, ty + (i === tiers.length - 1 ? 0 : tier.h * 0.3))
-                ctx.lineTo(tier.w, ty + (i === tiers.length - 1 ? 0 : tier.h * 0.3))
-                ctx.closePath()
-                ctx.fillStyle = tier.shade
-                ctx.fill()
-                ty -= tier.h * 0.65
-            })
-
-            // trunk
-            ctx.fillStyle = '#3d2b1a'
-            ctx.fillRect(-s * 0.04, 0, s * 0.08, s * 0.18)
-
-            ctx.restore()
-        }
-
-        const draw = () => {
-            const w = canvas.width
-            const h = canvas.height
-            t += 0.016
-
-            // Sky gradient - animated
-            const skyShift = (Math.sin(t * 0.1) + 1) / 2
-            const grad = ctx.createLinearGradient(0, 0, 0, h)
-            grad.addColorStop(0, `rgb(${10 + skyShift * 8},${25 + skyShift * 12},${35 + skyShift * 10})`)
-            grad.addColorStop(0.45, `rgb(${20 + skyShift * 10},${55 + skyShift * 15},${40 + skyShift * 10})`)
-            grad.addColorStop(0.75, `rgb(${30 + skyShift * 8},${80 + skyShift * 12},${55 + skyShift * 8})`)
-            grad.addColorStop(1, `rgb(${10 + skyShift * 5},${35 + skyShift * 8},${22 + skyShift * 5})`)
-            ctx.fillStyle = grad
-            ctx.fillRect(0, 0, w, h)
-
-            // Stars
-            stars.forEach(star => {
-                const alpha = 0.4 + 0.6 * Math.sin(t * star.speed + star.phase)
-                ctx.beginPath()
-                ctx.arc(star.x * w, star.y * h, star.r, 0, Math.PI * 2)
-                ctx.fillStyle = `rgba(255,255,255,${alpha})`
-                ctx.fill()
-            })
-
-            // Mountains back
-            ctx.beginPath()
-            const driftB = Math.sin(t * 0.08) * 12
-            ctx.moveTo(0, h)
-            ctx.lineTo(driftB + w * 0.0, h * 0.68)
-            ctx.lineTo(driftB + w * 0.15, h * 0.42)
-            ctx.lineTo(driftB + w * 0.3, h * 0.60)
-            ctx.lineTo(driftB + w * 0.48, h * 0.30)
-            ctx.lineTo(driftB + w * 0.65, h * 0.50)
-            ctx.lineTo(driftB + w * 0.82, h * 0.38)
-            ctx.lineTo(driftB + w * 1.0, h * 0.58)
-            ctx.lineTo(w, h)
-            ctx.closePath()
-            ctx.fillStyle = 'rgba(25,65,40,0.55)'
-            ctx.fill()
-
-            // Mountains mid
-            ctx.beginPath()
-            const driftM = Math.sin(t * 0.11 + 1) * 8
-            ctx.moveTo(0, h)
-            ctx.lineTo(driftM + w * 0.0, h * 0.72)
-            ctx.lineTo(driftM + w * 0.12, h * 0.52)
-            ctx.lineTo(driftM + w * 0.25, h * 0.65)
-            ctx.lineTo(driftM + w * 0.42, h * 0.42)
-            ctx.lineTo(driftM + w * 0.58, h * 0.58)
-            ctx.lineTo(driftM + w * 0.72, h * 0.46)
-            ctx.lineTo(driftM + w * 0.88, h * 0.62)
-            ctx.lineTo(w, h * 0.72)
-            ctx.lineTo(w, h)
-            ctx.closePath()
-            ctx.fillStyle = 'rgba(15,48,28,0.72)'
-            ctx.fill()
-
-            // Mountains front
-            ctx.beginPath()
-            ctx.moveTo(0, h)
-            ctx.lineTo(w * 0.0, h * 0.82)
-            ctx.lineTo(w * 0.1, h * 0.68)
-            ctx.lineTo(w * 0.22, h * 0.75)
-            ctx.lineTo(w * 0.38, h * 0.60)
-            ctx.lineTo(w * 0.52, h * 0.72)
-            ctx.lineTo(w * 0.68, h * 0.63)
-            ctx.lineTo(w * 0.80, h * 0.70)
-            ctx.lineTo(w * 1.0, h * 0.78)
-            ctx.lineTo(w, h)
-            ctx.closePath()
-            ctx.fillStyle = 'rgba(8,28,16,0.88)'
-            ctx.fill()
-
-            // Pine trees
-            trees.forEach(tree => {
-                tree.sway = Math.sin(t * tree.swaySpeed + tree.phase) * tree.swayAmp
-                drawPine(tree.x, 0.78 + (1 - tree.scale) * 0.08, tree.scale, tree.sway)
-            })
-
-            // Mist
-            const mistGrad = ctx.createLinearGradient(0, h * 0.72, 0, h)
-            mistGrad.addColorStop(0, 'rgba(160,200,175,0)')
-            mistGrad.addColorStop(0.5, `rgba(160,200,175,${0.06 + 0.04 * Math.sin(t * 0.15)})`)
-            mistGrad.addColorStop(1, `rgba(180,215,195,${0.12 + 0.05 * Math.sin(t * 0.12)})`)
-            ctx.fillStyle = mistGrad
-            ctx.fillRect(0, h * 0.72, w, h)
-
-            // Fireflies
-            fireflies.forEach(ff => {
-                ff.x += ff.vx + Math.sin(t * ff.speed + ff.phase) * 0.001
-                ff.y += ff.vy + Math.cos(t * ff.speed * 0.7 + ff.phase) * 0.0006
-                if (ff.x < 0.05) ff.x = 0.95
-                if (ff.x > 0.95) ff.x = 0.05
-                if (ff.y < 0.25) ff.y = 0.75
-                if (ff.y > 0.85) ff.y = 0.3
-                const glow = (Math.sin(t * ff.speed * 2 + ff.phase) + 1) / 2
-                const alpha = 0.3 + glow * 0.7
-                const px = ff.x * w
-                const py = ff.y * h
-                const grd = ctx.createRadialGradient(px, py, 0, px, py, 6)
-                grd.addColorStop(0, `rgba(200,255,160,${alpha})`)
-                grd.addColorStop(1, 'rgba(180,255,140,0)')
-                ctx.beginPath()
-                ctx.arc(px, py, 6, 0, Math.PI * 2)
-                ctx.fillStyle = grd
-                ctx.fill()
-                ctx.beginPath()
-                ctx.arc(px, py, 1.5, 0, Math.PI * 2)
-                ctx.fillStyle = `rgba(230,255,200,${alpha})`
-                ctx.fill()
-            })
-
-            // Falling leaves
-            leaves.forEach(lf => {
-                lf.x += lf.vx + Math.sin(t * 0.3 + lf.rot) * 0.0005
-                lf.y += lf.vy
-                lf.rot += lf.rotSpeed
-                if (lf.y > 1.05) {
-                    lf.y = -0.05
-                    lf.x = Math.random()
-                }
-                ctx.save()
-                ctx.translate(lf.x * w, lf.y * h)
-                ctx.rotate(lf.rot)
-                ctx.globalAlpha = lf.opacity * (lf.y < 0.05 ? lf.y / 0.05 : 1)
-                ctx.beginPath()
-                ctx.ellipse(0, 0, lf.size, lf.size * 0.5, 0, 0, Math.PI * 2)
-                ctx.fillStyle = 'rgba(100,180,120,0.6)'
-                ctx.fill()
-                ctx.globalAlpha = 1
-                ctx.restore()
-            })
-
-            // Bottom gradient overlay for text readability
-            const textGrad = ctx.createLinearGradient(0, h * 0.55, 0, h)
-            textGrad.addColorStop(0, 'rgba(0,0,0,0)')
-            textGrad.addColorStop(1, 'rgba(0,0,0,0.65)')
-            ctx.fillStyle = textGrad
-            ctx.fillRect(0, h * 0.55, w, h)
-
-            animRef.current = requestAnimationFrame(draw)
-        }
-
-        draw()
-
-        return () => {
-            window.removeEventListener('resize', resize)
-            if (animRef.current) cancelAnimationFrame(animRef.current)
-        }
-    }, [])
-
-
-        const handleGoogleSignIn = async () => {
+    const handleGoogleSignIn = async () => {
+        if (googleLoading) return
+        setGoogleLoading(true)
         try {
-            const result = await signInWithPopup(auth, provider);
-            const firebaseUser = result.user;
-
+            const result = await signInWithPopup(auth, provider)
+            const firebaseUser = result.user
             const response = await fetch("/api/social-login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     username: firebaseUser.displayName,
                     email: firebaseUser.email,
                     provider: "google"
                 })
-            });
-
-            const data = await response.json();
-
+            })
+            const data = await response.json()
             if (response.ok) {
-                localStorage.setItem("user", JSON.stringify(data.user));
-                navigate("/dashboard");
+                setGoogleDone(true)
+                setTimeout(() => {
+                    localStorage.setItem("user", JSON.stringify(data.user))
+                    navigate("/dashboard")
+                }, 600)
             } else {
-                setError(data.error || "Google login failed");
+                setError(data.error || "Google login failed")
+                setGoogleLoading(false)
             }
-        } catch (error) {
-            console.log("Google sign in error:", error);
-            setError(error.message);
+        } catch (err) {
+            setError(err.message)
+            setGoogleLoading(false)
         }
-        };
+    }
+
+    const handleFacebookSignIn = async () => {
+        if (facebookLoading) return
+        setFacebookLoading(true)
+        try {
+            const { FacebookAuthProvider } = await import("firebase/auth")
+            const fbProvider = new FacebookAuthProvider()
+            const result = await signInWithPopup(auth, fbProvider)
+            const firebaseUser = result.user
+            const response = await fetch("/api/social-login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: firebaseUser.displayName,
+                    email: firebaseUser.email,
+                    provider: "facebook"
+                })
+            })
+            const data = await response.json()
+            if (response.ok) {
+                setFacebookDone(true)
+                setTimeout(() => {
+                    localStorage.setItem("user", JSON.stringify(data.user))
+                    navigate("/dashboard")
+                }, 600)
+            } else {
+                setError(data.error || "Facebook login failed")
+                setFacebookLoading(false)
+            }
+        } catch (err) {
+            setError(err.message)
+            setFacebookLoading(false)
+        }
+    }
+
     return (
         <section className="min-h-screen grid md:grid-cols-2">
 
-            {/* LEFT — animated canvas background */}
+            {/* LEFT — photo background with effects */}
             <div className="hidden md:flex relative overflow-hidden">
-                <canvas
-                    ref={canvasRef}
-                    className="absolute inset-0 w-full h-full"
+                <img
+                    src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=85&auto=format&fit=crop"
+                    alt="Pine forest"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    style={{ animation: 'slowZoom 20s ease-in-out infinite alternate' }}
                 />
-
-                {/* Text overlay */}
-                <div className="relative z-10 p-12 text-white flex flex-col justify-end w-full">
-                    <h1
-                        className="text-5xl font-bold leading-tight"
-                        style={{ animation: 'fadeUp 1.2s ease forwards' }}
-                    >
-                        Discover Baguio
-                    </h1>
-                    <p
-                        className="mt-4 text-gray-200 max-w-sm"
-                        style={{ animation: 'fadeUp 1.5s ease forwards' }}
-                    >
-                        Explore the Summer Capital of the philippines with real-time tips, guides, and local insights.
+                <div className="left-mist-1 absolute inset-0" />
+                <div className="left-mist-2 absolute inset-0" />
+                <div className="absolute inset-0" style={{
+                    background: `radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.45) 100%),
+                                 linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.72) 100%)`
+                }} />
+                <div className="left-particles absolute inset-0 pointer-events-none" />
+                <div className="absolute top-8 left-8 z-10">
+                    <p className="text-white/60 text-xs tracking-[0.25em] uppercase font-medium"
+                       style={{ animation: 'fadeUp 1.4s ease forwards', fontFamily: '"Cormorant Garamond", Georgia, serif' }}>
+                        Heritage Collective
                     </p>
+                </div>
+                <div className="relative z-10 p-10 text-white flex flex-col justify-end w-full">
+                    <div style={{ animation: 'fadeUp 1.2s ease forwards' }}>
+                        <h1 className="text-5xl font-bold leading-tight"
+                            style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontWeight: 700, letterSpacing: '-0.01em' }}>
+                            Experience the<br />Cordillera<br />Highlands
+                        </h1>
+                        <p className="mt-4 text-white/75 max-w-xs leading-relaxed"
+                           style={{ animation: 'fadeUp 1.5s ease forwards', fontFamily: '"Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: '1.05rem' }}>
+                            A sanctuary of mist, craft, and culture nestled within the whispering pines of Baguio.
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            {/* RIGHT FORM */}
-            <div className="relative flex flex-col items-center justify-center bg-linear-to-br from-green-50 via-white to-green-100 p-6">
+            {/* RIGHT PANEL */}
+            <div className="relative flex flex-col items-center justify-center min-h-screen p-6"
+                 style={{ background: '#f0ede8' }}>
 
-                {/* Back Button */}
-                <button
-                    onClick={() => navigate('/')}
-                    className="absolute top-5 right-5 bg-black/10 hover:bg-black/20 p-2 rounded-full transition"
-                >
+                <button onClick={() => navigate('/')}
+                    className="absolute top-5 right-5 bg-black/10 hover:bg-black/20 p-2 rounded-full transition">
                     <ArrowUturnLeftIcon className="w-5 h-5 text-black" />
                 </button>
 
                 {/* CARD */}
-                <div
-                    className="w-full max-w-md bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl p-8 border border-green-100"
-                    style={{ animation: 'cardPop 0.9s cubic-bezier(0.22,1,0.36,1) forwards' }}
-                >
-                    <h2 className="text-3xl font-bold text-gray-800 text-center">Create Account</h2>
-                    <p className="text-gray-500 text-center mt-2 mb-6">Start your journey today</p>
+                <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-sm"
+                     style={{ animation: 'cardPop 0.8s cubic-bezier(0.22,1,0.36,1) forwards' }}>
 
-                    {/* SOCIAL BUTTONS */}
-                    <div onClick={handleGoogleSignIn} className="flex flex-col gap-3">
-                        <button className="flex text-black items-center justify-center  gap-3 w-full border border-gray-200 hover:bg-gray-50 py-2.5 rounded-xl font-medium transition">
-                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" />
-                            Continue with Google
-                        </button>
-
-                        <button className="flex items-center justify-center gap-3 w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-medium transition">
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M22 12.07C22 6.48 17.52 2 11.93 2S1.86 6.48 1.86 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.4V9.41c0-2.37 1.41-3.68 3.57-3.68 1.03 0 2.1.18 2.1.18v2.31h-1.18c-1.16 0-1.52.72-1.52 1.46v1.75h2.59l-.41 2.9h-2.18V22c4.78-.75 8.44-4.91 8.44-9.93z"/>
-                            </svg>
-                            Continue with Facebook
-                        </button>
+                    {/* Header */}
+                    <div style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.1s' }}>
+                        <h2 className="text-2xl font-bold text-gray-900"
+                            style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontSize: '1.75rem' }}>
+                            Create your account
+                        </h2>
+                        <p className="text-gray-500 mt-1 text-sm leading-snug">
+                            Join our community of heritage seekers and nature lovers.
+                        </p>
                     </div>
 
-                    {/* DIVIDER */}
-                    <div className="flex items-center gap-3 my-6">
-                        <div className="flex-1 h-px bg-gray-300" />
-                        <span className="text-gray-400 text-sm">or</span>
-                        <div className="flex-1 h-px bg-gray-300" />
-                    </div>
+                    {/* FORM FIELDS */}
+                    <div className="mt-6 flex flex-col gap-4">
 
-                    {/* FORM */}
-                    {!showEmail ? (
-                        <button
-                            onClick={() => setShowEmail(true)}
-                            className="w-full border border-gray-300 hover:bg-gray-50 py-2.5 rounded-xl font-medium text-gray-600 transition"
-                        >
-                            Use email & password
-                        </button>
-                    ) : (
-                        <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4 text-black">
-                            <input type="text"  onChange={(e) => setUsername(e.target.value)}
-                                    value={username} placeholder="Full Name"
-                                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-green-600 outline-none"
-                            />
-                            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email"
-                                placeholder="Email"
-                                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-green-600 outline-none"
-                            />
-                            <input value={password} onChange={(e) => setPassword(e.target.value)} type="password"
-                                placeholder="Password"
-                                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-green-600 outline-none"
-                            />
-                            {error && <p className="text-red-500 text-sm">{error}</p>}
+                        {/* Full Name */}
+                        <div style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.2s' }}>
+                            <label className="block text-xs font-semibold tracking-widest text-gray-500 mb-1.5 uppercase">
+                                Full Name
+                            </label>
+                            <div className={`flex items-center gap-3 rounded-2xl px-4 py-3 border transition-all duration-200 ${focusedField === 'name' ? 'border-green-700 bg-white shadow-sm' : 'border-transparent bg-gray-100'}`}>
+                                <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                <input
+                                    type="text"
+                                    value={username}
+                                    onChange={e => setUsername(e.target.value)}
+                                    onFocus={() => setFocusedField('name')}
+                                    onBlur={() => setFocusedField(null)}
+                                    placeholder="Elias Canetti"
+                                    className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Email */}
+                        <div style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.3s' }}>
+                            <label className="block text-xs font-semibold tracking-widest text-gray-500 mb-1.5 uppercase">
+                                Email Address
+                            </label>
+                            <div className={`flex items-center gap-3 rounded-2xl px-4 py-3 border transition-all duration-200 ${focusedField === 'email' ? 'border-green-700 bg-white shadow-sm' : 'border-transparent bg-gray-100'}`}>
+                                <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                    onFocus={() => setFocusedField('email')}
+                                    onBlur={() => setFocusedField(null)}
+                                    placeholder="hello@example.com"
+                                    className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Password */}
+                        <div style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.4s' }}>
+                            <label className="block text-xs font-semibold tracking-widest text-gray-500 mb-1.5 uppercase">
+                                Password
+                            </label>
+                            <div className={`flex items-center gap-3 rounded-2xl px-4 py-3 border transition-all duration-200 ${focusedField === 'password' ? 'border-green-700 bg-white shadow-sm' : 'border-transparent bg-gray-100'}`}>
+                                <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    onFocus={() => setFocusedField('password')}
+                                    onBlur={() => setFocusedField(null)}
+                                    placeholder="••••••••"
+                                    className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
+                                />
+                                <button type="button" onClick={() => setShowPassword(v => !v)}
+                                    className="text-gray-400 hover:text-gray-600 transition-colors">
+                                    {showPassword
+                                        ? <EyeSlashIcon className="w-4 h-4" />
+                                        : <EyeIcon className="w-4 h-4" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {error && <p className="text-red-500 text-xs -mt-2">{error}</p>}
+
+                        {/* Submit */}
+                        <div style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.5s' }}>
                             <button
                                 onClick={handleRegister}
-                                className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2.5 rounded-xl transition"
-                            >
+                                className="w-full text-white font-semibold py-3.5 rounded-2xl transition-all duration-200 hover:opacity-90 active:scale-[0.98] mt-1"
+                                style={{ background: '#1e3a1e', fontSize: '0.95rem' }}>
                                 Create Account
                             </button>
-                        </form>
-                    )}
+                        </div>
+                    </div>
 
-                    <p className="text-center text-gray-500 text-sm mt-6">
+                    {/* Divider */}
+                    <div className="flex items-center gap-3 my-5"
+                         style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.6s' }}>
+                        <div className="flex-1 h-px bg-gray-200" />
+                        <span className="text-gray-400 text-xs tracking-widest uppercase">or</span>
+                        <div className="flex-1 h-px bg-gray-200" />
+                    </div>
+
+                    {/* Social buttons */}
+                    <div className="flex gap-3"
+                         style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.7s' }}>
+                        {/* Google */}
+                        <button
+                            onClick={handleGoogleSignIn}
+                            disabled={googleLoading || googleDone}
+                            className="social-btn flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-medium text-gray-700 relative overflow-hidden"
+                            style={{ transition: 'transform 0.15s, box-shadow 0.15s, background 0.2s' }}>
+                            <span className="social-ripple" />
+                            {googleLoading && !googleDone ? (
+                                <span className="social-spinner google-spinner" />
+                            ) : googleDone ? (
+                                <svg className="w-4 h-4 text-green-600 checkmark-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                </svg>
+                            ) : (
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-4 h-4" alt="Google" />
+                            )}
+                            <span className={googleDone ? 'text-green-600' : ''}>
+                                {googleDone ? 'Done!' : googleLoading ? 'Signing in…' : 'Google'}
+                            </span>
+                        </button>
+
+                        {/* Facebook */}
+                        <button
+                            onClick={handleFacebookSignIn}
+                            disabled={facebookLoading || facebookDone}
+                            className="social-btn flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-medium text-gray-700 relative overflow-hidden"
+                            style={{ transition: 'transform 0.15s, box-shadow 0.15s, background 0.2s' }}>
+                            <span className="social-ripple" />
+                            {facebookLoading && !facebookDone ? (
+                                <span className="social-spinner fb-spinner" />
+                            ) : facebookDone ? (
+                                <svg className="w-4 h-4 text-green-600 checkmark-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                </svg>
+                            ) : (
+                                <svg className="w-4 h-4" fill="#1877F2" viewBox="0 0 24 24">
+                                    <path d="M22 12.07C22 6.48 17.52 2 11.93 2S1.86 6.48 1.86 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.4V9.41c0-2.37 1.41-3.68 3.57-3.68 1.03 0 2.1.18 2.1.18v2.31h-1.18c-1.16 0-1.52.72-1.52 1.46v1.75h2.59l-.41 2.9h-2.18V22c4.78-.75 8.44-4.91 8.44-9.93z"/>
+                                </svg>
+                            )}
+                            <span className={facebookDone ? 'text-green-600' : ''}>
+                                {facebookDone ? 'Done!' : facebookLoading ? 'Signing in…' : 'Facebook'}
+                            </span>
+                        </button>
+                    </div>
+
+                    {/* Sign in link */}
+                    <p className="text-center text-gray-500 text-sm mt-6"
+                       style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.8s' }}>
                         Already have an account?{" "}
-                        <span
-                            onClick={() => navigate('/Signin')}
-                            className="text-green-700 font-semibold cursor-pointer hover:underline"
-                        >
-                            Sign in
+                        <span onClick={() => navigate('/Signin')}
+                            className="font-semibold cursor-pointer hover:underline"
+                            style={{ color: '#1e3a1e' }}>
+                            Sign In
                         </span>
                     </p>
                 </div>
 
-                <p className="text-xs text-gray-500 mt-6">
+                <p className="text-xs text-gray-400 mt-5"
+                   style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.9s' }}>
                     © 2026 Baguio Tourist System. All rights reserved.
                 </p>
             </div>
 
             {/* Global keyframes */}
             <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
                 @keyframes fadeUp {
-                    from { opacity: 0; transform: translateY(16px); }
+                    from { opacity: 0; transform: translateY(14px); }
                     to   { opacity: 1; transform: translateY(0); }
                 }
                 @keyframes cardPop {
-                    from { opacity: 0; transform: scale(0.96) translateY(20px); }
+                    from { opacity: 0; transform: scale(0.95) translateY(24px); }
                     to   { opacity: 1; transform: scale(1) translateY(0); }
+                }
+                @keyframes slowZoom {
+                    from { transform: scale(1); }
+                    to   { transform: scale(1.08); }
+                }
+                @keyframes mistDrift1 {
+                    0%   { transform: translateX(-8%) translateY(0); opacity: 0.55; }
+                    50%  { transform: translateX(4%) translateY(-2%); opacity: 0.7; }
+                    100% { transform: translateX(-8%) translateY(0); opacity: 0.55; }
+                }
+                @keyframes mistDrift2 {
+                    0%   { transform: translateX(6%) translateY(0); opacity: 0.4; }
+                    50%  { transform: translateX(-3%) translateY(3%); opacity: 0.6; }
+                    100% { transform: translateX(6%) translateY(0); opacity: 0.4; }
+                }
+                @keyframes ffFloat {
+                    0%   { transform: translate(0,0) scale(1); opacity: 0; }
+                    20%  { opacity: 1; }
+                    80%  { opacity: 0.8; }
+                    100% { transform: translate(var(--dx),var(--dy)) scale(0.5); opacity: 0; }
+                }
+                .left-mist-1 {
+                    background: radial-gradient(ellipse 120% 60% at 20% 70%, rgba(200,220,210,0.35) 0%, transparent 70%),
+                                radial-gradient(ellipse 80% 40% at 80% 80%, rgba(180,210,195,0.28) 0%, transparent 60%);
+                    animation: mistDrift1 14s ease-in-out infinite;
+                }
+                .left-mist-2 {
+                    background: radial-gradient(ellipse 100% 50% at 60% 60%, rgba(210,230,220,0.22) 0%, transparent 65%),
+                                radial-gradient(ellipse 70% 35% at 10% 90%, rgba(190,215,200,0.18) 0%, transparent 55%);
+                    animation: mistDrift2 19s ease-in-out infinite;
+                }
+                .left-particles::before,
+                .left-particles::after {
+                    content: '';
+                    position: absolute;
+                    width: 4px; height: 4px;
+                    border-radius: 50%;
+                    background: rgba(200,255,160,0.85);
+                    box-shadow:
+                        12vw 62vh 6px 2px rgba(200,255,160,0.5),
+                        28vw 71vh 4px 1px rgba(210,255,170,0.6),
+                        41vw 58vh 5px 2px rgba(195,250,155,0.4),
+                        8vw  78vh 4px 1px rgba(205,255,165,0.55),
+                        35vw 80vh 6px 2px rgba(200,255,160,0.45),
+                        22vw 55vh 3px 1px rgba(215,255,175,0.5),
+                        48vw 66vh 5px 1px rgba(200,255,160,0.4),
+                        5vw  55vh 4px 2px rgba(205,255,165,0.6);
+                    animation: ffFloat 6s ease-in-out infinite alternate;
+                    --dx: 15px; --dy: -20px;
+                }
+                .left-particles::after {
+                    animation-delay: -3s;
+                    --dx: -12px; --dy: 18px;
+                    box-shadow:
+                        18vw 68vh 5px 2px rgba(200,255,160,0.5),
+                        33vw 75vh 4px 1px rgba(210,255,170,0.45),
+                        44vw 53vh 6px 2px rgba(195,250,155,0.55),
+                        15vw 82vh 4px 1px rgba(205,255,165,0.4),
+                        39vw 61vh 5px 2px rgba(200,255,160,0.6),
+                        7vw  72vh 3px 1px rgba(215,255,175,0.4),
+                        50vw 70vh 4px 1px rgba(200,255,160,0.5),
+                        26vw 59vh 5px 2px rgba(205,255,165,0.45);
+                }
+
+                /* Social button animations */
+                .social-btn { cursor: pointer; }
+                .social-btn:hover {
+                    background: #f9f9f9 !important;
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                }
+                .social-btn:active {
+                    transform: scale(0.96) translateY(0px) !important;
+                    box-shadow: none !important;
+                }
+                .social-btn:disabled {
+                    cursor: not-allowed;
+                    transform: none !important;
+                    box-shadow: none !important;
+                }
+
+                /* Ripple */
+                .social-ripple {
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(0,0,0,0.07);
+                    width: 0; height: 0;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;
+                }
+                .social-btn:active .social-ripple {
+                    animation: rippleBurst 0.45s ease-out forwards;
+                }
+                @keyframes rippleBurst {
+                    from { width: 0; height: 0; opacity: 0.5; }
+                    to   { width: 180px; height: 180px; opacity: 0; }
+                }
+
+                /* Spinner */
+                .social-spinner {
+                    display: inline-block;
+                    width: 14px; height: 14px;
+                    border-radius: 50%;
+                    border: 2px solid transparent;
+                    animation: spin 0.7s linear infinite;
+                    flex-shrink: 0;
+                }
+                .google-spinner { border-top-color: #4285F4; border-right-color: #EA4335; border-bottom-color: #FBBC05; }
+                .fb-spinner    { border-top-color: #1877F2; border-right-color: #1877F2; border-bottom-color: rgba(24,119,242,0.3); }
+                @keyframes spin { to { transform: rotate(360deg); } }
+
+                /* Checkmark pop */
+                .checkmark-pop { animation: checkPop 0.4s cubic-bezier(0.22,1,0.36,1) forwards; }
+                @keyframes checkPop {
+                    0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+                    60%  { transform: scale(1.2) rotate(5deg); opacity: 1; }
+                    100% { transform: scale(1) rotate(0deg); opacity: 1; }
                 }
             `}</style>
         </section>
