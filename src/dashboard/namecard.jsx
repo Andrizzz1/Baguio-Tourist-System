@@ -6,6 +6,7 @@ export const NameCard = () => {
     const firstName = user?.username?.split(' ')[0] || 'User';
     const [weather, setWeather] = useState()
     const [savecount, setSavecount] = useState(0)
+    const [visitedcount, setVisitedcount] = useState(0)
     const fetchDATA = async () => {
         try {
             const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=16.402332&lon=120.596008&appid=${weather_api}&units=metric`)
@@ -17,7 +18,22 @@ export const NameCard = () => {
         }
     }
 
+    const fetchvisitedCount = async ()=>{
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user?.id || user?.users_id;
 
+        if (!userId) return;
+        try{
+            const visitRes = await fetch(`/api/visited-spots?userId=${userId}`);
+            const visitData = await visitRes.json();
+
+            if(visitRes.ok){
+                setVisitedcount(visitData.totalVisited)
+            }
+        }catch(err){
+            console.log(err)
+        }
+    }
     const fetchSavedCount = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user?.id || user?.users_id;
@@ -37,6 +53,7 @@ export const NameCard = () => {
     };
     useEffect(() => { fetchDATA();
                     fetchSavedCount();
+                    fetchvisitedCount();
      }, [])
 
     return <section className="text-black flex justify-center m-5">
@@ -89,7 +106,7 @@ export const NameCard = () => {
             </div>
             
             <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-4 text-center  gap-x-0.5 place-items-center justify-items-center justify-center text-emerald-100  text-xs">
-                <div className="bg-green-500/15 p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p className="text-xl">0</p><p >Spots Visited</p></div>
+                <div className="bg-green-500/15 p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p className="text-xl">{visitedcount}</p><p >Spots Visited</p></div>
                 <div className="bg-green-500/15  p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p className="text-xl">{savecount}</p><p className="mt-1">Saved Places</p></div>
                 <div className="bg-green-500/15  p-2 rounded-2xl  w-20 h-20 flex flex-col justify-around"><p className="text-xl">0</p><p className="mt-1">Plannned Trips</p></div>
                 <div className="bg-green-500/15  p-2 rounded-2xl w-20 h-20 flex flex-col justify-around"><p className="text-xl">0</p><p className="mt-1">Followers</p></div>
