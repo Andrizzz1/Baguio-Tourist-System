@@ -12,6 +12,10 @@ export const RegisterAcc = () => {
     const [username, setUsername] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [focusedField, setFocusedField] = useState(null)
+    const [googleLoading, setGoogleLoading] = useState(false)
+    const [facebookLoading, setFacebookLoading] = useState(false)
+    const [googleDone, setGoogleDone] = useState(false)
+    const [facebookDone, setFacebookDone] = useState(false)
 
     const provider = new GoogleAuthProvider()
 
@@ -31,6 +35,8 @@ export const RegisterAcc = () => {
     }
 
     const handleGoogleSignIn = async () => {
+        if (googleLoading) return
+        setGoogleLoading(true)
         try {
             const result = await signInWithPopup(auth, provider)
             const firebaseUser = result.user
@@ -45,13 +51,52 @@ export const RegisterAcc = () => {
             })
             const data = await response.json()
             if (response.ok) {
-                localStorage.setItem("user", JSON.stringify(data.user))
-                navigate("/dashboard")
+                setGoogleDone(true)
+                setTimeout(() => {
+                    localStorage.setItem("user", JSON.stringify(data.user))
+                    navigate("/dashboard")
+                }, 600)
             } else {
                 setError(data.error || "Google login failed")
+                setGoogleLoading(false)
             }
         } catch (err) {
             setError(err.message)
+            setGoogleLoading(false)
+        }
+    }
+
+    const handleFacebookSignIn = async () => {
+        if (facebookLoading) return
+        setFacebookLoading(true)
+        try {
+            const { FacebookAuthProvider } = await import("firebase/auth")
+            const fbProvider = new FacebookAuthProvider()
+            const result = await signInWithPopup(auth, fbProvider)
+            const firebaseUser = result.user
+            const response = await fetch("/api/social-login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: firebaseUser.displayName,
+                    email: firebaseUser.email,
+                    provider: "facebook"
+                })
+            })
+            const data = await response.json()
+            if (response.ok) {
+                setFacebookDone(true)
+                setTimeout(() => {
+                    localStorage.setItem("user", JSON.stringify(data.user))
+                    navigate("/dashboard")
+                }, 600)
+            } else {
+                setError(data.error || "Facebook login failed")
+                setFacebookLoading(false)
+            }
+        } catch (err) {
+            setError(err.message)
+            setFacebookLoading(false)
         }
     }
 
@@ -76,18 +121,18 @@ export const RegisterAcc = () => {
                 <div className="absolute top-8 left-8 z-10">
                     <p className="text-white/60 text-xs tracking-[0.25em] uppercase font-medium"
                        style={{ animation: 'fadeUp 1.4s ease forwards', fontFamily: '"Cormorant Garamond", Georgia, serif' }}>
-                        Baguio Tourist System
+                        Heritage Collective
                     </p>
                 </div>
                 <div className="relative z-10 p-10 text-white flex flex-col justify-end w-full">
                     <div style={{ animation: 'fadeUp 1.2s ease forwards' }}>
                         <h1 className="text-5xl font-bold leading-tight"
                             style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontWeight: 700, letterSpacing: '-0.01em' }}>
-                            Discover<br />Baguio<br />
+                            Experience the<br />Cordillera<br />Highlands
                         </h1>
                         <p className="mt-4 text-white/75 max-w-xs leading-relaxed"
                            style={{ animation: 'fadeUp 1.5s ease forwards', fontFamily: '"Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: '1.05rem' }}>
-                            Explore the Summer Capital of the philippines with real-time tips, guides, and local insights.
+                            A sanctuary of mist, craft, and culture nestled within the whispering pines of Baguio.
                         </p>
                     </div>
                 </div>
@@ -135,7 +180,7 @@ export const RegisterAcc = () => {
                                     onChange={e => setUsername(e.target.value)}
                                     onFocus={() => setFocusedField('name')}
                                     onBlur={() => setFocusedField(null)}
-                                    placeholder="Juan Dela Cruz"
+                                    placeholder="Elias Canetti"
                                     className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                                 />
                             </div>
@@ -213,19 +258,48 @@ export const RegisterAcc = () => {
                     {/* Social buttons */}
                     <div className="flex gap-3"
                          style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.7s' }}>
+                        {/* Google */}
                         <button
                             onClick={handleGoogleSignIn}
-                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 transition-all duration-200 active:scale-[0.97] text-sm font-medium text-gray-700">
-                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-4 h-4" alt="Google" />
-                            Google
+                            disabled={googleLoading || googleDone}
+                            className="social-btn flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-medium text-gray-700 relative overflow-hidden"
+                            style={{ transition: 'transform 0.15s, box-shadow 0.15s, background 0.2s' }}>
+                            <span className="social-ripple" />
+                            {googleLoading && !googleDone ? (
+                                <span className="social-spinner google-spinner" />
+                            ) : googleDone ? (
+                                <svg className="w-4 h-4 text-green-600 checkmark-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                </svg>
+                            ) : (
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-4 h-4" alt="Google" />
+                            )}
+                            <span className={googleDone ? 'text-green-600' : ''}>
+                                {googleDone ? 'Done!' : googleLoading ? 'Signing in…' : 'Google'}
+                            </span>
                         </button>
+
+                        {/* Facebook */}
                         <button
-                            onClick={handleGoogleSignIn}
-                            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 transition-all duration-200 active:scale-[0.97] text-sm font-medium text-gray-700">
-                            <svg className="w-4 h-4" fill="#1877F2" viewBox="0 0 24 24">
-                                <path d="M22 12.07C22 6.48 17.52 2 11.93 2S1.86 6.48 1.86 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.4V9.41c0-2.37 1.41-3.68 3.57-3.68 1.03 0 2.1.18 2.1.18v2.31h-1.18c-1.16 0-1.52.72-1.52 1.46v1.75h2.59l-.41 2.9h-2.18V22c4.78-.75 8.44-4.91 8.44-9.93z"/>
-                            </svg>
-                            Facebook
+                            onClick={handleFacebookSignIn}
+                            disabled={facebookLoading || facebookDone}
+                            className="social-btn flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl border border-gray-200 bg-white text-sm font-medium text-gray-700 relative overflow-hidden"
+                            style={{ transition: 'transform 0.15s, box-shadow 0.15s, background 0.2s' }}>
+                            <span className="social-ripple" />
+                            {facebookLoading && !facebookDone ? (
+                                <span className="social-spinner fb-spinner" />
+                            ) : facebookDone ? (
+                                <svg className="w-4 h-4 text-green-600 checkmark-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                </svg>
+                            ) : (
+                                <svg className="w-4 h-4" fill="#1877F2" viewBox="0 0 24 24">
+                                    <path d="M22 12.07C22 6.48 17.52 2 11.93 2S1.86 6.48 1.86 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.4V9.41c0-2.37 1.41-3.68 3.57-3.68 1.03 0 2.1.18 2.1.18v2.31h-1.18c-1.16 0-1.52.72-1.52 1.46v1.75h2.59l-.41 2.9h-2.18V22c4.78-.75 8.44-4.91 8.44-9.93z"/>
+                                </svg>
+                            )}
+                            <span className={facebookDone ? 'text-green-600' : ''}>
+                                {facebookDone ? 'Done!' : facebookLoading ? 'Signing in…' : 'Facebook'}
+                            </span>
                         </button>
                     </div>
 
@@ -320,6 +394,62 @@ export const RegisterAcc = () => {
                         7vw  72vh 3px 1px rgba(215,255,175,0.4),
                         50vw 70vh 4px 1px rgba(200,255,160,0.5),
                         26vw 59vh 5px 2px rgba(205,255,165,0.45);
+                }
+
+                /* Social button animations */
+                .social-btn { cursor: pointer; }
+                .social-btn:hover {
+                    background: #f9f9f9 !important;
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                }
+                .social-btn:active {
+                    transform: scale(0.96) translateY(0px) !important;
+                    box-shadow: none !important;
+                }
+                .social-btn:disabled {
+                    cursor: not-allowed;
+                    transform: none !important;
+                    box-shadow: none !important;
+                }
+
+                /* Ripple */
+                .social-ripple {
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(0,0,0,0.07);
+                    width: 0; height: 0;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%, -50%);
+                    pointer-events: none;
+                }
+                .social-btn:active .social-ripple {
+                    animation: rippleBurst 0.45s ease-out forwards;
+                }
+                @keyframes rippleBurst {
+                    from { width: 0; height: 0; opacity: 0.5; }
+                    to   { width: 180px; height: 180px; opacity: 0; }
+                }
+
+                /* Spinner */
+                .social-spinner {
+                    display: inline-block;
+                    width: 14px; height: 14px;
+                    border-radius: 50%;
+                    border: 2px solid transparent;
+                    animation: spin 0.7s linear infinite;
+                    flex-shrink: 0;
+                }
+                .google-spinner { border-top-color: #4285F4; border-right-color: #EA4335; border-bottom-color: #FBBC05; }
+                .fb-spinner    { border-top-color: #1877F2; border-right-color: #1877F2; border-bottom-color: rgba(24,119,242,0.3); }
+                @keyframes spin { to { transform: rotate(360deg); } }
+
+                /* Checkmark pop */
+                .checkmark-pop { animation: checkPop 0.4s cubic-bezier(0.22,1,0.36,1) forwards; }
+                @keyframes checkPop {
+                    0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+                    60%  { transform: scale(1.2) rotate(5deg); opacity: 1; }
+                    100% { transform: scale(1) rotate(0deg); opacity: 1; }
                 }
             `}</style>
         </section>
