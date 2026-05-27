@@ -15,4 +15,7 @@ export const ALL_PLACES = [
     { name: 'Baguio Cathedral',      location: 'Session Road, Baguio City',            badge: 'Church'          },
     { name: 'Sky Ranch Baguio',      location: 'Luneta Hill, Upper Session Road',      badge: 'Fun Attractions' },
     { name: 'SM City Baguio',        location: 'Luneta Hill, Upper Session Road',      badge: 'View Decks'      },
+    { name: 'The Great Wall of Baguio',        location: 'Purok Ongasan, Loakan Proper, Baguio City.',      badge: 'Dragon Treasure Castle'      },
+    { name: 'Sunshine Park Baguio',       location: 'Baguio, Benguet, Philippines, near SM Baguio, UP Baguio, and along the Military Cut-Off area in Baguio.',                 badge: 'Public Park'            },
+    { name: 'Mt. Camisong Forest Park and Events',      location: 'Sitio Peday, Brgy. Loacan, Itogon, Benguet.',            badge: 'Forest Park'          },
 ]
