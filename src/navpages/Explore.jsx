@@ -421,10 +421,25 @@ const otherPlaces = [
         entry: "₱500",
         description: "A scenic forest park offering event spaces, fresh mountain air, and relaxing views. It is ideal for nature trips, gatherings, and sightseeing, providing a peaceful escape surrounded by pine trees and the cool highland atmosphere of Benguet.",
         about: "The Mt. Camisong Forest Park and Events is a mountain destination in Tuba, Benguet known for its pine forests, cool climate, and natural surroundings near Baguio City.",
-        highlights: ["Relaxing spot for students and locals","Near SM Baguio and UP Baguio", "Open areas for sitting, studying","Peaceful urban green space","Surrounded by trees and fresh mountain air"],
+        highlights: ["Panoramic mountain views","Cool pine forest vibe", "Family-friendly environment","Photo-worthy scenery","Event venue spots"],
         image: "https://itogon.gov.ph/wp-content/uploads/2025/02/475218180_1018315113659444_8283416788382906297_n-4-1024x683.jpg",
 
     },
+        {
+        name: "Mount Pulag",
+        location: "Kabayan, Benguet, Cordillera Administrative Region, Philippines.",
+        rating: "4.7",
+        badge: "Mountain",
+        badgeColor: "bg-green-100 text-green-700",
+        hours: "8:00AM - 5:00PM",
+        entry: "₱250",
+        description: "Mount Pulag is the highest mountain in Luzon, famous for its breathtaking sea of clouds, cool climate, and scenic hiking trails. It features mossy forests, grasslands, and stunning sunrise views that attract hikers and nature lovers from different parts of the Philippines.",
+        about: "Located in Benguet, Mount Pulag stands about 2,926 meters above sea level inside Mount Pulag National Park. It is home to diverse wildlife and rare plants. The mountain is one of the most popular hiking destinations in Northern Luzon because of its beautiful landscapes and unforgettable sunrise experience.",
+        highlights: ["Sea of Clouds","3rd Highest Mountain in the Philippines", "Stargazing at Night","Mossy Forest","Grassland Summit", "Cool Climate"],
+        image: "https://i0.wp.com/wanderingfeetph.com/wp-content/uploads/2020/01/20efe-20140907_060743_hdr.jpg?fit=1200%2C900&ssl=1",
+
+    },
+    
     
 ]
 
@@ -1033,12 +1048,12 @@ const handleToggleSaveSpot = async (spot) => {
                     <>
                         <div className="flex items-center justify-end mb-8 anim-fade-in">
                             <span className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full font-medium">
-                                19 places
+                                {allPlaces.length} places
                             </span>
                         </div>
 
                         <div className="mb-10 anim-fade-up">
-                            <h1 className="text-3xl font-bold text-gray-900">Explore Baguio</h1>
+                            <h1 className="text-3xl font-bold text-gray-900">Explore Baguio/Benguet</h1>
                             <p className="text-gray-500 mt-1">Discover top destinations and hidden gems around the City of Pines.</p>
                         </div>
 

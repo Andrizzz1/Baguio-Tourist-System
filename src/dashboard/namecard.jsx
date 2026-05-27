@@ -85,7 +85,7 @@ export const NameCard = () => {
                 <div>
                     <h1 className="nc-heading font-semibold text-emerald-50 text-5xl">Kamusta, {firstName}!</h1>
                 </div>
-                <p className="nc-subtitle max-w-xl text-emerald-100">Ready to explore the Summer Capital? Discover hidden trails, local cuisine, and the rich Cordilleran history — all guided by AI.</p>
+                <p className="nc-subtitle max-w-xl text-emerald-100">Ready to explore the Summer Capital? <br />Discover hidden trails, local cuisine, and the rich Cordilleran history all guided by AI.</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-4 text-center  gap-x-0.5 place-items-center justify-items-center justify-center text-emerald-100  text-xs">

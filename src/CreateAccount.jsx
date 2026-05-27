@@ -148,11 +148,11 @@ export const RegisterAcc = () => {
                 </button>
 
                 {/* CARD */}
-                <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-sm"
+                <div className="w-full max-w-md bg-white rounded-3xl p-8 shadow-sm"
                      style={{ animation: 'cardPop 0.8s cubic-bezier(0.22,1,0.36,1) forwards' }}>
 
                     {/* Header */}
-                    <div style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.1s' }}>
+                   <div className="text-center" style={{ animation: 'fadeUp 0.7s ease forwards', opacity: 0, animationDelay: '0.1s' }}>
                         <h2 className="text-2xl font-bold text-gray-900"
                             style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontSize: '1.75rem' }}>
                             Create your account
@@ -225,7 +225,8 @@ export const RegisterAcc = () => {
                                     placeholder="••••••••"
                                     className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                                 />
-                                <button type="button" onClick={() => setShowPassword(v => !v)}
+                                <button type="button" 
+                                onClick={() => setShowPassword(v => !v)}
                                     className="text-gray-400 hover:text-gray-600 transition-colors">
                                     {showPassword
                                         ? <EyeSlashIcon className="w-4 h-4" />

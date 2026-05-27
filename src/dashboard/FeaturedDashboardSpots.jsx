@@ -58,11 +58,11 @@ const CATEGORIES = [
                 image: '/imgs/the-mansion.jpg',
             },
             {
-                name: ' Baguio Cathedral',
+                name: 'Baguio Cathedral',
                 category: 'Church',
                 rating: 4.7,
                 location: 'Baguio City',
-                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Baguio_Cathedral_2023-02-24.jpg/1920px-Baguio_Cathedral_2023-02-24.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail',
+                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Baguio_Cathedral_2023-02-24.jpg/1920px-Baguio_Cathedral_2023-02-24.jpg',
             },
         ],
     },
@@ -130,13 +130,14 @@ const CATEGORIES = [
     },
 ]
 
-function SpotCard({ name, category, rating, location, image, index, accentColor, accentBg }) {
+function SpotCard({ name, category, rating, location, image, index, accentColor, accentBg, navigate }) {
     const [saved, setSaved] = useState(false)
 
     return (
         <div
+            onClick={() => navigate(`/explore?place=${encodeURIComponent(name)}`)}
             className="group flex flex-col rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden
-                        hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 min-w-0 fds-card"
+                        hover:shadow-lg hover:-translate-y-1.5 transition-all duration-300 min-w-0 fds-card cursor-pointer"
             style={{ animationDelay: `${index * 0.08}s` }}
         >
             {/* Image */}
@@ -144,7 +145,7 @@ function SpotCard({ name, category, rating, location, image, index, accentColor,
                 <img
                     src={image}
                     alt={name}
-                    className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={e => {
                         e.target.style.display = 'none'
                         e.target.nextSibling.style.display = 'flex'
@@ -152,7 +153,7 @@ function SpotCard({ name, category, rating, location, image, index, accentColor,
                 />
                 {/* Fallback placeholder */}
                 <div
-                    className="absolute inset-0 items-center justify-center text-4xl hidden"
+                    className="absolute inset-0 items-center justify-center text-4xl"
                     style={{ background: accentBg, display: 'none' }}
                 >
                     <span>📍</span>
@@ -166,7 +167,7 @@ function SpotCard({ name, category, rating, location, image, index, accentColor,
                     {category}
                 </span>
                 <button
-                    onClick={() => setSaved(p => !p)}
+                    onClick={(e) => { e.stopPropagation(); setSaved(p => !p) }}
                     className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/95 shadow-sm flex items-center justify-center
                                transition-all duration-200 hover:scale-110 active:scale-95"
                 >
@@ -214,6 +215,7 @@ function CategorySection({ id, label, emoji, accentColor, accentBg, accentBorder
                         {label}
                     </h3>
                 </div>
+                {/* ── "See all" navigates to /explore?category=<id> ── */}
                 <button
                     onClick={() => navigate(`/explore?category=${id}`)}
                     className="flex items-center gap-1 text-xs font-semibold transition-all duration-200 hover:gap-2 shrink-0"
@@ -233,6 +235,7 @@ function CategorySection({ id, label, emoji, accentColor, accentBg, accentBorder
                         index={i + sectionIndex * 3}
                         accentColor={accentColor}
                         accentBg={accentBg}
+                        navigate={navigate}
                     />
                 ))}
             </div>
@@ -293,19 +296,17 @@ export const FeaturedDashboardSpots = () => {
                 .fds-heart-pop {
                     animation: heartPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
                 }
-                .group-hover\:scale-108:hover img {
-                    transform: scale(1.08);
-                }
             `}</style>
 
             <div className="fds-container bg-white rounded-3xl border border-gray-100 shadow-sm p-6 flex flex-col gap-6">
 
                 {/* Top Header */}
-                <div className="flex items-start justify-between">
+                <div className="flex flex-col items-center text-center gap-2">
                     <div>
                         <h2 className="fds-heading font-bold text-gray-800 text-lg">Featured Tourist Spots</h2>
                         <p className="fds-sub text-gray-400 text-sm mt-0.5">Hand-picked places loved by travelers this week</p>
                     </div>
+                    {/* "Explore all" goes to /explore with no filter */}
                     <button
                         onClick={() => navigate('/explore')}
                         className="fds-seeall flex items-center gap-1 text-xs font-semibold text-green-700 hover:text-green-900
