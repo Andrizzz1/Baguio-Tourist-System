@@ -26,6 +26,8 @@ function ActionCard({ icon, name, desc, bg, index }) {
     function buttonIdentifier(){
         if(name === "Saved Spots"){
              navigate('/saved')
+        }else if (name === 'Plan a Trip'){
+            navigate('/dashboard/Plan-A-Trip')
         }
     }
     return (
