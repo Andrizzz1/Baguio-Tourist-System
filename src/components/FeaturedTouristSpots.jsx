@@ -123,7 +123,7 @@ function SideCard({ name, category, location, image, badge, index }) {
                 </div>
             </div>
         </div>
-    )
+    )   
 }
 
 export const FeaturedSpots = () => {

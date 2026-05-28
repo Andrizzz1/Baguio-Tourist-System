@@ -16,7 +16,7 @@ import { ProtectedRoute } from './auth/ProtectedRoute.jsx'
 import { Community } from './navpages/community.jsx'
 import { Saved } from './navpages/Saved.jsx'
 import { Explore } from './navpages/Explore.jsx'
-
+import { Planterip } from './dashboard/PlanAtrip.jsx'
 
 createRoot(document.getElementById('root')).render(
   
@@ -47,8 +47,14 @@ createRoot(document.getElementById('root')).render(
             <Saved  />
           </ProtectedRoute>
         }/>
+
+        <Route path='/dashboard/Plan-A-Trip' element={ 
+          <ProtectedRoute>
+            <Planterip />
+          </ProtectedRoute>
+        }/> 
       </Routes>
-     
+    
     </BrowserRouter>
    
   </StrictMode>,

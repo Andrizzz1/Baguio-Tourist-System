@@ -137,15 +137,25 @@ export const Community = () => {
 
 
     const handleImage = (e) => {
-        const file = e.target.files[0]
-        if (!file) return
-        const reader = new FileReader()
-        reader.onloadend = () => {
-            setImagePreview(reader.result)
-            setImageBase64(reader.result)
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        if (file.size > 1 * 1024 * 1024) {
+            alert("Image is too large. Please upload an image below 1MB.");
+            e.target.value = "";
+            return;
         }
-        reader.readAsDataURL(file)
-    }
+
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+            setImageBase64(reader.result);
+        };
+
+        reader.readAsDataURL(file);
+    };
 
         const clearImage = () => {
             setImagePreview(null)
@@ -185,7 +195,16 @@ export const Community = () => {
             })
         });
 
-        const data = await res.json();
+        const text = await res.text();
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            console.log("Server returned non-JSON:", text);
+            alert("Post failed. The image may be too large.");
+            return;
+        }
 
         console.log("POST status:", res.status);
         console.log("POST response:", data);
