@@ -1,9 +1,9 @@
 import { useState, useEffect,useRef } from "react"
 import { useSearchParams } from "react-router-dom"
 import { DashboardNav } from "../dashboard/DashboardNav"
-import {HeartIcon, MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon, PaperAirplaneIcon  } from "@heroicons/react/24/solid"
+import {HeartIcon, MapPinIcon, StarIcon, SparklesIcon, ClockIcon, XMarkIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid"
 import { ArrowLeftIcon } from "@heroicons/react/24/outline"
-import { HeartIcon as HeartOutline } from '@heroicons/react/24/outline'
+import { HeartIcon as HeartOutline , CheckCircleIcon  } from '@heroicons/react/24/outline'
 import { RiRobot2Fill } from 'react-icons/ri'
 const weather_api = import.meta.env.VITE_open_weather_api;
 /* ─────────────────────────────────────────────
@@ -465,6 +465,36 @@ const PlaceModal = ({ place, onClose }) => {
     const [itineraries, setIteneraries] = useState([]);
     const bottomRef = useRef(null) 
     const [toast, setToast] = useState(null)
+    const [visitedSpots, setVisitedSpots] = useState([]);
+
+const fetchVisitedSpots = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id || user?.users_id;
+
+    if (!userId) return;
+
+    try {
+        const res = await fetch(`/api/visited-spots?userId=${userId}&listOnly=true`);
+
+        const text = await res.text();
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch {
+            console.log("Not JSON response:", text);
+            return;
+        }
+
+        if (res.ok && Array.isArray(data)) {
+            setVisitedSpots(data.map((item) => item.spot_id));
+        } else {
+            console.log(data.error || "Invalid visited spots data");
+        }
+    } catch (err) {
+        console.log("Fetch visited spots error:", err);
+    }
+};
 
     const fetchIteneraries = async () =>{
         const user = JSON.parse(localStorage.getItem("user"));
@@ -488,6 +518,7 @@ const PlaceModal = ({ place, onClose }) => {
     }
     useEffect(()=>{
         fetchIteneraries();
+        fetchVisitedSpots();
     },[]);
 
     const handleAddItinerary = async (spot) =>{
@@ -637,6 +668,62 @@ const PlaceModal = ({ place, onClose }) => {
     if (!place) return null
 
 
+const handleToggleVisited = async (spot) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id || user?.users_id;
+    const spotId = getSpotId(spot);
+
+    if (!userId) {
+        alert("Please login first.");
+        return;
+    }
+
+    const isVisited = visitedSpots.includes(spotId);
+
+    try {
+        if (isVisited) {
+            const res = await fetch(`/api/visited-spots?userId=${userId}&spotId=${spotId}`, {
+                method: "DELETE"
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setVisitedSpots((prev) => prev.filter((id) => id !== spotId));
+                showToast("Removed from visited spots", "success");
+            } else {
+                showToast(data.error || "Failed to remove visited spot", "error");
+            }
+        } else {
+            const res = await fetch("/api/visited-spots", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    spot_id: spotId
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setVisitedSpots((prev) =>
+                    prev.includes(spotId) ? prev : [...prev, spotId]
+                );
+                showToast("Marked as visited", "success");
+            } else {
+                showToast(data.error || "Failed to mark as visited", "error");
+            }
+        }
+    } catch (err) {
+        console.log("Toggle visited error:", err);
+        showToast("Something went wrong", "error");
+    }
+};
+
+
     const CHIPS = ['How do I get to ' + place.name + ' from city center?', 'History of The ' + place.name + ' ?', 'Any food spots near ' + place.name + ' ?', 'Send Google Map location']
     return (
         <div
@@ -733,6 +820,27 @@ const PlaceModal = ({ place, onClose }) => {
                                 <button onClick={()=>{showChatbot(false)}} className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-800 font-semibold py-3 rounded-2xl text-sm btn-ghost">
                                     Ask AI Guide
                                 </button>
+                            </div>
+
+                            {/*Already Visited button */}
+                            <div className="flex items-center justify-between mt-2 border p-3 rounded-2xl border-gray-200">                               
+                                <div className="flex items-center">
+                                    <CheckCircleIcon className="w-5 h-5 text-green-600" />
+                                    <div>
+                                        <p className="text-sm font-bold inline ml-1">Already visited?</p>
+                                        <p className="text-xs text-gray-700 ml-1"> Log this spot so it shows in your activity</p>
+                                    </div>
+
+                                </div>
+                                <button 
+                                        onClick={() => handleToggleVisited(place)}
+                                        className={`text-sm p-2 rounded-2xl text-white font-semibold ${
+                                            visitedSpots.includes(getSpotId(place))
+                                                ? "bg-gray-500"
+                                                : "bg-green-500"
+                                        }`}>
+                                        {visitedSpots.includes(getSpotId(place)) ? "Visited" : "Mark as Visited"}
+                                    </button>
                             </div>
                         </>        
                     ) : (
@@ -970,6 +1078,7 @@ const handleToggleSaveSpot = async (spot) => {
         console.log("Save spot error:", err);
     }
 };
+
     return (
         <section className="min-h-screen bg-white">
             <DashboardNav />
