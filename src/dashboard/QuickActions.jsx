@@ -15,8 +15,8 @@ const actions = [
     },
     {
         icon: <MapPinIcon className="w-6 h-6 text-teal-700" />,
-        name: 'Explore Places',
-        desc: 'Discover landmarks, trails, and local attractions.',
+        name: 'Transportation',
+        desc: 'Taxis, jeep, & buses',
         bg: 'bg-teal-100',
     },
 ]
@@ -28,6 +28,8 @@ function ActionCard({ icon, name, desc, bg, index }) {
              navigate('/saved')
         }else if (name === 'Plan a Trip'){
             navigate('/dashboard/Plan-A-Trip')
+        }else if (name === 'Transportation'){
+            navigate('/dashboard/Transportation')
         }
     }
     return (

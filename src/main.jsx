@@ -17,7 +17,7 @@ import { Community } from './navpages/community.jsx'
 import { Saved } from './navpages/Saved.jsx'
 import { Explore } from './navpages/Explore.jsx'
 import { Planterip } from './dashboard/PlanAtrip.jsx'
-
+import { Transportation } from './dashboard/transportation.jsx'
 createRoot(document.getElementById('root')).render(
   
   <StrictMode>
@@ -51,6 +51,11 @@ createRoot(document.getElementById('root')).render(
         <Route path='/dashboard/Plan-A-Trip' element={ 
           <ProtectedRoute>
             <Planterip />
+          </ProtectedRoute>
+        }/> 
+        <Route path='/dashboard/Transportation' element={ 
+          <ProtectedRoute>
+            <Transportation />
           </ProtectedRoute>
         }/> 
       </Routes>
