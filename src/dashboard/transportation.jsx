@@ -1,7 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react"
+import './css/transportation.css'
+import { useNavigate } from 'react-router-dom'
+const fadeUpStyle = {
+  animation: "fadeUp 0.45s ease both",
+}
+
+const cardStyle = (delay = 0) => ({
+  animation: `fadeUp 0.4s ease ${delay}s both`,
+})
 
 export const Transportation = () => {
-  const [activeTab, setActiveTab] = useState("jeepney");
+  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState("jeepney")
+  const [prevTab, setPrevTab] = useState(null)
+  const contentRef = useRef(null)
+
+  const switchTab = (id) => {
+    setPrevTab(activeTab)
+    setActiveTab(id)
+  }
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.style.animation = "none"
+      void contentRef.current.offsetHeight
+      contentRef.current.style.animation = "fadeUp 0.35s ease both"
+    }
+  }, [activeTab])
 
   const jeepneyRoutes = [
     {
@@ -29,7 +54,7 @@ export const Transportation = () => {
       fare: "₱15 – ₱22",
       stops: ["City Hall", "Marcos Hwy junction", "Camp 7"],
     },
-  ];
+  ]
 
   const taxiRoutes = [
     { from: "Burnham Park", to: "Session Road", fare: "₱60 – ₱90", time: "5 – 10 min" },
@@ -38,7 +63,7 @@ export const Transportation = () => {
     { from: "Session Road", to: "Wright Park", fare: "₱100 – ₱150", time: "10 – 15 min" },
     { from: "SM Baguio", to: "BenCab Museum", fare: "₱250 – ₱350", time: "25 – 35 min" },
     { from: "Burnham Park", to: "The Mansion", fare: "₱130 – ₱190", time: "12 – 18 min" },
-  ];
+  ]
 
   const busTerminals = [
     {
@@ -65,186 +90,142 @@ export const Transportation = () => {
       ],
     },
     {
-      name: "Genesis/Joy Bus",
-      address: "Magsaysay Ave, near Center Mall",
-      hours: "4:00 AM – 8:00 PM",
-      operators: "Local Benguet operators",
+      name: "Genesis / Joy Bus",
+      address: "Slaughterhouse Area, Magsaysay Ave",
+      hours: "5:00 AM – 9:00 PM",
+      operators: "Genesis Transport, Joy Bus",
       destinations: [
-        { place: "La Trinidad, Benguet", fare: "₱20 – ₱30" },
-        { place: "Sagada, Mt. Province", fare: "₱220 – ₱280" },
-        { place: "Bontoc", fare: "₱250 – ₱320" },
-        { place: "Kabayan / Buguias", fare: "₱180 – ₱250" },
+        { place: "Manila (Pasay / Cubao)", fare: "₱500 – ₱850" },
+        { place: "Dagupan", fare: "₱210 – ₱290" },
+        { place: "San Fernando, La Union", fare: "₱170 – ₱230" },
       ],
     },
-  ];
+  ]
 
   const tabs = [
-    { id: "taxi", label: "Taxi", icon: "🚖" },
-    { id: "jeepney", label: "Jeepney", icon: "🚌" },
-    { id: "bus", label: "Bus", icon: "🚍" },
-  ];
+    { id: "jeepney", label: "Jeepney", emoji: "🚌" },
+    { id: "taxi", label: "Taxi", emoji: "🚖" },
+    { id: "bus", label: "Bus", emoji: "🚍" },
+  ]
 
   return (
-    <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", padding: "20px", background: "#f8f9fa", minHeight: "100vh" }}>
-
-      {/* ── HEADER SECTION ── */}
-      <div style={{ marginBottom: "28px" }}>
-
-        {/* Travel Assistant Badge */}
-        <div style={{
-          display: "inline-block",
-          border: "1.5px solid #2d7a5e",
-          borderRadius: "20px",
-          padding: "4px 14px",
-          fontSize: "12px",
-          fontWeight: "600",
-          color: "#2d7a5e",
-          marginBottom: "14px",
-          background: "white",
-        }}>
-          Travel Assistant
-        </div>
-
-        {/* Title */}
-        <h1 style={{
-          fontSize: "34px",
-          fontWeight: "800",
-          color: "#111",
-          margin: "0 0 10px 0",
-          lineHeight: "1.2",
-        }}>
-          Transportation in Baguio City
-        </h1>
-
-        {/* Subtitle */}
-        <p style={{
-          fontSize: "15px",
-          color: "#666",
-          margin: "0 0 18px 0",
-          lineHeight: "1.6",
-          maxWidth: "620px",
-        }}>
-          A simple guide to help you move around Baguio using taxis, jeepneys, and bus terminals. Use the estimates below to plan your day.
-        </p>
-
-        {/* Info Banner */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          background: "#fffde7",
-          border: "1.5px solid #f0d88a",
-          borderRadius: "12px",
-          padding: "12px 18px",
-          maxWidth: "720px",
-        }}>
-          <span style={{ fontSize: "16px", flexShrink: 0 }}>ⓘ</span>
-          <span style={{ fontSize: "14px", color: "#7a5c00" }}>
-            All fares are estimated and may vary depending on traffic and conditions.
-          </span>
-        </div>
-      </div>
-
-      {/* ── TABS ── */}
-      <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            style={{
-              display: "flex", alignItems: "center", gap: "8px",
-              padding: "10px 20px", borderRadius: "50px",
-              border: `1.5px solid ${activeTab === tab.id ? "#333" : "#e0e0e0"}`,
-              background: "white", cursor: "pointer",
-              fontSize: "14px", fontWeight: activeTab === tab.id ? "600" : "500",
-              color: activeTab === tab.id ? "#111" : "#555",
-            }}
-          >
-            {tab.icon} {tab.label}
+    <>
+      <div className="transport-wrap">
+        {/* Header */}
+        <div className="flex justify-between flex-row-reverse">
+          <p className="transport-badge ">🗺 Travel Guide</p>
+            <button onClick={()=>{navigate("/dashboard")}} className="text-sm text-gray-500 hover:text-black flex items-center gap-1 mb-4 cursor-pointer">
+            ← back to dashboard
           </button>
-        ))}
-      </div>
+          </div>
 
-      {/* ── JEEPNEY ── */}
-      {activeTab === "jeepney" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-          {jeepneyRoutes.map((route, i) => (
-            <div key={i} style={{ background: "white", border: "1.5px solid #e8e8e8", borderRadius: "12px", padding: "20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-                <span style={{ fontSize: "17px", fontWeight: "600", color: "#111" }}>{route.title}</span>
-                <span style={{ background: "#e8f5f0", color: "#1a9e6e", fontSize: "12px", fontWeight: "600", padding: "4px 10px", borderRadius: "20px" }}>
-                  {route.fare}
-                </span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "6px" }}>
-                {route.stops.map((stop, j) => (
-                  <span key={j} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span style={{ background: "#f0f0f0", padding: "5px 12px", borderRadius: "20px", fontSize: "13px", color: "#444" }}>
-                      {stop}
-                    </span>
-                    {j < route.stops.length - 1 && <span style={{ color: "#999", fontSize: "13px" }}>→</span>}
-                  </span>
-                ))}
-              </div>
-            </div>
+        <h1 className="transport-title">Transportation in Baguio City</h1>
+        <p className="transport-sub">
+          Move around Baguio with ease — taxis, jeepneys, and bus terminals all in one place.
+        </p>
+        <div className="info-banner">
+          <span>ⓘ</span>
+          <span>All fares are estimated and may vary depending on traffic and conditions.</span>
+        </div>
+
+        {/* Tabs */}
+        <div className="tabs">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`tab-btn ${activeTab === tab.id ? "active" : ""}`}
+              onClick={() => switchTab(tab.id)}
+            >
+              {tab.emoji} {tab.label}
+            </button>
           ))}
         </div>
-      )}
 
-      {/* ── TAXI ── */}
-      {activeTab === "taxi" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
-          {taxiRoutes.map((route, i) => (
-            <div key={i} style={{ background: "white", border: "1.5px solid #e8e8e8", borderRadius: "12px", padding: "20px" }}>
-              <div style={{ fontSize: "14px", color: "#333", marginBottom: "12px" }}>
-                📍 {route.from} → {route.to}
-              </div>
-              <div style={{ fontSize: "11px", color: "#888", letterSpacing: "0.5px", fontWeight: "500", textTransform: "uppercase", marginBottom: "4px" }}>
-                Estimated Fare
-              </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "20px", fontWeight: "700", color: "#111" }}>{route.fare}</span>
-                <span style={{ background: "#e8f5f0", color: "#1a9e6e", fontSize: "12px", fontWeight: "500", padding: "4px 10px", borderRadius: "20px" }}>
-                  🕐 {route.time}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ── BUS ── */}
-      {activeTab === "bus" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-          {busTerminals.map((terminal, i) => (
-            <div key={i} style={{ background: "white", border: "1.5px solid #e8e8e8", borderRadius: "12px", padding: "20px" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "14px", marginBottom: "14px" }}>
-                <div style={{ background: "#eef2ff", borderRadius: "10px", width: "44px", height: "44px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "20px" }}>
-                  🚌
-                </div>
-                <div>
-                  <div style={{ fontSize: "16px", fontWeight: "700", color: "#111", marginBottom: "2px" }}>{terminal.name}</div>
-                  <div style={{ fontSize: "13px", color: "#888" }}>{terminal.address}</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: "20px", marginBottom: "14px" }}>
-                <span style={{ fontSize: "12.5px", color: "#555" }}>🕐 {terminal.hours}</span>
-                <span style={{ fontSize: "12.5px", color: "#555" }}>ℹ️ {terminal.operators}</span>
-              </div>
-              <div style={{ fontSize: "11px", color: "#888", letterSpacing: "0.5px", fontWeight: "600", textTransform: "uppercase", borderTop: "1px solid #f0f0f0", paddingTop: "12px", marginBottom: "8px" }}>
-                Destinations & Estimated Fares
-              </div>
-              {terminal.destinations.map((dest, j) => (
-                <div key={j} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0", borderBottom: "1px solid #f8f8f8", fontSize: "14px", color: "#333" }}>
-                  <span>{dest.place}</span>
-                  <span style={{ color: "#1a9e6e", fontWeight: "600" }}>{dest.fare}</span>
+        {/* Content */}
+        <div ref={contentRef}>
+          {/* Jeepney */}
+          {activeTab === "jeepney" && (
+            <div className="content-grid-2">
+              {jeepneyRoutes.map((route, i) => (
+                <div
+                  key={i}
+                  className="route-card"
+                  style={{ animation: `fadeUp 0.35s ease ${i * 0.06}s both` }}
+                >
+                  <div className="route-header">
+                    <span className="route-title">{route.title}</span>
+                    <span className="fare-badge">{route.fare}</span>
+                  </div>
+                  <div className="stops-row">
+                    {route.stops.map((stop, j) => (
+                      <span key={j} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <span className="stop-pill">{stop}</span>
+                        {j < route.stops.length - 1 && <span className="stop-arrow">→</span>}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
-          ))}
-        </div>
-      )}
+          )}
 
-    </div>
-  );
-};
+          {/* Taxi */}
+          {activeTab === "taxi" && (
+            <div className="content-grid-3">
+              {taxiRoutes.map((route, i) => (
+                <div
+                  key={i}
+                  className="taxi-card"
+                  style={{ animation: `fadeUp 0.35s ease ${i * 0.06}s both` }}
+                >
+                  <div className="taxi-route">
+                    <span className="taxi-from">{route.from}</span>
+                    <span style={{ color: "#aaa", margin: "0 6px" }}>→</span>
+                    <span className="taxi-from">{route.to}</span>
+                  </div>
+                  <div className="fare-label">Estimated Fare</div>
+                  <div className="taxi-fare-row">
+                    <span className="taxi-fare">{route.fare}</span>
+                    <span className="time-badge">🕐 {route.time}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Bus */}
+          {activeTab === "bus" && (
+            <div className="content-grid-2">
+              {busTerminals.map((terminal, i) => (
+                <div
+                  key={i}
+                  className="bus-card"
+                  style={{ animation: `fadeUp 0.35s ease ${i * 0.08}s both` }}
+                >
+                  <div className="bus-header">
+                    <div className="bus-icon-wrap">🚌</div>
+                    <div>
+                      <div className="bus-name">{terminal.name}</div>
+                      <div className="bus-address">📍 {terminal.address}</div>
+                    </div>
+                  </div>
+                  <div className="bus-meta">
+                    <span>🕐 {terminal.hours}</span>
+                    <span>🏢 {terminal.operators}</span>
+                  </div>
+                  <div className="dest-section-label">Destinations & Estimated Fares</div>
+                  {terminal.destinations.map((dest, j) => (
+                    <div key={j} className="dest-row">
+                      <span>{dest.place}</span>
+                      <span className="dest-fare">{dest.fare}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
