@@ -1,22 +1,12 @@
 import { useState, useEffect, useRef } from "react"
-import './css/transportation.css'
-import { useNavigate } from 'react-router-dom'
-const fadeUpStyle = {
-  animation: "fadeUp 0.45s ease both",
-}
-
-const cardStyle = (delay = 0) => ({
-  animation: `fadeUp 0.4s ease ${delay}s both`,
-})
+import { Link, useNavigate } from 'react-router-dom'
 
 export const Transportation = () => {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("jeepney")
-  const [prevTab, setPrevTab] = useState(null)
   const contentRef = useRef(null)
 
   const switchTab = (id) => {
-    setPrevTab(activeTab)
     setActiveTab(id)
   }
 
@@ -29,31 +19,11 @@ export const Transportation = () => {
   }, [activeTab])
 
   const jeepneyRoutes = [
-    {
-      title: "Plaza – Trancoville",
-      fare: "₱12 – ₱15",
-      stops: ["City Hall", "Magsaysay Ave", "Trancoville"],
-    },
-    {
-      title: "Plaza – Pacdal (Mines View)",
-      fare: "₱13 – ₱18",
-      stops: ["City Hall", "Leonard Wood Rd", "Wright Park", "Mines View"],
-    },
-    {
-      title: "Session Rd – Aurora Hill",
-      fare: "₱12 – ₱16",
-      stops: ["Session Rd", "Easter Rd", "Aurora Hill"],
-    },
-    {
-      title: "Plaza – Quezon Hill",
-      fare: "₱12 – ₱15",
-      stops: ["City Hall", "Naguilian Rd", "Quezon Hill"],
-    },
-    {
-      title: "Plaza – Camp 7 / Kennon",
-      fare: "₱15 – ₱22",
-      stops: ["City Hall", "Marcos Hwy junction", "Camp 7"],
-    },
+    { title: "Plaza – Trancoville", fare: "₱12 – ₱15", stops: ["City Hall", "Magsaysay Ave", "Trancoville"] },
+    { title: "Plaza – Pacdal (Mines View)", fare: "₱13 – ₱18", stops: ["City Hall", "Leonard Wood Rd", "Wright Park", "Mines View"] },
+    { title: "Session Rd – Aurora Hill", fare: "₱12 – ₱16", stops: ["Session Rd", "Easter Rd", "Aurora Hill"] },
+    { title: "Plaza – Quezon Hill", fare: "₱12 – ₱15", stops: ["City Hall", "Naguilian Rd", "Quezon Hill"] },
+    { title: "Plaza – Camp 7 / Kennon", fare: "₱15 – ₱22", stops: ["City Hall", "Marcos Hwy junction", "Camp 7"] },
   ]
 
   const taxiRoutes = [
@@ -71,6 +41,8 @@ export const Transportation = () => {
       address: "Gov. Pack Rd, near City Hall",
       hours: "24 hours (varies per operator)",
       operators: "Victory Liner, Genesis",
+      img: "https://images.topgear.com.ph/topgear/images/2026/02/16/genesis-p2p-sm-clark-to-trinoma-1771219317.webp",
+      link: "https://victoryliner.com",
       destinations: [
         { place: "Manila (Cubao / Pasay)", fare: "₱470 – ₱780" },
         { place: "La Union", fare: "₱160 – ₱220" },
@@ -82,6 +54,8 @@ export const Transportation = () => {
       address: "Magsaysay Ave, near Center Mall",
       hours: "4:00 AM – 8:00 PM",
       operators: "Local Benguet operators",
+      img: "/images/bus/dangwa.jpg",
+      link: "https://www.ltfrb.gov.ph",
       destinations: [
         { place: "La Trinidad, Benguet", fare: "₱20 – ₱30" },
         { place: "Sagada, Mt. Province", fare: "₱220 – ₱280" },
@@ -94,6 +68,8 @@ export const Transportation = () => {
       address: "Slaughterhouse Area, Magsaysay Ave",
       hours: "5:00 AM – 9:00 PM",
       operators: "Genesis Transport, Joy Bus",
+      img: "/images/bus/genesis.jpg",
+      link: "https://genesistransport.com.ph",
       destinations: [
         { place: "Manila (Pasay / Cubao)", fare: "₱500 – ₱850" },
         { place: "Dagupan", fare: "₱210 – ₱290" },
@@ -101,7 +77,6 @@ export const Transportation = () => {
       ],
     },
   ]
-
   const tabs = [
     { id: "jeepney", label: "Jeepney", emoji: "🚌" },
     { id: "taxi", label: "Taxi", emoji: "🚖" },
@@ -110,57 +85,111 @@ export const Transportation = () => {
 
   return (
     <>
-      <div className="transport-wrap">
-        {/* Header */}
-        <div className="flex justify-between flex-row-reverse">
-          <p className="transport-badge ">🗺 Travel Guide</p>
-            <button onClick={()=>{navigate("/dashboard")}} className="text-sm text-gray-500 hover:text-black flex items-center gap-1 mb-4 cursor-pointer">
-            ← back to dashboard
-          </button>
+      <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .anim-fadeup { animation: fadeUp 0.4s ease both; }
+        .anim-fadeup-1 { animation: fadeUp 0.4s ease 0.12s both; }
+        .tab-content { animation: fadeUp 0.35s ease both; }
+        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+      `}</style>
+
+      <div className="min-h-screen bg-[#f4f6f5] p-6 font-sans">
+
+          {/* ── Hero Header ── */}
+        <div
+          className="anim-fadeup relative rounded-2xl overflow-hidden p-8 mb-6 flex flex-col justify-between min-h-[210px]"
+          style={{
+            background: `linear-gradient(135deg, rgba(8,50,28,0.88) 0%, rgba(15,80,48,0.80) 100%), url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1400&q=80') center/cover no-repeat`,
+            boxShadow: "0 8px 32px rgba(10,60,35,0.3)",
+          }}
+        >
+          <div className="absolute inset-0 pointer-events-none" style={{ background: "linear-gradient(to bottom, rgba(5,35,18,0.3) 0%, transparent 60%)" }} />
+
+          {/* Top row */}
+          <div className="relative z-10 flex justify-between items-start mb-5">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="text-sm text-white/80 flex items-center gap-1 px-3 py-2 rounded-xl border border-white/20 backdrop-blur-sm cursor-pointer"
+              style={{ background: "rgba(255,255,255,0.12)" }}
+            >
+              ← back to dashboard
+            </button>
+            <span
+              className="text-xs font-semibold text-white px-4 py-1.5 rounded-full border border-white/25"
+              style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(6px)" }}
+            >
+              🗺 Travel Guide
+            </span>
           </div>
 
-        <h1 className="transport-title">Transportation in Baguio City</h1>
-        <p className="transport-sub">
-          Move around Baguio with ease — taxis, jeepneys, and bus terminals all in one place.
-        </p>
-        <div className="info-banner">
-          <span>ⓘ</span>
-          <span>All fares are estimated and may vary depending on traffic and conditions.</span>
+          {/* Centered Body */}
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <h1 className="text-5xl font-extrabold text-white mb-2 leading-tight" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.25)" }}>
+              Transportation in Baguio City
+            </h1>
+            <p className="text-sm text-white/75 leading-relaxed max-w-lg mb-4">
+              A simple guide to help you move around Baguio using taxis, jeepneys, and bus terminals.
+              Use the estimates below to plan your day.
+            </p>
+            <div
+              className="inline-flex items-center gap-2 text-sm rounded-xl px-4 py-2"
+              style={{
+                background: "rgba(255,248,180,0.12)",
+                border: "1px solid rgba(255,235,100,0.3)",
+                color: "#fff8cc",
+                backdropFilter: "blur(4px)",
+              }}
+            >
+              <span>ⓘ</span>
+              <span>All fares are estimated and may vary depending on traffic and conditions.</span>
+            </div>
+          </div>
         </div>
 
-        {/* Tabs */}
-        <div className="tabs">
+        {/* ── Tabs ── */}
+        <div className="anim-fadeup-1 inline-flex gap-1.5 bg-white border border-gray-200 rounded-full p-1.5 mb-5 shadow-sm">
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={`tab-btn ${activeTab === tab.id ? "active" : ""}`}
               onClick={() => switchTab(tab.id)}
+              className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer border-none
+                ${activeTab === tab.id
+                  ? "bg-[#1a9e6e] text-white shadow-md"
+                  : "bg-transparent text-gray-400 hover:bg-[#e8f5f0] hover:text-[#1a9e6e]"
+                }`}
             >
               {tab.emoji} {tab.label}
             </button>
           ))}
         </div>
 
-        {/* Content */}
-        <div ref={contentRef}>
+        {/* ── Content ── */}
+        <div ref={contentRef} className="tab-content">
+
           {/* Jeepney */}
           {activeTab === "jeepney" && (
-            <div className="content-grid-2">
+            <div className="grid grid-cols-2 gap-3.5">
               {jeepneyRoutes.map((route, i) => (
                 <div
                   key={i}
-                  className="route-card"
-                  style={{ animation: `fadeUp 0.35s ease ${i * 0.06}s both` }}
+                  className="card-hover bg-white border border-gray-200 rounded-2xl p-5 shadow-sm"
+                  style={{ animation: `fadeUp 0.35s ease ${i * 0.07}s both` }}
                 >
-                  <div className="route-header">
-                    <span className="route-title">{route.title}</span>
-                    <span className="fare-badge">{route.fare}</span>
+                  <div className="flex justify-between items-center mb-3 gap-2">
+                    <span className="text-[15px] font-bold text-gray-900">{route.title}</span>
+                    <span className="bg-[#e8f5f0] text-[#1a9e6e] text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+                      {route.fare}
+                    </span>
                   </div>
-                  <div className="stops-row">
+                  <div className="flex items-center flex-wrap gap-1.5">
                     {route.stops.map((stop, j) => (
-                      <span key={j} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                        <span className="stop-pill">{stop}</span>
-                        {j < route.stops.length - 1 && <span className="stop-arrow">→</span>}
+                      <span key={j} className="flex items-center gap-1.5">
+                        <span className="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full">{stop}</span>
+                        {j < route.stops.length - 1 && <span className="text-gray-300 text-xs">→</span>}
                       </span>
                     ))}
                   </div>
@@ -171,22 +200,25 @@ export const Transportation = () => {
 
           {/* Taxi */}
           {activeTab === "taxi" && (
-            <div className="content-grid-3">
+            <div className="grid grid-cols-3 gap-3.5">
               {taxiRoutes.map((route, i) => (
                 <div
                   key={i}
-                  className="taxi-card"
-                  style={{ animation: `fadeUp 0.35s ease ${i * 0.06}s both` }}
+                  className="card-hover bg-white border border-gray-200 rounded-2xl p-5 shadow-sm"
+                  style={{ animation: `fadeUp 0.35s ease ${i * 0.07}s both` }}
                 >
-                  <div className="taxi-route">
-                    <span className="taxi-from">{route.from}</span>
-                    <span style={{ color: "#aaa", margin: "0 6px" }}>→</span>
-                    <span className="taxi-from">{route.to}</span>
+                  <div className="text-xs text-[#1a9e6e] font-semibold mb-1">📍 Route</div>
+                  <div className="flex items-center gap-1.5 text-[15px] font-bold text-gray-900 mb-3">
+                    <span>{route.from}</span>
+                    <span className="text-gray-300 font-normal">→</span>
+                    <span>{route.to}</span>
                   </div>
-                  <div className="fare-label">Estimated Fare</div>
-                  <div className="taxi-fare-row">
-                    <span className="taxi-fare">{route.fare}</span>
-                    <span className="time-badge">🕐 {route.time}</span>
+                  <div className="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mb-1">Estimated Fare</div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl font-extrabold text-gray-900">{route.fare}</span>
+                    <span className="bg-[#e8f5f0] text-[#1a9e6e] text-xs font-semibold px-3 py-1 rounded-full">
+                      🕐 {route.time}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -195,35 +227,76 @@ export const Transportation = () => {
 
           {/* Bus */}
           {activeTab === "bus" && (
-            <div className="content-grid-2">
+            <div className="grid grid-cols-2 gap-3.5">
               {busTerminals.map((terminal, i) => (
                 <div
                   key={i}
-                  className="bus-card"
+                  className="card-hover bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm"
                   style={{ animation: `fadeUp 0.35s ease ${i * 0.08}s both` }}
                 >
-                  <div className="bus-header">
-                    <div className="bus-icon-wrap">🚌</div>
-                    <div>
-                      <div className="bus-name">{terminal.name}</div>
-                      <div className="bus-address">📍 {terminal.address}</div>
-                    </div>
+               {/* Image */}
+                  <div className="relative h-36 overflow-hidden bg-gradient-to-br from-[#d0ebe0] to-[#b8ddd0]">
+                    {terminal.img ? (
+                      <img
+                        src={terminal.img}
+                        alt={terminal.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = "none"
+                          e.target.parentNode.classList.add("flex", "items-center", "justify-center")
+                          e.target.parentNode.innerHTML = '<span style="font-size:36px">🚌</span>'
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-4xl">
+                        🚌
+                      </div>
+                    )}
                   </div>
-                  <div className="bus-meta">
-                    <span>🕐 {terminal.hours}</span>
-                    <span>🏢 {terminal.operators}</span>
-                  </div>
-                  <div className="dest-section-label">Destinations & Estimated Fares</div>
-                  {terminal.destinations.map((dest, j) => (
-                    <div key={j} className="dest-row">
-                      <span>{dest.place}</span>
-                      <span className="dest-fare">{dest.fare}</span>
+
+                  {/* Body */}
+                  <div className="p-5">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="bg-indigo-50 rounded-xl w-10 h-10 flex items-center justify-center text-lg flex-shrink-0">
+                        🚌
+                      </div>
+                      <div>
+                        <div className="text-[15px] font-bold text-gray-900">{terminal.name}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">📍 {terminal.address}</div>
+                      </div>
                     </div>
-                  ))}
+
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full">🕐 {terminal.hours}</span>
+                      <span className="text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded-full">🏢 {terminal.operators}</span>
+                    </div>
+
+                    <div className="text-[10px] text-gray-400 uppercase tracking-widest font-bold border-t border-gray-100 pt-3 mb-2">
+                      Destinations & Estimated Fares
+                    </div>
+
+                    {terminal.destinations.map((dest, j) => (
+                      <div
+                        key={j}
+                        className="flex justify-between items-center py-1.5 border-b border-gray-50 last:border-none text-sm text-gray-700"
+                      >
+                        <span>{dest.place}</span>
+                        <span className="text-[#1a9e6e] font-bold">{dest.fare}</span>
+                      </div>
+                    ))}
+
+                    {terminal.link && (
+                      <a href={terminal.link} target="_blank" rel="noopener noreferrer" className="mt-4 w-full flex items-center justify-center gap-2 bg-[#e8f5f0] hover:bg-[#1a9e6e] text-[#1a9e6e] hover:text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all duration-200">
+                        🌐 For more information, visit their site
+                      </a>
+                    )}
+
+                  </div>
                 </div>
               ))}
             </div>
           )}
+
         </div>
       </div>
     </>
