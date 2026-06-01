@@ -27,22 +27,34 @@ export const Transportation = () => {
   ]
 
   const taxiRoutes = [
-    { from: "Burnham Park", to: "Session Road", fare: "₱60 – ₱90", time: "5 – 10 min" },
-    { from: "Session Road", to: "Camp John Hay", fare: "₱120 – ₱180", time: "10 – 15 min" },
-    { from: "Burnham Park", to: "Mines View Park", fare: "₱150 – ₱220", time: "15 – 25 min" },
-    { from: "Session Road", to: "Wright Park", fare: "₱100 – ₱150", time: "10 – 15 min" },
-    { from: "SM Baguio", to: "BenCab Museum", fare: "₱250 – ₱350", time: "25 – 35 min" },
-    { from: "Burnham Park", to: "The Mansion", fare: "₱130 – ₱190", time: "12 – 18 min" },
+    { from: "Burnham Park", to: "Botanical Garden", fare: "₱70–₱100", time: "5 – 10 min" },
+    { from: "Burnham Park", to: "Baguio Cathedral", fare: "₱₱60–₱80", time: "10 – 15 min" },
+    { from: "Burnham Park", to: "SM City Baguio", fare: "₱₱60–₱80", time: "15 – 25 min" },
+    { from: "Burnham Park", to: "Baguio Night Market", fare: "₱50–₱70", time: "10 – 15 min" },
+    { from: "Burnham Park", to: "Tam-Awan Village", fare: "₱₱120–₱180", time: "25 – 35 min" },
+    { from: "Burnham Park", to: "BenCab Museum", fare: "₱180–₱250", time: "12 – 18 min" },
+    { from: "Burnham Park", to: "Diplomat Hotel", fare: "₱70–₱100", time: "12 – 18 min" },
+    { from: "Burnham Park", to: "Strawberry Farm", fare: "₱120–₱180", time: "12 – 18 min" },
+    { from: "Burnham Park", to: "Camp John Hay", fare: "₱80–₱120", time: "12 – 18 min" },
+    { from: "Burnham Park", to: "The Mansion", fare: "₱100–₱150", time: "12 – 18 min" },
+    { from: "Burnham Park", to: "Wright Park", fare: "₱100–₱150", time: "12 – 18 min" },
+    { from: "Burnham Park", to: "Mines View Park", fare: "₱120–₱180", time: "12 – 18 min" },
+    { from: "Burnham Park", to: "Skyrise Baguio", fare: "₱100–₱160", time: "12 – 18 min" }, 
+    { from: "Burnham Park", to: "Sunshine Park", fare: "₱60–₱100", time: "12 – 18 min" }, 
+    { from: "Burnham Park", to: "The Great Wall of Baguio", fare: "₱120–₱180", time: "12 – 18 min" }, 
+    { from: "Burnham Park", to: "Mt. Camisong Forest Park", fare: "₱500–₱800", time: "12 – 18 min" }, 
+    { from: "Burnham Park", to: "Mount Pulag Jump-off Point", fare: "₱1,500–₱3,000+", time: "12 – 18 min" }, 
+    { from: "Burnham Park", to: "Mount Kabunian Jump-off Point", fare: "₱₱2,000–₱4,000+", time: "12 – 18 min" }, 
   ]
 
   const busTerminals = [
     {
-      name: "Gov. Pack Road Terminal",
-      address: "Gov. Pack Rd, near City Hall",
+      name: "Victoy Liner",
+      address: "PNR Compound, Utility Road, corner Marcovile Street, Upper Session Road",
       hours: "24 hours (varies per operator)",
-      operators: "Victory Liner, Genesis",
-      img: "https://images.topgear.com.ph/topgear/images/2026/02/16/genesis-p2p-sm-clark-to-trinoma-1771219317.webp",
-      link: "https://victoryliner.com",
+      operators: "Victory Liner, Inc.",
+      img: "https://scontent.fcrk1-1.fna.fbcdn.net/v/t39.30808-6/488925176_1187323796772934_6030573830205746662_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeH3IyvtJDju_4_TSfDITZnOBNPh7oo0wE8E0-HuijTAT1_7Pd128IK8KEdsB35Oq2MELoCGsfpKlP9aB2cJyGyO&_nc_ohc=d-li5p5rHYIQ7kNvwHnVbjI&_nc_oc=AdpthcYbiwVvwbaMIXgryW6DHLJr8YjJxnDkKE46TNbQDViwzRhoEC_U1U1fmHFJuBE&_nc_zt=23&_nc_ht=scontent.fcrk1-1.fna&_nc_gid=24UlqUT9WFQehjP4xVEBaA&_nc_ss=7b2a8&oh=00_Af9SwHf3I-Y3xxrWtmDMqovJP7B09H11UJEdDLyhdLYVaw&oe=6A238DD1",
+      link: "https://www.victoryliner.com/",
       destinations: [
         { place: "Manila (Cubao / Pasay)", fare: "₱470 – ₱780" },
         { place: "La Union", fare: "₱160 – ₱220" },
@@ -50,12 +62,12 @@ export const Transportation = () => {
       ],
     },
     {
-      name: "Dangwa Terminal",
-      address: "Magsaysay Ave, near Center Mall",
-      hours: "4:00 AM – 8:00 PM",
-      operators: "Local Benguet operators",
-      img: "/images/bus/dangwa.jpg",
-      link: "https://www.ltfrb.gov.ph",
+      name: "Pangasinan Solid North",
+      address: "Gov. Pack Rd, near City Hall",
+      hours: "4:00 AM – 10:00 PM",
+      operators: "JAC Liner Inc",
+      img: "https://www.phbus.com/wp-content/uploads/2024/02/Solid-North-Bus-Terminal-Baguio-1.jpg",
+      link: "https://solidnorthinc.com/",
       destinations: [
         { place: "La Trinidad, Benguet", fare: "₱20 – ₱30" },
         { place: "Sagada, Mt. Province", fare: "₱220 – ₱280" },
@@ -66,9 +78,9 @@ export const Transportation = () => {
     {
       name: "Genesis / Joy Bus",
       address: "Slaughterhouse Area, Magsaysay Ave",
-      hours: "5:00 AM – 9:00 PM",
-      operators: "Genesis Transport, Joy Bus",
-      img: "/images/bus/genesis.jpg",
+      hours: "2:00 AM – 11:00 PM",
+      operators: "Genesis Transport Service Inc.",
+      img: "https://scontent.fcrk1-5.fna.fbcdn.net/v/t39.30808-6/504213750_1022018846795785_8124134482573428633_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHFpWbJNrn8RcjE3c8swGHGRvgBEbD0laNG-AERsPSVo5gyXySYCTGl1D3YfDi9CbbbmTA40i0Dy-3KG031f9s7&_nc_ohc=Wv18gTamleMQ7kNvwFmC1xt&_nc_oc=AdoW8-Txazlx6T49nbpEArbPm_0T_6ciMRsYCRcQ21pvCYCXeSA0Z_UMr70wNgUJjvg&_nc_zt=23&_nc_ht=scontent.fcrk1-5.fna&_nc_gid=uPXP7vOepnkX4R3pRSyipA&_nc_ss=7b2a8&oh=00_Af8B8iR3VZ1dJyERQjxPXF-fiI8YKPBxoNnzHD9X7hVWRA&oe=6A23B0C2",
       link: "https://genesistransport.com.ph",
       destinations: [
         { place: "Manila (Pasay / Cubao)", fare: "₱500 – ₱850" },
